@@ -1,47 +1,53 @@
 ﻿using Dao.Contracts;
+using Services.Dao.Implementations.SqlServer;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Dao.Implementations.SqlServer.Mappers
 {
-
-	public sealed class FamiliaMapper : IObjectMapper<Familia>
+    /// <summary>
+    /// Mapeador para convertir arrays de objetos en instancias de la clase Familia.
+    /// </summary>
+    public sealed class FamiliaMapper : IObjectMapper<Familia>
     {
-		#region singleton
-		private readonly static FamiliaMapper _instance = new FamiliaMapper();
+        #region Singleton Pattern
+        private static readonly FamiliaMapper _instance = new FamiliaMapper();
 
-		public static FamiliaMapper Current
-		{
-			get
-			{
-				return _instance;
-			}
-		}
+        /// <summary>
+        /// Acceso a la instancia singleton del mapeador.
+        /// </summary>
+        public static FamiliaMapper Current => _instance;
 
-		private FamiliaMapper()
-		{
-			//Implent here the initialization of your singleton
-		}
+        private FamiliaMapper()
+        {
+            // Aquí se puede implementar la inicialización del singleton si es necesario.
+        }
         #endregion
 
+        /// <summary>
+        /// Convierte un array de valores en una instancia de Familia.
+        /// </summary>
+        /// <param name="values">Array que contiene los valores de los campos de una entidad Familia.</param>
+        /// <returns>Una instancia de Familia mapeada desde los valores proporcionados.</returns>
         public Familia Fill(object[] values)
         {
-			//Nivel de hidratación 1 (Primitivos)
-			Familia familia = new Familia();
-			familia.Id = Guid.Parse(values[0].ToString());
-			familia.Nombre = values[1].ToString();
+            if (values == null || values.Length < 2)
+            {
+                throw new ArgumentException("Values array is null or does not have enough elements to map a Familia object.");
+            }
 
-			//Nivel 2 de hidratación (Agregaciones)
+            Familia familia = new Familia
+            {
+                Id = Guid.Parse(values[0]?.ToString()),
+                Nombre = values[1]?.ToString()
+            };
 
-			FamiliaPatenteRepository.Current.Join(familia);
-            //FamiliaFamiliaRepository.Current.Join(familia);
+            // Hidratación de relaciones con otras entidades como Patentes y Familias
+            // Agrega patentes asociadas a la familia.
+            FamiliaPatenteRepository.Current.Join(familia);
+            // Si existen asociaciones familiares, descomentar y asegurarse que FamiliaFamiliaRepository está implementado.
+            // FamiliaFamiliaRepository.Current.Join(familia);
 
-			return familia;
+            return familia;
         }
-        
     }
-
 }

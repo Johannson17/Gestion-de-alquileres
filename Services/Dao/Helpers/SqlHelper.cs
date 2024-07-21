@@ -6,16 +6,26 @@ using System.Linq;
 
 namespace Services.Dao.Helpers
 {
+    /// <summary>
+    /// Proporciona métodos estáticos para ejecutar operaciones en la base de datos.
+    /// </summary>
     internal static class SqlHelper
     {
-        readonly static string conString;
+        private readonly static string conString;
 
         static SqlHelper()
         {
             conString = ConfigurationManager.ConnectionStrings["ServicesSqlConnection"].ConnectionString;
         }
-        public static Int32 ExecuteNonQuery(String commandText,
-            CommandType commandType, params SqlParameter[] parameters)
+
+        /// <summary>
+        /// Ejecuta un comando que no devuelve ningún resultado, como INSERT, DELETE o UPDATE.
+        /// </summary>
+        /// <param name="commandText">Texto del comando SQL a ejecutar.</param>
+        /// <param name="commandType">Tipo del comando, como StoredProcedure o Text.</param>
+        /// <param name="parameters">Parámetros del comando SQL.</param>
+        /// <returns>El número de filas afectadas.</returns>
+        public static int ExecuteNonQuery(string commandText, CommandType commandType, params SqlParameter[] parameters)
         {
             CheckNullables(parameters);
 
@@ -23,8 +33,6 @@ namespace Services.Dao.Helpers
             {
                 using (SqlCommand cmd = new SqlCommand(commandText, conn))
                 {
-                    // There're three command types: StoredProcedure, Text, TableDirect. The TableDirect 
-                    // type is only for OLE DB.  
                     cmd.CommandType = commandType;
                     cmd.Parameters.AddRange(parameters);
 
@@ -34,22 +42,26 @@ namespace Services.Dao.Helpers
             }
         }
 
+        /// <summary>
+        /// Reemplaza cualquier parámetro nulo por DBNull para evitar errores en la base de datos.
+        /// </summary>
+        /// <param name="parameters">Array de SqlParameter que pueden contener valores nulos.</param>
         private static void CheckNullables(SqlParameter[] parameters)
         {
-            foreach (SqlParameter item in parameters)
+            foreach (SqlParameter item in parameters.Where(p => p.Value == null))
             {
-                if (item.SqlValue == null)
-                {
-                    item.SqlValue = DBNull.Value;
-                }
+                item.Value = DBNull.Value;
             }
         }
 
         /// <summary>
-        /// Set the connection, command, and then execute the command and only return one value.
+        /// Ejecuta un comando que devuelve el primer valor de la primera fila en el conjunto de resultados.
         /// </summary>
-        public static Object ExecuteScalar(String commandText,
-            CommandType commandType, params SqlParameter[] parameters)
+        /// <param name="commandText">Texto del comando SQL a ejecutar.</param>
+        /// <param name="commandType">Tipo del comando, como StoredProcedure o Text.</param>
+        /// <param name="parameters">Parámetros del comando SQL.</param>
+        /// <returns>El primer valor de la primera fila en el conjunto de resultados.</returns>
+        public static object ExecuteScalar(string commandText, CommandType commandType, params SqlParameter[] parameters)
         {
             using (SqlConnection conn = new SqlConnection(conString))
             {
@@ -65,10 +77,13 @@ namespace Services.Dao.Helpers
         }
 
         /// <summary>
-        /// Set the connection, command, and then execute the command with query and return the reader.
+        /// Ejecuta un comando y retorna un SqlDataReader para leer el resultado.
         /// </summary>
-        public static SqlDataReader ExecuteReader(String commandText,
-            CommandType commandType, params SqlParameter[] parameters)
+        /// <param name="commandText">Texto del comando SQL a ejecutar.</param>
+        /// <param name="commandType">Tipo del comando, como StoredProcedure o Text.</param>
+        /// <param name="parameters">Parámetros del comando SQL.</param>
+        /// <returns>Un SqlDataReader para leer los resultados del comando.</returns>
+        public static SqlDataReader ExecuteReader(string commandText, CommandType commandType, params SqlParameter[] parameters)
         {
             SqlConnection conn = new SqlConnection(conString);
 
@@ -80,9 +95,7 @@ namespace Services.Dao.Helpers
                 conn.Open();
                 // When using CommandBehavior.CloseConnection, the connection will be closed when the 
                 // IDataReader is closed.
-                SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-
-                return reader;
+                return cmd.ExecuteReader(CommandBehavior.CloseConnection);
             }
         }
     }

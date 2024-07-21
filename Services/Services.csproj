@@ -49,15 +49,18 @@
     <Compile Include="Dao\Implementations\SqlServer\FamiliaRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\Mappers\FamiliaMapper.cs" />
     <Compile Include="Dao\Implementations\SqlServer\Mappers\PatenteMapper.cs" />
+    <Compile Include="Dao\Implementations\SqlServer\Mappers\UsuarioMapper.cs" />
     <Compile Include="Dao\Implementations\SqlServer\PatenteRepository.cs" />
+    <Compile Include="Dao\Implementations\SqlServer\UsuarioFamiliaRepository.cs" />
+    <Compile Include="Dao\Implementations\SqlServer\UsuarioPatenteRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\UsuarioRepository.cs" />
     <Compile Include="Dao\LanguageDao.cs" />
     <Compile Include="Dao\LoggerDao.cs" />
     <Compile Include="Dao\ILoggerDao.cs" />
-    <Compile Include="Domain\DemoComposite\Acceso.cs" />
-    <Compile Include="Domain\DemoComposite\Familia.cs" />
-    <Compile Include="Domain\DemoComposite\Patente.cs" />
-    <Compile Include="Domain\DemoComposite\Usuario.cs" />
+    <Compile Include="Domain\Composite\Acceso.cs" />
+    <Compile Include="Domain\Composite\Familia.cs" />
+    <Compile Include="Domain\Composite\Patente.cs" />
+    <Compile Include="Domain\Composite\Usuario.cs" />
     <Compile Include="Domain\Exceptions\WordNotFoundException.cs" />
     <Compile Include="Domain\Log.cs" />
     <Compile Include="Facade\Extentions\StringExtention.cs" />
@@ -72,7 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dao\Scripts\scriptSecurityDB.sql" />
-    <Content Include="Dao\Scripts\SecurityPP con datos.sql" />
     <Content Include="Dao\Scripts\StoredProcedures.sql" />
   </ItemGroup>
   <ItemGroup />

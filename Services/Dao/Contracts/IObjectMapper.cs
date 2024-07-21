@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dao.Contracts
 {
+    /// <summary>
+    /// Interfaz interna para mapear objetos desde una representación de backend a un objeto específico de la aplicación.
+    /// </summary>
+    /// <typeparam name="T">Tipo del objeto en la aplicación.</typeparam>
     internal interface IObjectMapper<T>
     {
         /// <summary>
-        /// Con fill vamos a concretar la adapción de cada backend en un objeto de nuestra app.
+        /// Mapea un arreglo de valores a un objeto específico de tipo T.
         /// </summary>
-        /// <param name="values">tecnología implementada backend</param>
-        /// <returns>Objeto adaptado. Ej: Customer</returns>
+        /// <param name="values">Array de objetos que representa los datos desde el backend, como valores de una fila de base de datos.</param>
+        /// <returns>Una instancia de tipo T adaptada con los datos del backend. Ejemplo: Customer.</returns>
         T Fill(object[] values);
     }
 }

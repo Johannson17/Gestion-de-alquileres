@@ -1,84 +1,124 @@
 ﻿using Dao.Contracts;
 using Services.Dao.Helpers;
+using Services.Dao.Implementations.SqlServer.Mappers;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Services.Dao.Implementations.SqlServer
 {
+    /// <summary>
+    /// Repositorio para la gestión de entidades Usuario con operaciones CRUD.
+    /// </summary>
+    public sealed class UsuarioRepository : IGenericDao<Usuario>
+    {
+        #region Singleton Pattern
+        private static readonly UsuarioRepository _instance = new UsuarioRepository();
 
-	public sealed class UsuarioRepository : IGenericDao<Usuario>
-	{
-		#region singleton
-		private readonly static UsuarioRepository _instance = new UsuarioRepository();
+        /// <summary>
+        /// Acceso a la instancia singleton del repositorio.
+        /// </summary>
+        public static UsuarioRepository Current => _instance;
 
-		public static UsuarioRepository Current
-		{
-			get
-			{
-				return _instance;
-			}
-		}
-
-		private UsuarioRepository()
-		{
-			//Implent here the initialization of your singleton
-		}
+        private UsuarioRepository()
+        {
+            // Aquí se puede implementar la inicialización del singleton si es necesario.
+        }
         #endregion
+
+        /// <summary>
+        /// Añade un nuevo Usuario al sistema.
+        /// </summary>
+        /// <param name="obj">La instancia de Usuario a añadir.</param>
         public void Add(Usuario obj)
         {
-            //Esto debería ser una Tx
             SqlHelper.ExecuteNonQuery("UsuarioInsert", CommandType.StoredProcedure,
-              new SqlParameter[] { new SqlParameter("@IdUsuario", obj.IdUsuario),
-                                   new SqlParameter("@UserName", obj.UserName),
-                                   new SqlParameter("@Password", obj.Password) });
+                new SqlParameter("@IdUsuario", obj.IdUsuario),
+                new SqlParameter("@UserName", obj.UserName),
+                new SqlParameter("@Password", obj.Password));
 
-            //Stop al SQL SERVER
-
-            //Hay que verificar las relaciones?
-            foreach (var item in obj.Accesos)
+            foreach (var acceso in obj.Accesos)
             {
-                if(item.GetCount() == 0)
+                if (acceso.GetType() == typeof(Patente))
                 {
-                    //Estoy ante una patente
-                    //Usuario_PatenteInsert
-
+                    SqlHelper.ExecuteNonQuery("Usuario_PatenteInsert", CommandType.StoredProcedure,
+                        new SqlParameter("@IdUsuario", obj.IdUsuario),
+                        new SqlParameter("@IdPatente", acceso.Id));
                 }
-                else
+                else if (acceso.GetType() == typeof(Familia))
                 {
-                    //Estoy ante una familia
-                    //Usuario_FamiliaInsert
+                    SqlHelper.ExecuteNonQuery("Usuario_FamiliaInsert", CommandType.StoredProcedure,
+                        new SqlParameter("@IdUsuario", obj.IdUsuario),
+                        new SqlParameter("@IdFamilia", acceso.Id));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Actualiza un Usuario existente en el sistema.
+        /// </summary>
+        /// <param name="obj">La instancia de Usuario a actualizar.</param>
+        public void Update(Usuario obj)
+        {
+            SqlHelper.ExecuteNonQuery("UsuarioUpdate", CommandType.StoredProcedure,
+                new SqlParameter("@IdUsuario", obj.IdUsuario),
+                new SqlParameter("@UserName", obj.UserName),
+                new SqlParameter("@Password", obj.Password));
+        }
+
+        /// <summary>
+        /// Elimina un Usuario del sistema por su identificador único.
+        /// </summary>
+        /// <param name="id">El identificador único del Usuario a eliminar.</param>
+        public void Remove(Guid id)
+        {
+            SqlHelper.ExecuteNonQuery("UsuarioDelete", CommandType.StoredProcedure,
+                new SqlParameter("@IdUsuario", id));
+        }
+
+        /// <summary>
+        /// Obtiene un Usuario por su identificador único.
+        /// </summary>
+        /// <param name="id">El identificador único del Usuario.</param>
+        /// <returns>La instancia de Usuario si existe, de lo contrario, null.</returns>
+        public Usuario GetById(Guid id)
+        {
+            Usuario usuario = null;
+
+            using (var reader = SqlHelper.ExecuteReader("UsuarioSelect", CommandType.StoredProcedure,
+                new SqlParameter("@IdUsuario", id)))
+            {
+                if (reader.Read())
+                {
+                    object[] data = new object[reader.FieldCount];
+                    reader.GetValues(data);
+                    usuario = UsuarioMapper.Current.Fill(data);
                 }
             }
 
-
-
+            return usuario;
         }
 
-        public void Update(Usuario obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Usuario GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Obtiene todos los Usuarios del sistema.
+        /// </summary>
+        /// <returns>Una lista de todas las instancias de Usuario.</returns>
         public List<Usuario> GetAll()
         {
-            throw new NotImplementedException();
-        }
-        
-    }
+            List<Usuario> usuarios = new List<Usuario>();
 
+            using (var reader = SqlHelper.ExecuteReader("UsuarioSelectAll", CommandType.StoredProcedure))
+            {
+                while (reader.Read())
+                {
+                    object[] data = new object[reader.FieldCount];
+                    reader.GetValues(data);
+                    usuarios.Add(UsuarioMapper.Current.Fill(data));
+                }
+            }
+
+            return usuarios;
+        }
+    }
 }

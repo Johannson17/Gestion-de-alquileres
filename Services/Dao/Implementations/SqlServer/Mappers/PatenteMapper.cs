@@ -1,43 +1,48 @@
 ﻿using Dao.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Dao.Implementations.SqlServer.Mappers
 {
-
-	public sealed class PatenteMapper : IObjectMapper<Patente>
+    /// <summary>
+    /// Mapeador para convertir arrays de objetos en instancias de Patente.
+    /// </summary>
+    public sealed class PatenteMapper : IObjectMapper<Patente>
     {
-		#region singleton
-		private readonly static PatenteMapper _instance = new PatenteMapper();
+        #region Singleton Pattern
+        private static readonly PatenteMapper _instance = new PatenteMapper();
 
-		public static PatenteMapper Current
-		{
-			get
-			{
-				return _instance;
-			}
-		}
+        /// <summary>
+        /// Acceso a la instancia singleton del mapeador.
+        /// </summary>
+        public static PatenteMapper Current => _instance;
 
-		private PatenteMapper()
-		{
-			//Implent here the initialization of your singleton
-		}
+        private PatenteMapper()
+        {
+            // Aquí se puede implementar la inicialización del singleton si es necesario.
+        }
         #endregion
 
+        /// <summary>
+        /// Convierte un array de valores en una instancia de Patente.
+        /// </summary>
+        /// <param name="values">Array que contiene los valores de los campos de una entidad Patente.</param>
+        /// <returns>Una instancia de Patente mapeada desde los valores proporcionados.</returns>
         public Patente Fill(object[] values)
         {
-            Patente patente = new Patente();
-            patente.Id = Guid.Parse(values[0].ToString());
-            patente.Nombre = values[1].ToString();
-            patente.DataKey = values[2].ToString();
-            patente.TipoAcceso = (TipoAcceso) int.Parse(values[3].ToString());
+            if (values == null || values.Length < 4)
+            {
+                throw new ArgumentException("Values array is null or does not have enough elements to map a Patente object.");
+            }
 
-			return patente;
+            Patente patente = new Patente
+            {
+                Id = Guid.Parse(values[0]?.ToString()),
+                Nombre = values[1]?.ToString(),
+                DataKey = values[2]?.ToString(),
+                TipoAcceso = (TipoAcceso)Enum.Parse(typeof(TipoAcceso), values[3]?.ToString())
+            };
+
+            return patente;
         }
-        
     }
-
 }

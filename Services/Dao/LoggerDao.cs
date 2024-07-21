@@ -1,54 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Services.Domain;
 using System.Diagnostics;
 using System.Configuration;
 using System.IO;
+using Services.Domain;
 
 namespace Services.Dao
 {
-    internal static class LoggerDao 
+    internal static class LoggerDao
     {
-        private static string PathLogError { get; set; } = ConfigurationManager.AppSettings["PathLogError"];
-        private static string PathLogInfo { get; set; } = ConfigurationManager.AppSettings["PathLogInfo"];
+        private static readonly string PathLogError = ConfigurationManager.AppSettings["PathLogError"];
+        private static readonly string PathLogInfo = ConfigurationManager.AppSettings["PathLogInfo"];
 
+        /// <summary>
+        /// Escribe un log en el archivo correspondiente según el nivel de severidad del mensaje.
+        /// </summary>
+        /// <param name="log">Información del log a escribir.</param>
+        /// <param name="ex">Excepción opcional cuya traza se debe incluir en el log.</param>
         public static void WriteLog(Log log, Exception ex = null)
         {
-            switch (log.TraceLevel)
+            string path;
+            string formatMessage = FormatMessage(log);
+
+            if (log.TraceLevel == TraceLevel.Error && ex != null)
             {
-
-                case TraceLevel.Error:
-                    string formatMessage = FormatMessage(log);
-                    formatMessage += ex.StackTrace;
-
-                    WriteToFile(PathLogError, formatMessage);
-                    break;
-
-                case TraceLevel.Warning:
-                case TraceLevel.Verbose:
-                case TraceLevel.Info:
-                    //Aplicando particularidades para cada severidad...
-                    WriteToFile(PathLogInfo, FormatMessage(log));
-                    break;
+                formatMessage += $"\nException Stack Trace: {ex.StackTrace}";
+                path = PathLogError;
             }
+            else
+            {
+                path = PathLogInfo;
+            }
+
+            // Concatenar la fecha al nombre del archivo para gestionar el corte diario de logs.
+            string fullPath = Path.Combine(Path.GetDirectoryName(path), $"{DateTime.Now.ToString("yyyy-MM-dd")}-{Path.GetFileName(path)}");
+            WriteToFile(fullPath, formatMessage);
         }
 
         private static string FormatMessage(Log log)
         {
-            return $"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")} [{log.TraceLevel}] : {log.Message}";
+            return $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} [{log.TraceLevel}] : {log.Message}";
         }
 
+        /// <summary>
+        /// Escribe el mensaje formateado al archivo de log especificado.
+        /// </summary>
+        /// <param name="path">Ruta del archivo donde se escribe el log.</param>
+        /// <param name="message">Mensaje formateado para escribir en el log.</param>
         private static void WriteToFile(string path, string message)
         {
-            //Definir política de depuración de logs (Corte)
-            path = DateTime.Now.ToString("dd-MM-yyyy") + path;
-
-            using (StreamWriter str = new StreamWriter(path, true))
+            using (StreamWriter writer = new StreamWriter(path, true))
             {
-                str.WriteLine(message);
+                writer.WriteLine(message);
             }
         }
     }

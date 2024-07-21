@@ -1,56 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Services.Dao
 {
     internal static class LanguageDao
     {
-        private static string Path = ConfigurationManager.AppSettings["LanguagePath"];
+        private static readonly string path = ConfigurationManager.AppSettings["LanguagePath"];
+        private static readonly Dictionary<string, Dictionary<string, string>> cache = new Dictionary<string, Dictionary<string, string>>();
+
+        /// <summary>
+        /// Traduce una clave a su valor correspondiente en el idioma actual del hilo.
+        /// </summary>
+        /// <param name="key">Clave que identifica el texto a traducir.</param>
+        /// <returns>Texto traducido.</returns>
         public static string Translate(string key)
         {
             string language = Thread.CurrentThread.CurrentUICulture.Name;
-            string fileName = Path + language;
+            string fileName = Path.Combine(path, language + ".txt");  // Asumiendo que las traducciones están en archivos .txt
 
-            using (StreamReader str = new StreamReader(fileName))
+            // Cargar las traducciones en cache si aún no están cargadas
+            if (!cache.ContainsKey(language))
             {
-                while (!str.EndOfStream)
-                {
-                    string line = str.ReadLine();
-                    string [] columns = line.Split('=');
+                LoadLanguageFile(language, fileName);
+            }
 
-                    if (columns[0].ToLower() == key.ToLower())
+            // Buscar la clave en el diccionario de la caché
+            if (cache[language].TryGetValue(key.ToLower(), out string value))
+            {
+                return value;
+            }
+
+            // No encontré la clave...
+            throw new KeyNotFoundException($"Key '{key}' not found for language '{language}'.");
+        }
+
+        /// <summary>
+        /// Carga y parsea el archivo de idioma en la caché.
+        /// </summary>
+        /// <param name="language">Identificador del lenguaje.</param>
+        /// <param name="fileName">Nombre del archivo a cargar.</param>
+        private static void LoadLanguageFile(string language, string fileName)
+        {
+            var translations = new Dictionary<string, string>();
+
+            using (StreamReader reader = new StreamReader(fileName))
+            {
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] columns = line.Split('=');
+                    if (columns.Length == 2)
                     {
-                        //Mejorar la técnica con el usuario de diccionarios en memoria    
-                        //Dictionary<string,string> keyValuePairs = new Dictionary<string,string>();
-                        //Probar redis o algún soft de caché
-                        //Encontré la clave buscada...
-                        return columns[1];
+                        translations[columns[0].ToLower()] = columns[1];
                     }
                 }
             }
-            //No encontré la clave...
-            throw new Exception("No encontré la palabra...");
 
+            cache[language] = translations;
         }
 
+        /// <summary>
+        /// Escribe una clave en el archivo de idioma especificado.
+        /// </summary>
+        /// <param name="key">Clave a escribir.</param>
         public static void WriteKey(string key)
         {
-            string language = Thread.CurrentThread.CurrentUICulture.Name;
-
+            // Implementación pendiente
         }
 
+        /// <summary>
+        /// Obtiene una lista de todos los idiomas disponibles.
+        /// </summary>
+        /// <returns>Lista de identificadores de idiomas.</returns>
         public static List<string> GetLanguages()
         {
-            return new List<string>();
+            return Directory.GetFiles(path)
+                .Select(Path.GetFileNameWithoutExtension)
+                .ToList();
         }
-
-
-
     }
 }
