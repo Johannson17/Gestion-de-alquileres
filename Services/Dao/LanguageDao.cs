@@ -21,7 +21,7 @@ namespace Services.Dao
         public static string Translate(string key)
         {
             string language = Thread.CurrentThread.CurrentUICulture.Name;
-            string fileName = Path.Combine(path, language + ".txt");  // Asumiendo que las traducciones están en archivos .txt
+            string fileName = Path.Combine(path, language + ".txt");
 
             // Cargar las traducciones en cache si aún no están cargadas
             if (!cache.ContainsKey(language))
@@ -48,29 +48,62 @@ namespace Services.Dao
         {
             var translations = new Dictionary<string, string>();
 
-            using (StreamReader reader = new StreamReader(fileName))
+            try
             {
-                while (!reader.EndOfStream)
+                using (StreamReader reader = new StreamReader(fileName))
                 {
-                    string line = reader.ReadLine();
-                    string[] columns = line.Split('=');
-                    if (columns.Length == 2)
+                    while (!reader.EndOfStream)
                     {
-                        translations[columns[0].ToLower()] = columns[1];
+                        string line = reader.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+                        {
+                            continue; // Saltar líneas vacías o comentarios
+                        }
+
+                        string[] columns = line.Split('=');
+                        if (columns.Length == 2)
+                        {
+                            translations[columns[0].ToLower()] = columns[1];
+                        }
                     }
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                throw new FileNotFoundException($"Language file '{fileName}' not found.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error loading language file '{fileName}': {ex.Message}");
             }
 
             cache[language] = translations;
         }
 
         /// <summary>
-        /// Escribe una clave en el archivo de idioma especificado.
+        /// Escribe una clave y su valor en el archivo de idioma especificado.
         /// </summary>
+        /// <param name="language">El idioma al que pertenece la clave.</param>
         /// <param name="key">Clave a escribir.</param>
-        public static void WriteKey(string key)
+        /// <param name="value">Valor de la clave a escribir.</param>
+        public static void WriteKey(string language, string key, string value)
         {
-            // Implementación pendiente
+            string fileName = Path.Combine(path, language + ".txt");
+
+            // Asegurarse de que el archivo y la caché estén cargados
+            if (!cache.ContainsKey(language))
+            {
+                LoadLanguageFile(language, fileName);
+            }
+
+            // Escribir la clave en la caché
+            cache[language][key.ToLower()] = value;
+
+            // Escribir la clave en el archivo
+            using (StreamWriter writer = new StreamWriter(fileName, true))
+            {
+                writer.WriteLine($"{key}={value}");
+            }
         }
 
         /// <summary>
@@ -79,9 +112,22 @@ namespace Services.Dao
         /// <returns>Lista de identificadores de idiomas.</returns>
         public static List<string> GetLanguages()
         {
-            return Directory.GetFiles(path)
+            return Directory.GetFiles(path, "*.txt")
                 .Select(Path.GetFileNameWithoutExtension)
                 .ToList();
+        }
+
+        /// <summary>
+        /// Recarga los archivos de idioma en la caché.
+        /// </summary>
+        public static void ReloadLanguages()
+        {
+            cache.Clear();
+            foreach (var language in GetLanguages())
+            {
+                string fileName = Path.Combine(path, language + ".txt");
+                LoadLanguageFile(language, fileName);
+            }
         }
     }
 }

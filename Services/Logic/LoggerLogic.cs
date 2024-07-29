@@ -23,6 +23,7 @@ namespace Services.Logic
                 NotifyError(log, ex);
             }
 
+            // Llamar al método WriteLog de LoggerDao para escribir el log en el archivo y la base de datos.
             LoggerDao.WriteLog(log, ex);
         }
 

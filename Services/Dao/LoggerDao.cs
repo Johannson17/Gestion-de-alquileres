@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using Services.Domain;
+using Services.Dao.Helpers;
 
 namespace Services.Dao
 {
@@ -10,9 +13,11 @@ namespace Services.Dao
     {
         private static readonly string PathLogError = ConfigurationManager.AppSettings["PathLogError"];
         private static readonly string PathLogInfo = ConfigurationManager.AppSettings["PathLogInfo"];
+        private static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["ServicesSqlConnection"].ConnectionString;
 
         /// <summary>
-        /// Escribe un log en el archivo correspondiente según el nivel de severidad del mensaje.
+        /// Escribe un log en el archivo correspondiente según el nivel de severidad del mensaje
+        /// y también en la base de datos.
         /// </summary>
         /// <param name="log">Información del log a escribir.</param>
         /// <param name="ex">Excepción opcional cuya traza se debe incluir en el log.</param>
@@ -32,8 +37,9 @@ namespace Services.Dao
             }
 
             // Concatenar la fecha al nombre del archivo para gestionar el corte diario de logs.
-            string fullPath = Path.Combine(Path.GetDirectoryName(path), $"{DateTime.Now.ToString("yyyy-MM-dd")}-{Path.GetFileName(path)}");
+            string fullPath = Path.Combine(Path.GetDirectoryName(path), $"{DateTime.Now:yyyy-MM-dd}-{Path.GetFileName(path)}");
             WriteToFile(fullPath, formatMessage);
+            WriteToDatabase(log, ex);
         }
 
         private static string FormatMessage(Log log)
@@ -52,6 +58,28 @@ namespace Services.Dao
             {
                 writer.WriteLine(message);
             }
+        }
+
+        /// <summary>
+        /// Escribe el log en la tabla de logs de la base de datos.
+        /// </summary>
+        /// <param name="log">Información del log a escribir.</param>
+        /// <param name="ex">Excepción opcional cuya traza se debe incluir en el log.</param>
+        private static void WriteToDatabase(Log log, Exception ex = null)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Message", log.Message),
+                new SqlParameter("@TraceLevel", (int)log.TraceLevel),
+                new SqlParameter("@Date", log.Date),
+                new SqlParameter("@Exception", ex != null ? (object)ex.ToString() : DBNull.Value)
+            };
+
+            string commandText = @"
+                INSERT INTO Log (Message, TraceLevel, Date, Exception)
+                VALUES (@Message, @TraceLevel, @Date, @Exception)";
+
+            SqlHelper.ExecuteNonQuery(commandText, CommandType.Text, parameters);
         }
     }
 }
