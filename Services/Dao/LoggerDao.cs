@@ -12,17 +12,25 @@ using Services.Dao.Implementations.SqlServer;
 
 namespace Services.Dao
 {
+    /// <summary>
+    /// Clase responsable de manejar el registro de logs en archivos y en la base de datos.
+    /// </summary>
     public class LoggerDao : ILoggerDao
     {
-
         #region Singleton Pattern
+        /// <summary>
+        /// Instancia única de la clase LoggerDao.
+        /// </summary>
         private static readonly LoggerDao _instance = new LoggerDao();
 
         /// <summary>
-        /// Acceso a la instancia singleton.
+        /// Obtiene la instancia singleton de LoggerDao.
         /// </summary>
         public static LoggerDao Current => _instance;
 
+        /// <summary>
+        /// Constructor privado para implementar el patrón Singleton.
+        /// </summary>
         private LoggerDao()
         {
             // Aquí se puede implementar la inicialización del singleton si es necesario.
@@ -161,11 +169,21 @@ namespace Services.Dao
             SqlHelper.ExecuteNonQuery(commandText, CommandType.Text);
         }
 
+        /// <summary>
+        /// Formatea un mensaje de log con el formato deseado.
+        /// </summary>
+        /// <param name="log">El objeto de log que contiene la información a formatear.</param>
+        /// <returns>El mensaje formateado del log.</returns>
         private string FormatMessage(Log log)
         {
             return $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} [{log.TraceLevel}] : {log.Message}";
         }
 
+        /// <summary>
+        /// Escribe el mensaje de log en un archivo de texto.
+        /// </summary>
+        /// <param name="path">La ruta del archivo.</param>
+        /// <param name="message">El mensaje formateado a escribir.</param>
         private void WriteToFile(string path, string message)
         {
             using (StreamWriter writer = new StreamWriter(path, true))
