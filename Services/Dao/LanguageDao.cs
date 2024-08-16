@@ -8,8 +8,23 @@ using System.Threading;
 
 namespace Services.Dao
 {
-    internal static class LanguageDao
+    internal sealed class LanguageDao
     {
+
+        #region Singleton Pattern
+        private static readonly LanguageDao _instance = new LanguageDao();
+
+        /// <summary>
+        /// Acceso a la instancia singleton.
+        /// </summary>
+        public static LanguageDao Current => _instance;
+
+        private LanguageDao()
+        {
+            // Aquí se puede implementar la inicialización del singleton si es necesario.
+        }
+        #endregion
+
         private static readonly string path = ConfigurationManager.AppSettings["LanguagePath"];
         private static readonly Dictionary<string, Dictionary<string, string>> cache = new Dictionary<string, Dictionary<string, string>>();
 

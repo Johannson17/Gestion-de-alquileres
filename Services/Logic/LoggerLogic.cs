@@ -1,7 +1,9 @@
-﻿using Services.Dao;
+﻿using Services.Factory;
 using Services.Domain;
 using System;
 using System.Diagnostics;
+using Services.Dao;
+using Services.Dao.Contracts;
 
 namespace Services.Logic
 {
@@ -23,8 +25,11 @@ namespace Services.Logic
                 NotifyError(log, ex);
             }
 
-            // Llamar al método WriteLog de LoggerDao para escribir el log en el archivo y la base de datos.
-            LoggerDao.WriteLog(log, ex);
+            // Obtener el "LoggerDao" desde el Factory
+            var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+
+            // Llamar al método WriteLog de la instancia de LoggerDao para escribir el log en el archivo y la base de datos.
+            loggerDao.WriteLog(log, ex);
         }
 
         /// <summary>
@@ -35,11 +40,6 @@ namespace Services.Logic
         private static void NotifyError(Log log, Exception ex)
         {
             // Aquí va la lógica para enviar un mensaje vía WhatsApp a un destinatario específico.
-            // Por ejemplo, se puede usar una API de servicio de mensajería como Twilio o WhatsApp Business API.
-            // Ejemplo:
-            // WhatsAppService.SendMessage("NúmeroDestinatario", $"Error crítico: {log.Message}\nDetalles: {ex?.Message}");
-
-            // Simulación de envío de mensaje:
             Console.WriteLine($"Enviando mensaje de error crítico a fulanito: {log.Message}\nDetalles: {ex?.Message}");
         }
     }

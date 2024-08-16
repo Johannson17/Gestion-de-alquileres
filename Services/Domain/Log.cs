@@ -9,6 +9,11 @@ namespace Services.Domain
     public class Log
     {
         /// <summary>
+        /// Unique identifier for the log entry.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// Message of the log entry.
         /// </summary>
         public string Message { get; set; }
@@ -24,19 +29,25 @@ namespace Services.Domain
         public DateTime Date { get; set; }
 
         /// <summary>
+        /// Optional details of the exception if applicable.
+        /// </summary>
+        public string Exception { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the Log class.
         /// </summary>
         /// <param name="message">The log message.</param>
         /// <param name="traceLevel">The severity level of the log (default is TraceLevel.Info).</param>
+        /// <param name="exception">The exception details, if any.</param>
         /// <param name="date">The timestamp of the log entry (default is current time).</param>
-        public Log(string message, TraceLevel traceLevel = TraceLevel.Info, DateTime date = default)
+        public Log(string message, TraceLevel traceLevel = TraceLevel.Info, string exception = null, DateTime date = default)
         {
+            Id = Guid.NewGuid();
             Message = message ?? throw new ArgumentNullException(nameof(message), "Log message cannot be null.");
             TraceLevel = traceLevel;
+            Exception = exception;
             Date = (date == default) ? DateTime.Now : date;
         }
-
-        // Additional methods or properties can be added here to support more features such as logging to different targets, formatting, etc.
 
         /// <summary>
         /// Returns a formatted string representation of the log entry.
@@ -44,7 +55,7 @@ namespace Services.Domain
         /// <returns>A string that represents the current log object.</returns>
         public override string ToString()
         {
-            return $"{Date:yyyy-MM-dd HH:mm:ss} [{TraceLevel}]: {Message}";
+            return $"{Date:yyyy-MM-dd HH:mm:ss} [{TraceLevel}]: {Message} {(Exception != null ? $"\nException: {Exception}" : string.Empty)}";
         }
     }
 }

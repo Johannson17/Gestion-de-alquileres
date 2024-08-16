@@ -1,7 +1,8 @@
-﻿using Services.Dao.Implementations.SqlServer;
+﻿using Services.Factory;
 using Services.Domain;
 using System;
 using System.Collections.Generic;
+using Services.Dao.Implementations.SqlServer;
 
 namespace Services.Logic
 {
@@ -21,8 +22,14 @@ namespace Services.Logic
                 throw new ArgumentNullException(nameof(user), "El usuario no puede ser nulo.");
             }
 
+            var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
+            var patenteRepository = FactoryDao.CreateRepository<PatenteRepository>();
+            var familiaRepository = FactoryDao.CreateRepository<FamiliaRepository>();
+            var usuarioPatenteRepository = FactoryDao.CreateRepository<UsuarioPatenteRepository>();
+            var usuarioFamiliaRepository = FactoryDao.CreateRepository<UsuarioFamiliaRepository>();
+
             // Guardar el usuario en la base de datos
-            UsuarioRepository.Current.Add(user);
+            usuarioRepository.Add(user);
 
             // Asignar Patentes y Familias existentes al usuario
             foreach (var acceso in user.Accesos)
@@ -30,10 +37,10 @@ namespace Services.Logic
                 if (acceso is Patente patente)
                 {
                     // Verificar si la patente existe antes de asignarla
-                    Patente existingPatente = PatenteRepository.Current.GetById(patente.Id);
+                    Patente existingPatente = patenteRepository.GetById(patente.Id);
                     if (existingPatente != null)
                     {
-                        UsuarioPatenteRepository.Current.Add(user, patente);
+                        usuarioPatenteRepository.Add(user, patente);
                     }
                     else
                     {
@@ -43,10 +50,10 @@ namespace Services.Logic
                 else if (acceso is Familia familia)
                 {
                     // Verificar si la familia existe antes de asignarla
-                    Familia existingFamilia = FamiliaRepository.Current.GetById(familia.Id);
+                    Familia existingFamilia = familiaRepository.GetById(familia.Id);
                     if (existingFamilia != null)
                     {
-                        UsuarioFamiliaRepository.Current.Add(user, familia);
+                        usuarioFamiliaRepository.Add(user, familia);
                     }
                     else
                     {
@@ -70,8 +77,10 @@ namespace Services.Logic
                 throw new ArgumentNullException(nameof(user), "El usuario no puede ser nulo.");
             }
 
+            var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
+
             // Verificar el nombre de usuario y la contraseña contra la base de datos
-            Usuario usuarioDB = UsuarioRepository.Current.GetById(user.IdUsuario);
+            Usuario usuarioDB = usuarioRepository.GetById(user.IdUsuario);
 
             if (usuarioDB != null && usuarioDB.UserName == user.UserName && usuarioDB.Password == user.Password)
             {
@@ -96,22 +105,28 @@ namespace Services.Logic
                 throw new ArgumentNullException(nameof(user), "El usuario no puede ser nulo.");
             }
 
+            var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
+            var patenteRepository = FactoryDao.CreateRepository<PatenteRepository>();
+            var familiaRepository = FactoryDao.CreateRepository<FamiliaRepository>();
+            var usuarioPatenteRepository = FactoryDao.CreateRepository<UsuarioPatenteRepository>();
+            var usuarioFamiliaRepository = FactoryDao.CreateRepository<UsuarioFamiliaRepository>();
+
             // Actualizar el usuario en la base de datos
-            UsuarioRepository.Current.Update(user);
+            usuarioRepository.Update(user);
 
             // Actualizar Patentes y Familias del usuario
-            UsuarioPatenteRepository.Current.RemoveByUsuario(user);
-            UsuarioFamiliaRepository.Current.RemoveByUsuario(user);
+            usuarioPatenteRepository.RemoveByUsuario(user);
+            usuarioFamiliaRepository.RemoveByUsuario(user);
 
             foreach (var acceso in user.Accesos)
             {
                 if (acceso is Patente patente)
                 {
                     // Verificar si la patente existe antes de asignarla
-                    Patente existingPatente = PatenteRepository.Current.GetById(patente.Id);
+                    Patente existingPatente = patenteRepository.GetById(patente.Id);
                     if (existingPatente != null)
                     {
-                        UsuarioPatenteRepository.Current.Add(user, patente);
+                        usuarioPatenteRepository.Add(user, patente);
                     }
                     else
                     {
@@ -121,10 +136,10 @@ namespace Services.Logic
                 else if (acceso is Familia familia)
                 {
                     // Verificar si la familia existe antes de asignarla
-                    Familia existingFamilia = FamiliaRepository.Current.GetById(familia.Id);
+                    Familia existingFamilia = familiaRepository.GetById(familia.Id);
                     if (existingFamilia != null)
                     {
-                        UsuarioFamiliaRepository.Current.Add(user, familia);
+                        usuarioFamiliaRepository.Add(user, familia);
                     }
                     else
                     {
@@ -142,18 +157,22 @@ namespace Services.Logic
         /// <param name="idUsuario">El identificador del usuario a eliminar.</param>
         public static void Delete(Guid idUsuario)
         {
-            Usuario user = UsuarioRepository.Current.GetById(idUsuario);
+            var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
+            var usuarioPatenteRepository = FactoryDao.CreateRepository<UsuarioPatenteRepository>();
+            var usuarioFamiliaRepository = FactoryDao.CreateRepository<UsuarioFamiliaRepository>();
+
+            Usuario user = usuarioRepository.GetById(idUsuario);
             if (user == null)
             {
                 throw new ArgumentException("El usuario no existe.", nameof(idUsuario));
             }
 
             // Eliminar accesos del usuario
-            UsuarioPatenteRepository.Current.RemoveByUsuario(user);
-            UsuarioFamiliaRepository.Current.RemoveByUsuario(user);
+            usuarioPatenteRepository.RemoveByUsuario(user);
+            usuarioFamiliaRepository.RemoveByUsuario(user);
 
             // Eliminar el usuario de la base de datos
-            UsuarioRepository.Current.Remove(idUsuario);
+            usuarioRepository.Remove(idUsuario);
 
             Console.WriteLine($"Usuario {user.UserName} eliminado con éxito.");
         }
@@ -165,11 +184,15 @@ namespace Services.Logic
         /// <returns>La instancia del usuario si existe, de lo contrario, null.</returns>
         public static Usuario GetById(Guid idUsuario)
         {
-            Usuario user = UsuarioRepository.Current.GetById(idUsuario);
+            var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
+            var usuarioPatenteRepository = FactoryDao.CreateRepository<UsuarioPatenteRepository>();
+            var usuarioFamiliaRepository = FactoryDao.CreateRepository<UsuarioFamiliaRepository>();
+
+            Usuario user = usuarioRepository.GetById(idUsuario);
             if (user != null)
             {
-                UsuarioPatenteRepository.Current.Join(user);
-                UsuarioFamiliaRepository.Current.Join(user);
+                usuarioPatenteRepository.Join(user);
+                usuarioFamiliaRepository.Join(user);
             }
             return user;
         }
@@ -180,11 +203,15 @@ namespace Services.Logic
         /// <returns>Una lista de todas las instancias de Usuario.</returns>
         public static List<Usuario> GetAll()
         {
-            List<Usuario> usuarios = UsuarioRepository.Current.GetAll();
+            var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
+            var usuarioPatenteRepository = FactoryDao.CreateRepository<UsuarioPatenteRepository>();
+            var usuarioFamiliaRepository = FactoryDao.CreateRepository<UsuarioFamiliaRepository>();
+
+            List<Usuario> usuarios = usuarioRepository.GetAll();
             foreach (var user in usuarios)
             {
-                UsuarioPatenteRepository.Current.Join(user);
-                UsuarioFamiliaRepository.Current.Join(user);
+                usuarioPatenteRepository.Join(user);
+                usuarioFamiliaRepository.Join(user);
             }
             return usuarios;
         }
