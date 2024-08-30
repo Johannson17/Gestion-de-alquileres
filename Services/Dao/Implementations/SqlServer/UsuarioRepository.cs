@@ -120,5 +120,36 @@ namespace Services.Dao.Implementations.SqlServer
 
             return usuarios;
         }
+
+        /// <summary>
+        /// Obtiene un usuario por su nombre de usuario.
+        /// </summary>
+        /// <param name="userName">El nombre de usuario a buscar.</param>
+        /// <returns>La instancia del usuario si existe, de lo contrario, null.</returns>
+        public Usuario GetByUserName(string userName)
+        {
+            Usuario user = null;
+
+            string commandText = "SELECT IdUsuario, UserName, Password FROM Usuario WHERE UserName = @UserName";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@UserName", userName)
+            };
+
+            using (var reader = SqlHelper.ExecuteReader(commandText, System.Data.CommandType.Text, parameters))
+            {
+                if (reader.Read())
+                {
+                    user = new Usuario
+                    {
+                        IdUsuario = reader.GetGuid(0),
+                        UserName = reader.GetString(1),
+                        Password = reader.GetString(2) // La contraseña está encriptada
+                    };
+                }
+            }
+
+            return user;
+        }
     }
 }

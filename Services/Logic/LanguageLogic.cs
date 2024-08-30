@@ -1,5 +1,7 @@
 ﻿using Services.Dao;
+using Services.Dao.Contracts;
 using Services.Domain;
+using Services.Factory;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,19 +27,25 @@ namespace Services.Logic
             }
             catch (KeyNotFoundException ex)
             {
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+
                 // Envía la clave no encontrada al grupo correspondiente (por ejemplo, vía web service).
                 LanguageDao.WriteKey(Thread.CurrentThread.CurrentUICulture.Name, key, $"[{key}]");
 
                 // Registra el problema en el sistema de logs.
-                LoggerDao.WriteLog(new Log($"La clave '{key}' no se encontró y fue registrada.", TraceLevel.Warning), ex);
+                loggerDao.WriteLog(new Log($"La clave '{key}' no se encontró y fue registrada.", TraceLevel.Warning), ex);
 
                 // Retorna la clave original entre corchetes para indicar que no se encontró.
                 return $"[{key}]";
             }
             catch (Exception ex)
             {
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+
                 // Registra cualquier otra excepción que ocurra.
-                LoggerDao.WriteLog(new Log("Error al traducir la clave.", TraceLevel.Error), ex);
+                loggerDao.WriteLog(new Log("Error al traducir la clave.", TraceLevel.Error), ex);
 
                 // Retorna la clave original si ocurre una excepción inesperada.
                 return key;
@@ -55,12 +63,18 @@ namespace Services.Logic
             try
             {
                 LanguageDao.WriteKey(language, key, value);
-                LoggerDao.WriteLog(new Log($"La clave '{key}' fue agregada al idioma '{language}'.", TraceLevel.Info));
+
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+                loggerDao.WriteLog(new Log($"La clave '{key}' fue agregada al idioma '{language}'.", TraceLevel.Info));
             }
             catch (Exception ex)
             {
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+
                 // Registra cualquier excepción que ocurra al agregar la clave.
-                LoggerDao.WriteLog(new Log("Error al agregar la clave de traducción.", TraceLevel.Error), ex);
+                loggerDao.WriteLog(new Log("Error al agregar la clave de traducción.", TraceLevel.Error), ex);
             }
         }
 
@@ -72,12 +86,18 @@ namespace Services.Logic
             try
             {
                 LanguageDao.ReloadLanguages();
-                LoggerDao.WriteLog(new Log("Se recargaron todos los archivos de idioma.", TraceLevel.Info));
+
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+                loggerDao.WriteLog(new Log("Se recargaron todos los archivos de idioma.", TraceLevel.Info));
             }
             catch (Exception ex)
             {
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+
                 // Registra cualquier excepción que ocurra al recargar los idiomas.
-                LoggerDao.WriteLog(new Log("Error al recargar los archivos de idioma.", TraceLevel.Error), ex);
+                loggerDao.WriteLog(new Log("Error al recargar los archivos de idioma.", TraceLevel.Error), ex);
             }
         }
 
@@ -93,8 +113,11 @@ namespace Services.Logic
             }
             catch (Exception ex)
             {
+                // Obtener instancia de LoggerDao desde el FactoryDao
+                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
+
                 // Registra cualquier excepción que ocurra al obtener los idiomas.
-                LoggerDao.WriteLog(new Log("Error al obtener la lista de idiomas.", TraceLevel.Error), ex);
+                loggerDao.WriteLog(new Log("Error al obtener la lista de idiomas.", TraceLevel.Error), ex);
 
                 // Retorna una lista vacía si ocurre una excepción.
                 return new List<string>();

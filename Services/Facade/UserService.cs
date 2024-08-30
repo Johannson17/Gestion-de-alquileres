@@ -2,6 +2,7 @@
 using Services.Logic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Services.Facade
 {
@@ -19,11 +20,11 @@ namespace Services.Facade
             try
             {
                 UserLogic.Register(user);
-                Console.WriteLine("Usuario registrado con éxito.");
+                LoggerService.WriteLog($"Usuario registrado con éxito: {user.UserName}", TraceLevel.Info);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al registrar el usuario: {ex.Message}");
+                LoggerService.WriteException(ex);
                 throw;
             }
         }
@@ -41,7 +42,7 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al validar el usuario: {ex.Message}");
+                LoggerService.WriteException(ex);
                 throw;
             }
         }
@@ -55,11 +56,11 @@ namespace Services.Facade
             try
             {
                 UserLogic.Update(user);
-                Console.WriteLine("Usuario actualizado con éxito.");
+                LoggerService.WriteLog($"Usuario actualizado con éxito: {user.UserName}", TraceLevel.Info);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al actualizar el usuario: {ex.Message}");
+                LoggerService.WriteException(ex);
                 throw;
             }
         }
@@ -73,11 +74,11 @@ namespace Services.Facade
             try
             {
                 UserLogic.Delete(idUsuario);
-                Console.WriteLine("Usuario eliminado con éxito.");
+                LoggerService.WriteLog($"Usuario eliminado con éxito: {idUsuario}", TraceLevel.Info);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al eliminar el usuario: {ex.Message}");
+                LoggerService.WriteException(ex);
                 throw;
             }
         }
@@ -95,7 +96,7 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener el usuario: {ex.Message}");
+                LoggerService.WriteException(ex);
                 throw;
             }
         }
@@ -104,15 +105,103 @@ namespace Services.Facade
         /// Obtiene todos los usuarios del sistema.
         /// </summary>
         /// <returns>Una lista de todas las instancias de Usuario.</returns>
-        public static List<Usuario> GetAll()
+        public static List<Usuario> GetAllUsuarios()
         {
             try
             {
-                return UserLogic.GetAll();
+                return UserLogic.GetAllUsuarios();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al obtener los usuarios: {ex.Message}");
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene todas las patentes del sistema.
+        /// </summary>
+        /// <returns>Una lista de todas las instancias de Patente.</returns>
+        public static List<Patente> GetAllPatentes()
+        {
+            try
+            {
+                return UserLogic.GetAllPatentes();
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene todas las familias del sistema.
+        /// </summary>
+        /// <returns>Una lista de todas las instancias de Familia.</returns>
+        public static List<Familia> GetAllFamilias()
+        {
+            try
+            {
+                return UserLogic.GetAllFamilias();
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Sincroniza las patentes con los formularios del sistema.
+        /// </summary>
+        /// <param name="formNames">Lista de nombres de formularios presentes en el sistema.</param>
+        public static void SyncPatentesWithForms(List<string> formNames)
+        {
+            try
+            {
+                UserLogic.SyncPatentesWithForms(formNames);
+                LoggerService.WriteLog("Sincronización de patentes con formularios completada con éxito.", TraceLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene un usuario por su nombre de usuario.
+        /// </summary>
+        /// <param name="userName">El nombre de usuario.</param>
+        /// <returns>La instancia del usuario si existe, de lo contrario, null.</returns>
+        public static Usuario GetByUserName(string userName)
+        {
+            try
+            {
+                return UserLogic.GetByUserName(userName);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Agrega una nueva familia al sistema.
+        /// </summary>
+        /// <param name="familia">La familia a agregar.</param>
+        public static void AddFamilia(Familia familia)
+        {
+            try
+            {
+                UserLogic.AddFamilia(familia);
+                LoggerService.WriteLog($"Familia agregada con éxito: {familia.Nombre}", TraceLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
                 throw;
             }
         }

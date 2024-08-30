@@ -69,6 +69,7 @@
     <Compile Include="Facade\LoggerService.cs" />
     <Compile Include="Facade\UserService.cs" />
     <Compile Include="Dao\Helpers\SqlHelper.cs" />
+    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Logic\LanguageLogic.cs" />
     <Compile Include="Logic\LoggerLogic.cs" />
     <Compile Include="Logic\UserLogic.cs" />
@@ -78,6 +79,9 @@
     <Content Include="Dao\Scripts\scriptSecurityDB.sql" />
     <Content Include="Dao\Scripts\StoredProcedures.sql" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Dao\Helpers\Snippets\singleton.snippet" />
+    <None Include="Dao\Helpers\Snippets\staments.snippet" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
