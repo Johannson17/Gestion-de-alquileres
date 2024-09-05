@@ -98,5 +98,24 @@ namespace Services.Facade
                 throw new InvalidOperationException("Error al obtener la lista de idiomas.", ex);
             }
         }
+
+        /// <summary>
+        /// Guarda la traducción para una clave específica.
+        /// </summary>
+        /// <param name="key">Clave del texto a traducir.</param>
+        /// <param name="translation">Texto traducido.</param>
+        public static void SaveTranslation(string key, string translation)
+        {
+            try
+            {
+                LanguageLogic.SaveTranslation(key, translation);
+                LoggerService.WriteLog($"Traducción guardada para la clave '{key}'.", System.Diagnostics.TraceLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
     }
 }

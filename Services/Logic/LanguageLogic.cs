@@ -53,6 +53,25 @@ namespace Services.Logic
         }
 
         /// <summary>
+        /// Guarda la traducción para una clave específica en el idioma actual.
+        /// </summary>
+        /// <param name="key">Clave del texto a traducir.</param>
+        /// <param name="translation">Texto traducido.</param>
+        public static void SaveTranslation(string key, string translation)
+        {
+            try
+            {
+                LanguageDao.WriteKey(Thread.CurrentThread.CurrentUICulture.Name, key, translation);
+                LoggerDao.Current.WriteLog(new Log($"La traducción de la clave '{key}' fue guardada exitosamente.", TraceLevel.Info));
+            }
+            catch (Exception ex)
+            {
+                LoggerDao.Current.WriteLog(new Log($"Error al guardar la traducción de la clave '{key}'.", TraceLevel.Error), ex);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Agrega una nueva clave y su valor a un archivo de idioma especificado.
         /// </summary>
         /// <param name="language">El idioma al que pertenece la clave.</param>
