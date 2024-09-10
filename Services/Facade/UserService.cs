@@ -34,7 +34,7 @@ namespace Services.Facade
         /// </summary>
         /// <param name="user">El usuario a validar.</param>
         /// <returns>Retorna true si las credenciales son válidas; de lo contrario, false.</returns>
-        public static bool Validate(Usuario user)
+        public static Usuario Validate(Usuario user)
         {
             try
             {

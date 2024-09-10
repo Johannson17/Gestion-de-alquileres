@@ -25,49 +25,14 @@ namespace Services.Logic
             }
 
             var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
-            var patenteRepository = FactoryDao.CreateRepository<PatenteRepository>();
-            var familiaRepository = FactoryDao.CreateRepository<FamiliaRepository>();
-            var usuarioPatenteRepository = FactoryDao.CreateRepository<UsuarioPatenteRepository>();
-            var usuarioFamiliaRepository = FactoryDao.CreateRepository<UsuarioFamiliaRepository>();
+
+            user.IdUsuario = Guid.NewGuid();
 
             // Encriptar la contraseña antes de guardar en la base de datos
             user.Password = EncryptionHelper.EncryptPassword(user.Password);
 
             // Guardar el usuario en la base de datos
             usuarioRepository.Add(user);
-
-            // Asignar Patentes y Familias existentes al usuario
-            foreach (var acceso in user.Accesos)
-            {
-                if (acceso is Patente patente)
-                {
-                    // Verificar si la patente existe antes de asignarla
-                    Patente existingPatente = patenteRepository.GetById(patente.Id);
-                    if (existingPatente != null)
-                    {
-                        usuarioPatenteRepository.Add(user, patente);
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"La patente con ID {patente.Id} no existe.", nameof(user.Accesos));
-                    }
-                }
-                else if (acceso is Familia familia)
-                {
-                    // Verificar si la familia existe antes de asignarla
-                    Familia existingFamilia = familiaRepository.GetById(familia.Id);
-                    if (existingFamilia != null)
-                    {
-                        usuarioFamiliaRepository.Add(user, familia);
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"La familia con ID {familia.Id} no existe.", nameof(user.Accesos));
-                    }
-                }
-            }
-
-            Console.WriteLine($"Usuario {user.UserName} registrado con éxito.");
         }
 
         /// <summary>
@@ -75,7 +40,7 @@ namespace Services.Logic
         /// </summary>
         /// <param name="user">El usuario a validar.</param>
         /// <returns>Retorna true si las credenciales son válidas; de lo contrario, false.</returns>
-        public static bool Validate(Usuario user)
+        public static Usuario Validate(Usuario user)
         {
             if (user == null)
             {
@@ -84,21 +49,24 @@ namespace Services.Logic
 
             var usuarioRepository = FactoryDao.CreateRepository<UsuarioRepository>();
 
-            // Verificar el nombre de usuario y la contraseña contra la base de datos
-            Usuario usuarioDB = usuarioRepository.GetById(user.IdUsuario);
+            // Obtener todos los usuarios de la base de datos
+            var usuarios = usuarioRepository.GetAll();
 
-            if (usuarioDB != null && usuarioDB.UserName == user.UserName)
+            // Filtrar por nombre de usuario
+            Usuario usuarioDB = usuarios.FirstOrDefault(u => u.UserName == user.UserName);
+
+            if (usuarioDB != null)
             {
                 // Comparar la contraseña encriptada almacenada con la contraseña proporcionada
-                if (EncryptionHelper.VerifyPassword(user.Password, usuarioDB.Password))
+                if (EncryptionHelper.EncryptPassword(user.Password) == usuarioDB.Password)
                 {
                     Console.WriteLine("Usuario validado con éxito.");
-                    return true;
+                    return usuarioDB; // Devolver el usuario válido
                 }
             }
 
             Console.WriteLine("Validación de usuario fallida.");
-            return false;
+            return null; // Si no es válido, devolver null
         }
 
         /// <summary>
@@ -324,8 +292,11 @@ namespace Services.Logic
             // Guardar la familia en la base de datos
             familiaRepository.Add(familia);
 
-            // Asignar accesos (Patentes y Familias) a la familia
-            foreach (var acceso in familia.Accesos)
+            // Crear una lista temporal de accesos para evitar modificar la colección durante la iteración
+            var accesosTemp = new List<Acceso>(familia.Accesos);
+
+            // Asignar accesos (Patentes y Familias) a la familia desde la lista temporal
+            foreach (var acceso in accesosTemp)
             {
                 if (acceso is Patente patente)
                 {

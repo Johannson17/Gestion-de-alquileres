@@ -130,22 +130,48 @@ namespace Services.Dao.Implementations.SqlServer
         {
             Usuario user = null;
 
-            string commandText = "SELECT IdUsuario, UserName, Password FROM Usuario WHERE UserName = @UserName";
+            string commandText = "SELECT IdUsuario, UserName, Password FROM dbo.Usuario WHERE UserName = @UserName";
+
+            string trimmedUserName = userName.Trim(); // elimina espacios en blanco
+
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@UserName", userName)
+                new SqlParameter("@UserName", trimmedUserName)
             };
 
             using (var reader = SqlHelper.ExecuteReader(commandText, System.Data.CommandType.Text, parameters))
             {
                 if (reader.Read())
                 {
+                    // Verificar si el IdUsuario es DBNull y lanzar una excepción si es nulo
+                    if (reader.IsDBNull(0))
+                    {
+                        throw new InvalidCastException("El campo 'IdUsuario' no puede ser nulo.");
+                    }
+
+                    // Verificar si el UserName es DBNull y lanzar una excepción si es nulo
+                    if (reader.IsDBNull(1))
+                    {
+                        throw new InvalidCastException("El campo 'UserName' no puede ser nulo.");
+                    }
+
+                    // Verificar si la contraseña es DBNull y lanzar una excepción si es nulo
+                    if (reader.IsDBNull(2))
+                    {
+                        throw new InvalidCastException("El campo 'Password' no puede ser nulo.");
+                    }
+
+                    // Si todo está bien, realizar las conversiones
                     user = new Usuario
                     {
-                        IdUsuario = reader.GetGuid(0),
-                        UserName = reader.GetString(1),
-                        Password = reader.GetString(2) // La contraseña está encriptada
+                        IdUsuario = reader.GetGuid(0),        // Suponiendo que la columna es de tipo GUID
+                        UserName = reader.GetString(1),       // Suponiendo que es de tipo string
+                        Password = reader.GetString(2)        // Suponiendo que es de tipo string
                     };
+                }
+                else
+                {
+                    throw new Exception("No se encontró ningún registro para el nombre de usuario proporcionado.");
                 }
             }
 

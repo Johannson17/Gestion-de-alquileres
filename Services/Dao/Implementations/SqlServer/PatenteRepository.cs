@@ -33,6 +33,9 @@ namespace Services.Dao.Implementations.SqlServer
         /// <param name="obj">La instancia de Patente a añadir.</param>
         public void Add(Patente obj)
         {
+            // Generar un nuevo GUID para la relación si no existe
+            obj.Id = Guid.NewGuid();
+
             SqlHelper.ExecuteNonQuery("PatenteInsert", CommandType.StoredProcedure,
                 new SqlParameter("@IdPatente", obj.Id),
                 new SqlParameter("@Nombre", obj.Nombre),

@@ -18,6 +18,9 @@ namespace UI
         /// </summary>
         private void LoadAccesos()
         {
+            // Configurar DisplayMember para mostrar el nombre de los accesos
+            chlbAccesos.DisplayMember = "Nombre"; // Asegúrate de que las clases Patente y Familia tengan la propiedad 'Nombre'
+
             // Cargar Patentes
             var patentes = UserService.GetAllPatentes();
             foreach (var patente in patentes)
@@ -47,10 +50,14 @@ namespace UI
                     Descripcion = txtDescription.Text
                 };
 
-                // Añadir los accesos seleccionados a la familia
-                foreach (var item in chlbAccesos.CheckedItems)
+                // Iterar sobre los elementos seleccionados en CheckedListBox sin modificar la colección durante la enumeración
+                for (int i = 0; i < chlbAccesos.CheckedItems.Count; i++)
                 {
-                    nuevaFamilia.Add(item as Acceso);
+                    var acceso = chlbAccesos.CheckedItems[i] as Acceso;
+                    if (acceso != null)
+                    {
+                        nuevaFamilia.Add(acceso);
+                    }
                 }
 
                 // Registrar la nueva familia en la base de datos usando la lógica del backend

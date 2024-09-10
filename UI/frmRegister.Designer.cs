@@ -35,7 +35,11 @@
             this.cmbPatentes = new System.Windows.Forms.ComboBox();
             this.cmbFamilias = new System.Windows.Forms.ComboBox();
             this.btnAddFamilia = new System.Windows.Forms.Button();
-            this.btnAddPatente = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtConfirmPassword
@@ -102,21 +106,61 @@
             this.btnAddFamilia.UseVisualStyleBackColor = true;
             this.btnAddFamilia.Click += new System.EventHandler(this.btnAddFamilia_Click);
             // 
-            // btnAddPatente
+            // label1
             // 
-            this.btnAddPatente.Location = new System.Drawing.Point(766, 194);
-            this.btnAddPatente.Name = "btnAddPatente";
-            this.btnAddPatente.Size = new System.Drawing.Size(186, 23);
-            this.btnAddPatente.TabIndex = 17;
-            this.btnAddPatente.Text = "Nuevo Permiso";
-            this.btnAddPatente.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(125, 16);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Nombre de usuario:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 90);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(82, 16);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Contraseña: ";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 164);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(140, 16);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Confirmar contraseña: ";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(529, 23);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(46, 16);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Roles:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(763, 23);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(67, 16);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Permisos:";
             // 
             // frmRegister
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1070, 309);
-            this.Controls.Add(this.btnAddPatente);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnAddFamilia);
             this.Controls.Add(this.cmbFamilias);
             this.Controls.Add(this.cmbPatentes);
@@ -140,6 +184,10 @@
         private System.Windows.Forms.ComboBox cmbPatentes;
         private System.Windows.Forms.ComboBox cmbFamilias;
         private System.Windows.Forms.Button btnAddFamilia;
-        private System.Windows.Forms.Button btnAddPatente;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }

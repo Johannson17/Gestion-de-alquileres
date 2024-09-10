@@ -46,37 +46,40 @@ namespace UI
             };
 
             // Intentar validar al usuario llamando a UserService.Validate
-            bool isValid = UserService.Validate(user);
+            user = UserService.Validate(user);
 
             // Manejar el resultado de la autenticación
-            if (isValid)
+            if (user != null && user.IdUsuario != Guid.Empty)
             {
                 MessageBox.Show("Inicio de sesión exitoso.", "Bienvenido", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                // Ocultar el formulario de login
+                this.Hide();
+
                 // Obtener los accesos del usuario (patentes, familias) usando la lógica del composite a través de la fachada
-                Usuario usuarioAutenticado = UserService.GetByUserName(userName);
+                Usuario usuarioAutenticado = UserService.GetById(user.IdUsuario);
                 var accesos = usuarioAutenticado.Accesos;
+
+                Form mainForm = null;
 
                 // Verificar los permisos y mostrar el formulario correspondiente
                 if (TienePermisoAdmin(accesos))
                 {
-                    // Mostrar formulario de administración
-                    var adminForm = new frmMainAdmin();
-                    adminForm.Show();
-                }
-                else if (TienePermisoUsuarioEstandar(accesos))
-                {
-                    // Mostrar formulario de usuario estándar
-                    var standardForm = new frmMainAdmin();
-                    standardForm.Show(); // Puedes reemplazar esto con un formulario específico para usuarios estándar
+                    mainForm = new frmMainAdmin();
                 }
                 else
                 {
-                    // Si el usuario no tiene permisos, mostrar un mensaje
-                    MessageBox.Show("No tiene permisos para acceder a esta aplicación.", "Permisos insuficientes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    mainForm = new frmMainAdmin(); // Aquí deberías abrir el formulario para usuarios estándar
                 }
 
-                this.Hide(); // Ocultar el formulario de login
+                // Mostrar el formulario principal
+                if (mainForm != null)
+                {
+                    mainForm.ShowDialog();
+                }
+
+                // Mostrar nuevamente el formulario de login cuando el formulario principal se cierre
+                this.Show();
             }
             else
             {
@@ -97,20 +100,7 @@ namespace UI
                 {
                     return true;
                 }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Verifica si el usuario tiene permisos de usuario estándar.
-        /// </summary>
-        /// <param name="accesos">La lista de accesos (patentes y familias) del usuario.</param>
-        /// <returns>True si el usuario tiene permisos de usuario estándar; de lo contrario, false.</returns>
-        private bool TienePermisoUsuarioEstandar(List<Acceso> accesos)
-        {
-            foreach (var acceso in accesos)
-            {
-                if (acceso is Familia familia && familia.Nombre == "UsuarioEstandar")
+                else if (acceso is Familia familia && familia.Nombre == "Admin")
                 {
                     return true;
                 }

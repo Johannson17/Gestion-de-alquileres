@@ -58,17 +58,17 @@
     <Compile Include="frmChangeLenguage.Designer.cs">
       <DependentUpon>frmChangeLenguage.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMainAdmin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMainAdmin.Designer.cs">
-      <DependentUpon>frmMainAdmin.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMainAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMainAdmin.Designer.cs">
+      <DependentUpon>frmMainAdmin.cs</DependentUpon>
     </Compile>
     <Compile Include="frmRegister.cs">
       <SubType>Form</SubType>
@@ -87,9 +87,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmMainAdmin.aa.resx">
-      <DependentUpon>frmMainAdmin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMainAdmin.resx">
       <DependentUpon>frmMainAdmin.cs</DependentUpon>

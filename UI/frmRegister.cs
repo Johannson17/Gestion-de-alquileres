@@ -20,23 +20,43 @@ namespace UI
             InitializeComponent();
             btnRegister.Enabled = false; // El botón de registro comienza deshabilitado
 
+            // Inicializar los ComboBox como vacíos
+            cmbFamilias.Items.Clear();
+            cmbPatentes.Items.Clear();
+
             // Asignar eventos para la validación en tiempo real
             txtPassword.TextChanged += ValidatePasswords;
             txtConfirmPassword.TextChanged += ValidatePasswords;
 
-            InitializeComboBoxes(); // Inicializar ComboBoxes de Familias y Patentes
+            // Asignar eventos para cargar los datos cuando se despliegan los ComboBoxes
+            cmbFamilias.DropDown += cmbFamilias_DropDown;
+            cmbPatentes.DropDown += cmbPatentes_DropDown;
 
-            // Sincronizar las patentes con los formularios al iniciar el login
-            PatenteHelper.SyncPatentesWithForms();
+            // Establecer los ComboBox sin ninguna selección inicial
+            cmbFamilias.SelectedIndex = -1;
+            cmbPatentes.SelectedIndex = -1;
         }
 
         /// <summary>
-        /// Inicializa los ComboBoxes de Familias y Patentes cargando los datos desde el backend.
+        /// Cargar familias cuando se despliega el ComboBox de familias.
         /// </summary>
-        private void InitializeComboBoxes()
+        private void cmbFamilias_DropDown(object sender, EventArgs e)
         {
-            LoadFamilias();
-            LoadPatentes();
+            if (cmbFamilias.Items.Count == 0)
+            {
+                LoadFamilias();
+            }
+        }
+
+        /// <summary>
+        /// Cargar patentes cuando se despliega el ComboBox de patentes.
+        /// </summary>
+        private void cmbPatentes_DropDown(object sender, EventArgs e)
+        {
+            if (cmbPatentes.Items.Count == 0)
+            {
+                LoadPatentes();
+            }
         }
 
         /// <summary>
@@ -44,13 +64,21 @@ namespace UI
         /// </summary>
         private void LoadFamilias()
         {
-            // Obtén las familias desde la lógica del backend a través de la fachada
-            var familias = UserService.GetAllFamilias();
+            if (cmbFamilias.Items.Count == 0)
+            {
+                // Añadir un elemento vacío para permitir no seleccionar nada
+                cmbFamilias.Items.Add(new Familia { Nombre = "<Ninguna>", Id = Guid.Empty });
 
-            // Poblar cmbFamilias
-            cmbFamilias.DataSource = familias;
-            cmbFamilias.DisplayMember = "Nombre";  // Suponiendo que Familia tiene una propiedad llamada 'Nombre'
-            cmbFamilias.ValueMember = "Id";        // Suponiendo que Familia tiene una propiedad llamada 'Id'
+                var familias = UserService.GetAllFamilias();
+                foreach (var familia in familias)
+                {
+                    cmbFamilias.Items.Add(familia);
+                }
+
+                cmbFamilias.DisplayMember = "Nombre";
+                cmbFamilias.ValueMember = "Id";
+                cmbFamilias.SelectedIndex = -1; // Sin selección predeterminada
+            }
         }
 
         /// <summary>
@@ -58,13 +86,21 @@ namespace UI
         /// </summary>
         private void LoadPatentes()
         {
-            // Obtén las patentes desde la lógica del backend a través de la fachada
-            var patentes = UserService.GetAllPatentes();
+            if (cmbPatentes.Items.Count == 0)
+            {
+                // Añadir un elemento vacío para permitir no seleccionar nada
+                cmbPatentes.Items.Add(new Patente { Nombre = "<Ninguna>", Id = Guid.Empty });
 
-            // Poblar cmbPatentes
-            cmbPatentes.DataSource = patentes;
-            cmbPatentes.DisplayMember = "Nombre";  // Suponiendo que Patente tiene una propiedad llamada 'Nombre'
-            cmbPatentes.ValueMember = "Id";        // Suponiendo que Patente tiene una propiedad llamada 'Id'
+                var patentes = UserService.GetAllPatentes();
+                foreach (var patente in patentes)
+                {
+                    cmbPatentes.Items.Add(patente);
+                }
+
+                cmbPatentes.DisplayMember = "Nombre";
+                cmbPatentes.ValueMember = "Id";
+                cmbPatentes.SelectedIndex = -1; // Sin selección predeterminada
+            }
         }
 
         /// <summary>
@@ -75,14 +111,12 @@ namespace UI
         {
             if (txtPassword.Text == txtConfirmPassword.Text)
             {
-                // Si las contraseñas coinciden, establecer el color de fondo normal y habilitar el botón de registro
                 txtPassword.BackColor = SystemColors.Window;
                 txtConfirmPassword.BackColor = SystemColors.Window;
                 btnRegister.Enabled = true;
             }
             else
             {
-                // Si no coinciden, establecer el color de fondo rojo y deshabilitar el botón de registro
                 txtPassword.BackColor = Color.Red;
                 txtConfirmPassword.BackColor = Color.Red;
                 btnRegister.Enabled = false;
@@ -106,6 +140,23 @@ namespace UI
                 // Asignar Familias y Patentes seleccionadas al usuario
                 var selectedFamilia = (Familia)cmbFamilias.SelectedItem;
                 var selectedPatente = (Patente)cmbPatentes.SelectedItem;
+
+                // Comprobar si al menos uno de los dos está seleccionado
+                if (selectedFamilia == null || selectedFamilia.Id == Guid.Empty)
+                {
+                    selectedFamilia = null;
+                }
+
+                if (selectedPatente == null || selectedPatente.Id == Guid.Empty)
+                {
+                    selectedPatente = null;
+                }
+
+                if (selectedFamilia == null && selectedPatente == null)
+                {
+                    MessageBox.Show("Debe seleccionar al menos un rol o un permiso.");
+                    return;
+                }
 
                 if (selectedFamilia != null)
                 {

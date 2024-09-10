@@ -33,6 +33,9 @@ namespace Services.Dao.Implementations.SqlServer
         /// <param name="obj">La instancia de Familia a añadir.</param>
         public void Add(Familia obj)
         {
+            // Generar un nuevo GUID para la relación si no existe
+            obj.Id = Guid.NewGuid();
+
             SqlHelper.ExecuteNonQuery("FamiliaInsert", CommandType.StoredProcedure,
                 new SqlParameter("@IdFamilia", obj.Id),
                 new SqlParameter("@Nombre", obj.Nombre));

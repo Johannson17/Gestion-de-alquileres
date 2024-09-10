@@ -32,6 +32,8 @@
             this.chlbAccesos = new System.Windows.Forms.CheckedListBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.txtDescription = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtName
@@ -66,11 +68,31 @@
             this.txtDescription.Size = new System.Drawing.Size(271, 22);
             this.txtDescription.TabIndex = 3;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(62, 16);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Nombre: ";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 79);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(85, 16);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Descripción: ";
+            // 
             // frmAddFamilia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(295, 450);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chlbAccesos);
@@ -88,5 +110,7 @@
         private System.Windows.Forms.CheckedListBox chlbAccesos;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
