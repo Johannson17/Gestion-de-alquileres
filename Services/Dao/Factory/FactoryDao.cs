@@ -1,5 +1,6 @@
 ﻿using Services.Dao;
 using Services.Dao.Contracts;
+using Services.Dao.Implementations;
 using Services.Dao.Implementations.SqlServer;
 using System;
 
@@ -46,9 +47,14 @@ namespace Services.Factory
             {
                 return LoggerDao.Current as T;
             }
-            else if (typeof(T) == typeof(LanguageDao))
+            else if (typeof(T) == typeof(ILanguageRepository))
             {
-                return LanguageDao.Current as T;
+                return LanguageRepository.Current as T;
+            }
+            
+            else if (typeof(T) == typeof(ILanguageRepository))
+            {
+                return LanguageRepository.Current as T;
             }
             else
             {

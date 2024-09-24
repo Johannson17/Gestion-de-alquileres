@@ -178,19 +178,20 @@
             // usuariosToolStripMenuItem
             // 
             this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
-            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.usuariosToolStripMenuItem.Text = "Usuarios y permisos";
             // 
             // idiomasToolStripMenuItem
             // 
             this.idiomasToolStripMenuItem.Name = "idiomasToolStripMenuItem";
-            this.idiomasToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.idiomasToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.idiomasToolStripMenuItem.Text = "Idiomas";
+            this.idiomasToolStripMenuItem.Click += new System.EventHandler(this.idiomasToolStripMenuItem_Click);
             // 
             // soporteToolStripMenuItem
             // 
             this.soporteToolStripMenuItem.Name = "soporteToolStripMenuItem";
-            this.soporteToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.soporteToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.soporteToolStripMenuItem.Text = "Soporte";
             // 
             // frmMainAdmin
@@ -199,6 +200,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.menuStrip1);
+            this.IsMdiContainer = true;
             this.Name = "frmMainAdmin";
             this.Text = "frmMainAdmin";
             this.menuStrip1.ResumeLayout(false);

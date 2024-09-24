@@ -44,10 +44,12 @@
   <ItemGroup>
     <Compile Include="Dao\Contracts\IGenericDao.cs" />
     <Compile Include="Dao\Contracts\IJoinRepository.cs" />
+    <Compile Include="Dao\Contracts\ILanguageRepository.cs" />
     <Compile Include="Dao\Contracts\IObjectMapper.cs" />
     <Compile Include="Dao\Factory\FactoryDao.cs" />
     <Compile Include="Dao\Implementations\SqlServer\FamiliaPatenteRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\FamiliaRepository.cs" />
+    <Compile Include="Dao\Implementations\SqlServer\LanguageRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\Mappers\FamiliaMapper.cs" />
     <Compile Include="Dao\Implementations\SqlServer\Mappers\PatenteMapper.cs" />
     <Compile Include="Dao\Implementations\SqlServer\Mappers\UsuarioMapper.cs" />
@@ -55,7 +57,6 @@
     <Compile Include="Dao\Implementations\SqlServer\UsuarioFamiliaRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\UsuarioPatenteRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\UsuarioRepository.cs" />
-    <Compile Include="Dao\LanguageDao.cs" />
     <Compile Include="Dao\LoggerDao.cs" />
     <Compile Include="Dao\Contracts\ILoggerDao.cs" />
     <Compile Include="Domain\Composite\Acceso.cs" />

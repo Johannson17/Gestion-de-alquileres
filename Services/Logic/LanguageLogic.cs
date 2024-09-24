@@ -1,146 +1,126 @@
-﻿using Services.Dao;
-using Services.Dao.Contracts;
-using Services.Domain;
+﻿using Services.Dao.Contracts;
 using Services.Factory;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 
 namespace Services.Logic
 {
-    /// <summary>
-    /// Lógica de negocio para la traducción de claves de texto en diferentes idiomas.
-    /// </summary>
-    internal static class LanguageLogic
+    public static class LanguageLogic
     {
+        private static Dictionary<string, string> translationsCache = new Dictionary<string, string>();
+
         /// <summary>
-        /// Traduce una clave especificada al texto correspondiente en el idioma actual.
+        /// Traduce una clave especificada.
         /// </summary>
-        /// <param name="key">La clave a traducir.</param>
-        /// <returns>El texto traducido asociado con la clave especificada.</returns>
+        /// <param name="key">Clave a traducir.</param>
+        /// <returns>Texto traducido.</returns>
         public static string Translate(string key)
         {
-            try
+            if (translationsCache.ContainsKey(key))
             {
-                return LanguageDao.Translate(key);
+                return translationsCache[key];
             }
-            catch (KeyNotFoundException ex)
-            {
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
 
-                // Envía la clave no encontrada al grupo correspondiente (por ejemplo, vía web service).
-                LanguageDao.WriteKey(Thread.CurrentThread.CurrentUICulture.Name, key, $"[{key}]");
-
-                // Registra el problema en el sistema de logs.
-                loggerDao.WriteLog(new Log($"La clave '{key}' no se encontró y fue registrada.", TraceLevel.Warning), ex);
-
-                // Retorna la clave original entre corchetes para indicar que no se encontró.
-                return $"[{key}]";
-            }
-            catch (Exception ex)
-            {
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
-
-                // Registra cualquier otra excepción que ocurra.
-                loggerDao.WriteLog(new Log("Error al traducir la clave.", TraceLevel.Error), ex);
-
-                // Retorna la clave original si ocurre una excepción inesperada.
-                return key;
-            }
+            throw new KeyNotFoundException($"La clave '{key}' no existe en las traducciones cargadas.");
         }
 
         /// <summary>
-        /// Guarda la traducción para una clave específica en el idioma actual.
+        /// Guarda una traducción para una clave específica y genera un nuevo archivo de idioma.
         /// </summary>
-        /// <param name="key">Clave del texto a traducir.</param>
-        /// <param name="translation">Texto traducido.</param>
-        public static void SaveTranslation(string key, string translation)
+        /// <param name="key">Clave de traducción.</param>
+        /// <param name="translation">Traducción.</param>
+        /// <param name="newLanguageFile">El nombre del nuevo archivo de idioma a crear.</param>
+        public static void SaveTranslation(string key, string translation, string newLanguageFile)
         {
-            try
-            {
-                LanguageDao.WriteKey(Thread.CurrentThread.CurrentUICulture.Name, key, translation);
-                LoggerDao.Current.WriteLog(new Log($"La traducción de la clave '{key}' fue guardada exitosamente.", TraceLevel.Info));
-            }
-            catch (Exception ex)
-            {
-                LoggerDao.Current.WriteLog(new Log($"Error al guardar la traducción de la clave '{key}'.", TraceLevel.Error), ex);
-                throw;
-            }
+            translationsCache[key] = translation;
+
+            // Llama al DAO para persistir los cambios en un nuevo archivo de idioma
+            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+            languageRepository.SaveTranslation(key, translation, newLanguageFile);
         }
 
         /// <summary>
-        /// Agrega una nueva clave y su valor a un archivo de idioma especificado.
+        /// Agrega una nueva traducción a un archivo de idioma.
         /// </summary>
         /// <param name="language">El idioma al que pertenece la clave.</param>
-        /// <param name="key">La clave a agregar.</param>
-        /// <param name="value">El valor de la clave a agregar.</param>
+        /// <param name="key">Clave a agregar.</param>
+        /// <param name="value">Valor de la clave a agregar.</param>
         public static void AddTranslation(string language, string key, string value)
         {
-            try
+            if (!translationsCache.ContainsKey(key))
             {
-                LanguageDao.WriteKey(language, key, value);
+                translationsCache[key] = value;
 
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
-                loggerDao.WriteLog(new Log($"La clave '{key}' fue agregada al idioma '{language}'.", TraceLevel.Info));
+                // Llama al DAO para agregar la traducción en el archivo
+                var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+                languageRepository.AddTranslation(language, key, value);
             }
-            catch (Exception ex)
+            else
             {
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
-
-                // Registra cualquier excepción que ocurra al agregar la clave.
-                loggerDao.WriteLog(new Log("Error al agregar la clave de traducción.", TraceLevel.Error), ex);
+                throw new InvalidOperationException($"La clave '{key}' ya existe en el idioma '{language}'.");
             }
         }
 
         /// <summary>
-        /// Recarga todos los archivos de idioma en la caché.
+        /// Guarda las traducciones modificadas en un archivo de idioma existente.
         /// </summary>
-        public static void ReloadLanguages()
+        public static void SaveTranslations(Dictionary<string, string> translations, string languageFile)
         {
-            try
+            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+            foreach (var translation in translations)
             {
-                LanguageDao.ReloadLanguages();
-
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
-                loggerDao.WriteLog(new Log("Se recargaron todos los archivos de idioma.", TraceLevel.Info));
-            }
-            catch (Exception ex)
-            {
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
-
-                // Registra cualquier excepción que ocurra al recargar los idiomas.
-                loggerDao.WriteLog(new Log("Error al recargar los archivos de idioma.", TraceLevel.Error), ex);
+                languageRepository.SaveTranslation(translation.Key, translation.Value, languageFile);
             }
         }
 
         /// <summary>
-        /// Obtiene una lista de todos los idiomas disponibles.
+        /// Guarda las traducciones en un nuevo archivo de idioma.
         /// </summary>
-        /// <returns>Lista de identificadores de idiomas.</returns>
+        public static void SaveTranslationsToNewFile(Dictionary<string, string> translations, string newLanguageFile)
+        {
+            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+            foreach (var translation in translations)
+            {
+                languageRepository.SaveTranslation(translation.Key, translation.Value, newLanguageFile);
+            }
+        }
+
+        /// <summary>
+        /// Recarga las traducciones de un archivo de idioma en la caché.
+        /// </summary>
+        public static void ReloadLanguages(string language)
+        {
+            translationsCache.Clear();
+
+            // Llama al DAO para cargar las traducciones del archivo especificado
+            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+            var translations = languageRepository.LoadAllTranslations(language);
+
+            foreach (var translation in translations)
+            {
+                translationsCache[translation.Key] = translation.Value;
+            }
+        }
+
+        /// <summary>
+        /// Carga todas las traducciones para un idioma específico.
+        /// </summary>
+        /// <param name="language">Idioma para cargar las traducciones.</param>
+        /// <returns>Diccionario con las traducciones cargadas.</returns>
+        public static Dictionary<string, string> LoadAllTranslations(string language)
+        {
+            // Llama al DAO para cargar todas las traducciones de un archivo de idioma
+            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+            return languageRepository.LoadAllTranslations(language);
+        }
+
+        /// <summary>
+        /// Obtiene una lista de todas las claves de idioma disponibles en la caché.
+        /// </summary>
+        /// <returns>Lista de claves de traducciones en la caché.</returns>
         public static List<string> GetLanguages()
         {
-            try
-            {
-                return LanguageDao.GetLanguages();
-            }
-            catch (Exception ex)
-            {
-                // Obtener instancia de LoggerDao desde el FactoryDao
-                var loggerDao = FactoryDao.CreateRepository<ILoggerDao>();
-
-                // Registra cualquier excepción que ocurra al obtener los idiomas.
-                loggerDao.WriteLog(new Log("Error al obtener la lista de idiomas.", TraceLevel.Error), ex);
-
-                // Retorna una lista vacía si ocurre una excepción.
-                return new List<string>();
-            }
+            return new List<string>(translationsCache.Keys);
         }
     }
 }

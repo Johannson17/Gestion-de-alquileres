@@ -1,4 +1,6 @@
-﻿using Services.Logic;
+﻿using Services.Dao.Contracts;
+using Services.Factory;
+using Services.Logic;
 using System;
 using System.Collections.Generic;
 
@@ -10,10 +12,30 @@ namespace Services.Facade
     public static class LanguageService
     {
         /// <summary>
-        /// Traduce una clave especificada al texto correspondiente en el idioma actual.
+        /// Guarda las traducciones modificadas en un archivo de idioma existente.
         /// </summary>
-        /// <param name="key">La clave a traducir, que representa un identificador para un fragmento de texto.</param>
-        /// <returns>El texto traducido asociado con la clave especificada.</returns>
+        /// <param name="translations">Diccionario con las claves y valores de traducción.</param>
+        /// <param name="languageFile">Nombre del archivo de idioma a modificar.</param>
+        public static void SaveTranslations(Dictionary<string, string> translations, string languageFile)
+        {
+            LanguageLogic.SaveTranslations(translations, languageFile);
+        }
+
+        /// <summary>
+        /// Guarda las traducciones en un nuevo archivo de idioma.
+        /// </summary>
+        /// <param name="translations">Diccionario con las claves y valores de traducción.</param>
+        /// <param name="newLanguageFile">Nombre del nuevo archivo de idioma.</param>
+        public static void SaveTranslationsToNewFile(Dictionary<string, string> translations, string newLanguageFile)
+        {
+            LanguageLogic.SaveTranslationsToNewFile(translations, newLanguageFile);
+        }
+
+        /// <summary>
+        /// Traduce una clave especificada utilizando la lógica de negocio.
+        /// </summary>
+        /// <param name="key">La clave que se desea traducir.</param>
+        /// <returns>El valor de la traducción asociado a la clave especificada.</returns>
         public static string Translate(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -25,10 +47,17 @@ namespace Services.Facade
             {
                 return LanguageLogic.Translate(key);
             }
+            catch (KeyNotFoundException ex)
+            {
+                // Registrar excepción en la bitácora
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException($"La clave '{key}' no existe en las traducciones cargadas.", ex);
+            }
             catch (Exception ex)
             {
-                // Opcionalmente manejar o registrar la excepción según sea necesario.
-                throw new InvalidOperationException($"Error al traducir la clave: {key}", ex);
+                // Registrar excepción en la bitácora
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException($"Error al traducir la clave '{key}'", ex);
             }
         }
 
@@ -59,33 +88,44 @@ namespace Services.Facade
             {
                 LanguageLogic.AddTranslation(language, key, value);
             }
+            catch (InvalidOperationException ex)
+            {
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException($"La clave '{key}' ya existe en el idioma '{language}'.", ex);
+            }
             catch (Exception ex)
             {
-                // Opcionalmente manejar o registrar la excepción según sea necesario.
-                throw new InvalidOperationException($"Error al agregar la traducción para la clave: {key} en el idioma: {language}", ex);
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException($"Error al agregar la traducción para la clave '{key}' en el idioma '{language}'.", ex);
             }
         }
 
         /// <summary>
-        /// Recarga todos los archivos de idioma en la caché.
+        /// Recarga todas las traducciones desde un archivo de idioma específico en la caché.
         /// </summary>
-        public static void ReloadLanguages()
+        /// <param name="language">El idioma para recargar las traducciones.</param>
+        public static void ReloadLanguages(string language)
         {
+            if (string.IsNullOrEmpty(language))
+            {
+                throw new ArgumentException("El idioma no puede ser nulo o estar vacío.", nameof(language));
+            }
+
             try
             {
-                LanguageLogic.ReloadLanguages();
+                LanguageLogic.ReloadLanguages(language);
             }
             catch (Exception ex)
             {
-                // Opcionalmente manejar o registrar la excepción según sea necesario.
-                throw new InvalidOperationException("Error al recargar los archivos de idioma.", ex);
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException($"Error al recargar los archivos de idioma: {language}.", ex);
             }
         }
 
         /// <summary>
-        /// Obtiene una lista de todos los idiomas disponibles.
+        /// Obtiene una lista de todas las claves de traducción disponibles.
         /// </summary>
-        /// <returns>Lista de identificadores de idiomas.</returns>
+        /// <returns>Lista de claves de traducción.</returns>
         public static List<string> GetLanguages()
         {
             try
@@ -94,27 +134,66 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                // Opcionalmente manejar o registrar la excepción según sea necesario.
-                throw new InvalidOperationException("Error al obtener la lista de idiomas.", ex);
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException("Error al obtener la lista de claves de traducción.", ex);
             }
         }
 
         /// <summary>
-        /// Guarda la traducción para una clave específica.
+        /// Guarda una traducción específica en un archivo de idioma.
         /// </summary>
-        /// <param name="key">Clave del texto a traducir.</param>
-        /// <param name="translation">Texto traducido.</param>
-        public static void SaveTranslation(string key, string translation)
+        /// <param name="key">Clave de la traducción.</param>
+        /// <param name="translation">Texto de la traducción.</param>
+        /// <param name="newLanguageFile">Nombre del archivo de idioma donde se guardará la traducción.</param>
+        public static void SaveTranslation(string key, string translation, string newLanguageFile)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentException("La clave no puede ser nula o estar vacía.", nameof(key));
+            }
+
+            if (string.IsNullOrEmpty(translation))
+            {
+                throw new ArgumentException("La traducción no puede ser nula o estar vacía.", nameof(translation));
+            }
+
+            if (string.IsNullOrEmpty(newLanguageFile))
+            {
+                throw new ArgumentException("El archivo de idioma no puede ser nulo o estar vacío.", nameof(newLanguageFile));
+            }
+
             try
             {
-                LanguageLogic.SaveTranslation(key, translation);
-                LoggerService.WriteLog($"Traducción guardada para la clave '{key}'.", System.Diagnostics.TraceLevel.Info);
+                LanguageLogic.SaveTranslation(key, translation, newLanguageFile);
+                LoggerService.WriteLog($"Traducción guardada para la clave '{key}' en el archivo '{newLanguageFile}'.", System.Diagnostics.TraceLevel.Info);
             }
             catch (Exception ex)
             {
                 LoggerService.WriteException(ex);
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Carga todas las traducciones para un idioma especificado.
+        /// </summary>
+        /// <param name="language">El idioma para el cual cargar las traducciones.</param>
+        /// <returns>Diccionario con las traducciones del idioma.</returns>
+        public static Dictionary<string, string> LoadAllTranslations(string language)
+        {
+            if (string.IsNullOrEmpty(language))
+            {
+                throw new ArgumentException("El idioma no puede ser nulo o estar vacío.", nameof(language));
+            }
+
+            try
+            {
+                return LanguageLogic.LoadAllTranslations(language);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw new InvalidOperationException($"Error al cargar todas las traducciones del idioma: {language}.", ex);
             }
         }
     }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace UI
@@ -15,6 +8,18 @@ namespace UI
         public frmMainAdmin()
         {
             InitializeComponent();
+        }
+
+        private void idiomasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmChangeLanguage
+            frmChangeLanguage changeLanguageForm = new frmChangeLanguage();
+
+            // Establecer el formulario frmMainAdmin como el padre MDI
+            changeLanguageForm.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            changeLanguageForm.Show();
         }
     }
 }
