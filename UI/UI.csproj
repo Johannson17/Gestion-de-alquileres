@@ -118,6 +118,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{55029da7-0844-4be8-9c3e-cbf0ca7d2cee}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LOGIC\Logic.csproj">
+      <Project>{dffaa5e3-13d2-4e7f-93fa-af849ad00154}</Project>
+      <Name>Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Services\Services.csproj">
       <Project>{9f3ce983-df0f-4f2f-a0ec-52522565a14a}</Project>
       <Name>Services</Name>
