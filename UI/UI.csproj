@@ -52,6 +52,12 @@
     <Compile Include="frmAddFamilia.Designer.cs">
       <DependentUpon>frmAddFamilia.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmAddPerson.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddPerson.Designer.cs">
+      <DependentUpon>frmAddPerson.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmChangeLenguage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +76,12 @@
     <Compile Include="frmMainAdmin.Designer.cs">
       <DependentUpon>frmMainAdmin.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmModifyPerson.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmModifyPerson.Designer.cs">
+      <DependentUpon>frmModifyPerson.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmRegister.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +94,9 @@
     <EmbeddedResource Include="frmAddFamilia.resx">
       <DependentUpon>frmAddFamilia.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmAddPerson.resx">
+      <DependentUpon>frmAddPerson.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmChangeLenguage.resx">
       <DependentUpon>frmChangeLenguage.cs</DependentUpon>
     </EmbeddedResource>
@@ -90,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMainAdmin.resx">
       <DependentUpon>frmMainAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmModifyPerson.resx">
+      <DependentUpon>frmModifyPerson.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmRegister.resx">
       <DependentUpon>frmRegister.cs</DependentUpon>

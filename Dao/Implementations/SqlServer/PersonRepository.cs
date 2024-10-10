@@ -1,30 +1,26 @@
 ﻿using DAO.Contracts;
+using DAO.RentsDataSetTableAdapters;
 using Domain;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using static Domain.Person;
 
 namespace DAO.Implementations.SqlServer
 {
     /// <summary>
-    /// Implementación del repositorio de personas que utiliza Entity Framework para interactuar con la base de datos.
+    /// Implementación del repositorio de personas utilizando el PersonTableAdapter.
     /// </summary>
     public class PersonRepository : IPersonRepository
     {
-        private readonly DbContext _context;
+        private readonly PersonTableAdapter _personTableAdapter;
 
         /// <summary>
-        /// Constructor que inyecta el DbContext.
+        /// Constructor que inicializa el PersonTableAdapter.
         /// </summary>
-        /// <param name="context">El contexto de base de datos que se utilizará para las operaciones CRUD.</param>
-        public PersonRepository(DbContext context)
+        public PersonRepository()
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _personTableAdapter = new PersonTableAdapter();
         }
 
         /// <summary>
@@ -39,10 +35,21 @@ namespace DAO.Implementations.SqlServer
                 throw new ArgumentNullException(nameof(person), "La entidad persona no puede ser nula.");
             }
 
-            _context.Set<Person>().Add(person);
-            _context.SaveChanges();
+            Guid newId = Guid.NewGuid();
 
-            return person.IdPerson; // Asumiendo que la entidad tiene un campo IdPerson de tipo Guid
+            _personTableAdapter.Insert(
+                newId,
+                person.NamePerson,                  // Nombre
+                person.LastNamePerson,              // Apellido
+                person.NumberDocumentPerson,        // Número de documento
+                person.TypeDocumentPerson,          // Tipo de documento
+                person.PhoneNumberPerson.ToString(),           // Número de teléfono
+                person.ElectronicDomicilePerson,    // Correo electrónico (equivalente a EmailPerson)
+                person.DomicilePerson,              // Domicilio
+                person.EnumTypePerson.ToString()          // Tipo de persona
+            );
+
+            return newId;
         }
 
         /// <summary>
@@ -56,8 +63,23 @@ namespace DAO.Implementations.SqlServer
                 throw new ArgumentNullException(nameof(person), "La entidad persona no puede ser nula.");
             }
 
-            _context.Set<Person>().Update(person);
-            _context.SaveChanges();
+            // Cargar la persona desde el DataSet y actualizar los campos
+            var personRow = _personTableAdapter.GetData().FirstOrDefault(r => r.IdPerson == person.IdPerson);
+
+            if (personRow == null)
+            {
+                throw new KeyNotFoundException($"No se encontró una persona con el ID: {person.IdPerson}");
+            }
+
+            personRow.NamePerson = person.NamePerson;
+            personRow.NumberDocumentPerson = person.NumberDocumentPerson;
+            personRow.TypeDocumentPerson = person.TypeDocumentPerson;
+            personRow.DomicilePerson = person.DomicilePerson;
+            personRow.EmailPerson = person.ElectronicDomicilePerson;
+            personRow.PhoneNumberPerson = person.PhoneNumberPerson.ToString();
+            personRow.TypePerson = person.EnumTypePerson.ToString();
+
+            _personTableAdapter.Update(personRow);
         }
 
         /// <summary>
@@ -66,15 +88,24 @@ namespace DAO.Implementations.SqlServer
         /// <param name="personId">El identificador único de la persona.</param>
         public void Delete(Guid personId)
         {
-            var person = _context.Set<Person>().Find(personId);
+            var personRow = _personTableAdapter.GetData().FirstOrDefault(r => r.IdPerson == personId);
 
-            if (person == null)
+            if (personRow == null)
             {
                 throw new KeyNotFoundException($"No se encontró una persona con el ID: {personId}");
             }
 
-            _context.Set<Person>().Remove(person);
-            _context.SaveChanges();
+            _personTableAdapter.Delete(
+                personRow.IdPerson,
+                personRow.NamePerson,                  // Nombre
+                personRow.LastNamePerson,              // Apellido
+                personRow.NumberDocumentPerson,        // Número de documento
+                personRow.TypeDocumentPerson,          // Tipo de documento
+                personRow.PhoneNumberPerson.ToString(),           // Número de teléfono
+                personRow.EmailPerson,    // Correo electrónico (equivalente a EmailPerson)
+                personRow.DomicilePerson,              // Domicilio
+                personRow.TypePerson.ToString()          // Tipo de persona
+            );
         }
 
         /// <summary>
@@ -83,7 +114,20 @@ namespace DAO.Implementations.SqlServer
         /// <returns>Una lista de objetos Person.</returns>
         public List<Person> GetAll()
         {
-            return _context.Set<Person>().ToList();
+            var personData = _personTableAdapter.GetData();
+
+            return personData.Select(row => new Person
+            {
+                IdPerson = row.IdPerson,
+                NamePerson = row.NamePerson,
+                LastNamePerson = row.LastNamePerson,
+                NumberDocumentPerson = row.NumberDocumentPerson,
+                TypeDocumentPerson = row.TypeDocumentPerson,
+                DomicilePerson = row.DomicilePerson,
+                ElectronicDomicilePerson = row.EmailPerson,
+                PhoneNumberPerson = int.Parse(row.PhoneNumberPerson),
+                EnumTypePerson = (PersonTypeEnum)Enum.Parse(typeof(PersonTypeEnum), row.TypePerson)
+            }).ToList();
         }
 
         /// <summary>
@@ -93,7 +137,25 @@ namespace DAO.Implementations.SqlServer
         /// <returns>La entidad Person correspondiente o null si no se encuentra.</returns>
         public Person GetById(Guid personId)
         {
-            return _context.Set<Person>().Find(personId);
+            var personRow = _personTableAdapter.GetData().FirstOrDefault(r => r.IdPerson == personId);
+
+            if (personRow == null)
+            {
+                return null;
+            }
+
+            return new Person
+            {
+                IdPerson = personRow.IdPerson,
+                NamePerson = personRow.NamePerson,
+                LastNamePerson = personRow.LastNamePerson,
+                NumberDocumentPerson = personRow.NumberDocumentPerson,
+                TypeDocumentPerson = personRow.TypeDocumentPerson,
+                DomicilePerson = personRow.DomicilePerson,
+                ElectronicDomicilePerson = personRow.EmailPerson,
+                PhoneNumberPerson = int.Parse(personRow.PhoneNumberPerson),
+                EnumTypePerson = (PersonTypeEnum)Enum.Parse(typeof(PersonTypeEnum), personRow.TypePerson)
+            };
         }
     }
 }

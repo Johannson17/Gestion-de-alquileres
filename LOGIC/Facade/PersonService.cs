@@ -1,24 +1,25 @@
-﻿using DAO.Implementations.SqlServer;  // Asegúrate de tener el using correcto para el repositorio
-using Domain;
+﻿using Domain;
+using LOGIC;
 using System;
 using System.Collections.Generic;
 
-namespace LOGIC
+namespace LOGIC.Facade
 {
     /// <summary>
-    /// Lógica de negocio para la gestión de personas (propietarios e inquilinos).
-    /// Esta clase se encarga de manejar las reglas de negocio y coordinar las operaciones de DAO.
+    /// Servicio para gestionar la lógica de personas (propietarios e inquilinos).
+    /// Simplifica la interacción entre la capa de UI y la lógica de negocio.
     /// </summary>
-    public class PersonLogic
+    public class PersonService
     {
-        private readonly PersonRepository _personRepository;
+        private readonly PersonLogic _personLogic;
 
         /// <summary>
-        /// Constructor de la clase PersonLogic que instancia el repositorio de personas.
+        /// Constructor que inicializa la lógica de negocio de personas.
         /// </summary>
-        public PersonLogic()
+        public PersonService()
         {
-            _personRepository = new PersonRepository(); // Instanciamos el repositorio manualmente
+            // Aquí solo se llama a la lógica, sin interacción con la DAO.
+            _personLogic = new PersonLogic();
         }
 
         /// <summary>
@@ -29,11 +30,11 @@ namespace LOGIC
         {
             try
             {
-                return _personRepository.GetAll();
+                return _personLogic.GetAllPersons();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener la lista de personas.", ex);
+                throw new Exception("Error al obtener la lista de personas desde el servicio.", ex);
             }
         }
 
@@ -46,11 +47,11 @@ namespace LOGIC
         {
             try
             {
-                return _personRepository.GetById(personId);
+                return _personLogic.GetPersonById(personId);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener la persona con ID: {personId}", ex);
+                throw new Exception($"Error al obtener la persona con ID: {personId} desde el servicio.", ex);
             }
         }
 
@@ -63,11 +64,11 @@ namespace LOGIC
         {
             try
             {
-                return _personRepository.Create(person);
+                return _personLogic.CreatePerson(person);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al crear la persona.", ex);
+                throw new Exception("Error al crear la persona desde el servicio.", ex);
             }
         }
 
@@ -79,11 +80,11 @@ namespace LOGIC
         {
             try
             {
-                _personRepository.Update(person);
+                _personLogic.UpdatePerson(person);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al actualizar la persona.", ex);
+                throw new Exception("Error al actualizar la persona desde el servicio.", ex);
             }
         }
 
@@ -95,11 +96,11 @@ namespace LOGIC
         {
             try
             {
-                _personRepository.Delete(personId);
+                _personLogic.DeletePerson(personId);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al eliminar la persona con ID: {personId}", ex);
+                throw new Exception($"Error al eliminar la persona con ID: {personId} desde el servicio.", ex);
             }
         }
     }

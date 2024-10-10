@@ -12,43 +12,29 @@ using Services.Dao.Implementations.SqlServer;
 
 namespace Services.Dao
 {
-    /// <summary>
-    /// Clase responsable de manejar el registro de logs en archivos y en la base de datos.
-    /// </summary>
     public class LoggerDao : ILoggerDao
     {
         #region Singleton Pattern
-        /// <summary>
-        /// Instancia única de la clase LoggerDao.
-        /// </summary>
         private static readonly LoggerDao _instance = new LoggerDao();
-
-        /// <summary>
-        /// Obtiene la instancia singleton de LoggerDao.
-        /// </summary>
         public static LoggerDao Current => _instance;
-
-        /// <summary>
-        /// Constructor privado para implementar el patrón Singleton.
-        /// </summary>
-        private LoggerDao()
-        {
-            // Aquí se puede implementar la inicialización del singleton si es necesario.
-        }
+        private LoggerDao() { }
         #endregion
 
         private static readonly string PathLogError = ConfigurationManager.AppSettings["PathLogError"];
         private static readonly string PathLogInfo = ConfigurationManager.AppSettings["PathLogInfo"];
         private static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["ServicesSqlConnection"].ConnectionString;
 
-        /// <summary>
-        /// Escribe un log en el archivo correspondiente según el nivel de severidad del mensaje
-        /// y también en la base de datos.
-        /// </summary>
-        /// <param name="log">Información del log a escribir.</param>
-        /// <param name="ex">Excepción opcional cuya traza se debe incluir en el log.</param>
+        // Lee el nivel de trazabilidad configurado en app.config
+        private static readonly TraceLevel ConfiguredTraceLevel = (TraceLevel)Enum.Parse(typeof(TraceLevel), ConfigurationManager.AppSettings["LogLevel"]);
+
         public void WriteLog(Log log, Exception ex = null)
         {
+            // Aplica el filtro de nivel de log: solo guarda si el nivel de log es <= al configurado
+            if (log.TraceLevel > ConfiguredTraceLevel)
+            {
+                return; // Ignora logs de mayor nivel al configurado
+            }
+
             string path;
             string formatMessage = FormatMessage(log);
 
@@ -68,11 +54,6 @@ namespace Services.Dao
             WriteToDatabase(log, ex);
         }
 
-        /// <summary>
-        /// Escribe el log en la tabla de logs de la base de datos.
-        /// </summary>
-        /// <param name="log">Información del log a escribir.</param>
-        /// <param name="ex">Excepción opcional cuya traza se debe incluir en el log.</param>
         private void WriteToDatabase(Log log, Exception ex = null)
         {
             SqlParameter[] parameters = new SqlParameter[]
@@ -90,10 +71,6 @@ namespace Services.Dao
             SqlHelper.ExecuteNonQuery(commandText, CommandType.Text, parameters);
         }
 
-        /// <summary>
-        /// Obtiene todos los logs almacenados en el sistema.
-        /// </summary>
-        /// <returns>Una lista de todos los logs almacenados.</returns>
         public List<Log> GetAllLogs()
         {
             List<Log> logs = new List<Log>();
@@ -105,21 +82,16 @@ namespace Services.Dao
                 while (reader.Read())
                 {
                     logs.Add(new Log(
-                        reader.GetString(1), // Message
-                        (TraceLevel)reader.GetInt32(2), // TraceLevel
-                        reader.IsDBNull(4) ? null : reader.GetString(4), // Exception
-                        reader.GetDateTime(3))); // Date
+                        reader.GetString(1),
+                        (TraceLevel)reader.GetInt32(2),
+                        reader.IsDBNull(4) ? null : reader.GetString(4),
+                        reader.GetDateTime(3)));
                 }
             }
 
             return logs;
         }
 
-        /// <summary>
-        /// Obtiene un log específico por su ID.
-        /// </summary>
-        /// <param name="logId">El identificador del log.</param>
-        /// <returns>El log correspondiente al ID proporcionado, o null si no existe.</returns>
         public Log GetLogById(Guid logId)
         {
             Log log = null;
@@ -135,20 +107,16 @@ namespace Services.Dao
                 if (reader.Read())
                 {
                     log = new Log(
-                        reader.GetString(1), // Message
-                        (TraceLevel)reader.GetInt32(2), // TraceLevel
-                        reader.IsDBNull(4) ? null : reader.GetString(4), // Exception
-                        reader.GetDateTime(3)); // Date
+                        reader.GetString(1),
+                        (TraceLevel)reader.GetInt32(2),
+                        reader.IsDBNull(4) ? null : reader.GetString(4),
+                        reader.GetDateTime(3));
                 }
             }
 
             return log;
         }
 
-        /// <summary>
-        /// Elimina un log específico por su ID.
-        /// </summary>
-        /// <param name="logId">El identificador del log.</param>
         public void DeleteLog(Guid logId)
         {
             string commandText = "DELETE FROM Log WHERE Id = @Id";
@@ -160,30 +128,17 @@ namespace Services.Dao
             SqlHelper.ExecuteNonQuery(commandText, CommandType.Text, parameters);
         }
 
-        /// <summary>
-        /// Elimina todos los logs en el sistema.
-        /// </summary>
         public void DeleteAllLogs()
         {
             string commandText = "DELETE FROM Log";
             SqlHelper.ExecuteNonQuery(commandText, CommandType.Text);
         }
 
-        /// <summary>
-        /// Formatea un mensaje de log con el formato deseado.
-        /// </summary>
-        /// <param name="log">El objeto de log que contiene la información a formatear.</param>
-        /// <returns>El mensaje formateado del log.</returns>
         private string FormatMessage(Log log)
         {
             return $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} [{log.TraceLevel}] : {log.Message}";
         }
 
-        /// <summary>
-        /// Escribe el mensaje de log en un archivo de texto.
-        /// </summary>
-        /// <param name="path">La ruta del archivo.</param>
-        /// <param name="message">El mensaje formateado a escribir.</param>
         private void WriteToFile(string path, string message)
         {
             using (StreamWriter writer = new StreamWriter(path, true))

@@ -51,7 +51,6 @@ namespace UI
             // Manejar el resultado de la autenticación
             if (user != null && user.IdUsuario != Guid.Empty)
             {
-                MessageBox.Show("Inicio de sesión exitoso.", "Bienvenido", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // Ocultar el formulario de login
                 this.Hide();
