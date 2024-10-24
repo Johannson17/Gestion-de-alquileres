@@ -20,6 +20,9 @@ namespace UI
             InitializeComponent();
             // Sincronizar las patentes con los formularios al iniciar el login
             PatenteHelper.SyncPatentesWithForms();
+            
+            // Establecer el foco en el TextBox del usuario
+            txtUsername.Focus();
         }
 
         /// <summary>
@@ -51,7 +54,6 @@ namespace UI
             // Manejar el resultado de la autenticación
             if (user != null && user.IdUsuario != Guid.Empty)
             {
-
                 // Ocultar el formulario de login
                 this.Hide();
 
@@ -105,6 +107,27 @@ namespace UI
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Manejar el evento de tecla presionada en los TextBox para simular el clic del botón de inicio de sesión al presionar Enter.
+        /// </summary>
+        private void txtUsername_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Evitar que se reproduzca el sonido de "Enter"
+                txtPassword.Focus(); // Enfocar el siguiente TextBox (contraseña)
+            }
+        }
+
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e) 
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Evitar que se reproduzca el sonido de "Enter"
+                btnLogin.PerformClick(); // Simular el clic en el botón de inicio de sesión
+            }
         }
     }
 }

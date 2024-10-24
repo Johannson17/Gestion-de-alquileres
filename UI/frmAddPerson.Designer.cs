@@ -50,7 +50,7 @@
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(16, 401);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(891, 47);
             this.btnSave.TabIndex = 1;
@@ -61,7 +61,7 @@
             // txtName
             // 
             this.txtName.Location = new System.Drawing.Point(16, 122);
-            this.txtName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtName.Margin = new System.Windows.Forms.Padding(4);
             this.txtName.Multiline = true;
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(408, 30);
@@ -70,7 +70,7 @@
             // txtDomicile
             // 
             this.txtDomicile.Location = new System.Drawing.Point(16, 197);
-            this.txtDomicile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDomicile.Margin = new System.Windows.Forms.Padding(4);
             this.txtDomicile.Multiline = true;
             this.txtDomicile.Name = "txtDomicile";
             this.txtDomicile.Size = new System.Drawing.Size(408, 30);
@@ -79,7 +79,7 @@
             // txtEmail
             // 
             this.txtEmail.Location = new System.Drawing.Point(16, 270);
-            this.txtEmail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtEmail.Margin = new System.Windows.Forms.Padding(4);
             this.txtEmail.Multiline = true;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(408, 30);
@@ -88,7 +88,7 @@
             // txtDocumentNumber
             // 
             this.txtDocumentNumber.Location = new System.Drawing.Point(497, 270);
-            this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtDocumentNumber.Multiline = true;
             this.txtDocumentNumber.Name = "txtDocumentNumber";
             this.txtDocumentNumber.Size = new System.Drawing.Size(408, 30);
@@ -97,7 +97,7 @@
             // txtLastName
             // 
             this.txtLastName.Location = new System.Drawing.Point(497, 122);
-            this.txtLastName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtLastName.Margin = new System.Windows.Forms.Padding(4);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(408, 30);
@@ -187,7 +187,7 @@
             // 
             this.cmbTypeOfPerson.FormattingEnabled = true;
             this.cmbTypeOfPerson.Location = new System.Drawing.Point(16, 348);
-            this.cmbTypeOfPerson.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbTypeOfPerson.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTypeOfPerson.Name = "cmbTypeOfPerson";
             this.cmbTypeOfPerson.Size = new System.Drawing.Size(408, 24);
             this.cmbTypeOfPerson.TabIndex = 28;
@@ -195,7 +195,7 @@
             // txtPhoneNumber
             // 
             this.txtPhoneNumber.Location = new System.Drawing.Point(497, 197);
-            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtPhoneNumber.Multiline = true;
             this.txtPhoneNumber.Name = "txtPhoneNumber";
             this.txtPhoneNumber.Size = new System.Drawing.Size(408, 30);
@@ -205,7 +205,7 @@
             // 
             this.cmbTypeOfDocument.FormattingEnabled = true;
             this.cmbTypeOfDocument.Location = new System.Drawing.Point(497, 348);
-            this.cmbTypeOfDocument.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbTypeOfDocument.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTypeOfDocument.Name = "cmbTypeOfDocument";
             this.cmbTypeOfDocument.Size = new System.Drawing.Size(408, 24);
             this.cmbTypeOfDocument.TabIndex = 29;
@@ -214,7 +214,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(924, 463);
+            this.ClientSize = new System.Drawing.Size(923, 461);
             this.Controls.Add(this.cmbTypeOfDocument);
             this.Controls.Add(this.cmbTypeOfPerson);
             this.Controls.Add(this.label8);
@@ -232,9 +232,10 @@
             this.Controls.Add(this.txtDomicile);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.btnSave);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmAddPerson";
-            this.Text = "frmAddPerson";
+            this.Text = "Agregar Persona";
             this.ResumeLayout(false);
             this.PerformLayout();
 

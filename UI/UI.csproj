@@ -46,10 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmAddFamilia.cs">
+    <Compile Include="frmAddProperty.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmAddFamilia.Designer.cs">
+    <Compile Include="frmAddProperty.Designer.cs">
+      <DependentUpon>frmAddProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service\frmAddFamilia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmAddFamilia.Designer.cs">
       <DependentUpon>frmAddFamilia.cs</DependentUpon>
     </Compile>
     <Compile Include="frmAddPerson.cs">
@@ -58,16 +64,22 @@
     <Compile Include="frmAddPerson.Designer.cs">
       <DependentUpon>frmAddPerson.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmChangeLenguage.cs">
+    <Compile Include="frmAddPropertyInventory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmChangeLenguage.Designer.cs">
+    <Compile Include="frmAddPropertyInventory.Designer.cs">
+      <DependentUpon>frmAddPropertyInventory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service\frmChangeLenguage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmChangeLenguage.Designer.cs">
       <DependentUpon>frmChangeLenguage.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmLogin.cs">
+    <Compile Include="Service\frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmLogin.Designer.cs">
+    <Compile Include="Service\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="frmMainAdmin.cs">
@@ -82,25 +94,55 @@
     <Compile Include="frmModifyPerson.Designer.cs">
       <DependentUpon>frmModifyPerson.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmRegister.cs">
+    <Compile Include="frmModifyProperty.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmRegister.Designer.cs">
+    <Compile Include="frmModifyProperty.Designer.cs">
+      <DependentUpon>frmModifyProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service\frmModifyFamily.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmModifyFamily.Designer.cs">
+      <DependentUpon>frmModifyFamily.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service\frmModifyUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmModifyUser.Designer.cs">
+      <DependentUpon>frmModifyUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service\frmRegister.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmRegister.Designer.cs">
       <DependentUpon>frmRegister.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PatenteHelper.cs" />
+    <Compile Include="frmModifyPropertyInventory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmModifyPropertyInventory.Designer.cs">
+      <DependentUpon>frmModifyPropertyInventory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmAddFamilia.resx">
+    <EmbeddedResource Include="Service\frmAddFamilia.resx">
       <DependentUpon>frmAddFamilia.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddPerson.resx">
       <DependentUpon>frmAddPerson.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmChangeLenguage.resx">
+    <EmbeddedResource Include="frmAddProperty.resx">
+      <DependentUpon>frmAddProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddPropertyInventory.resx">
+      <DependentUpon>frmAddPropertyInventory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Service\frmChangeLenguage.resx">
       <DependentUpon>frmChangeLenguage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmLogin.resx">
+    <EmbeddedResource Include="Service\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMainAdmin.resx">
@@ -109,8 +151,20 @@
     <EmbeddedResource Include="frmModifyPerson.resx">
       <DependentUpon>frmModifyPerson.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmRegister.resx">
+    <EmbeddedResource Include="frmModifyProperty.resx">
+      <DependentUpon>frmModifyProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Service\frmModifyFamily.resx">
+      <DependentUpon>frmModifyFamily.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Service\frmModifyUser.resx">
+      <DependentUpon>frmModifyUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Service\frmRegister.resx">
       <DependentUpon>frmRegister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmModifyPropertyInventory.resx">
+      <DependentUpon>frmModifyPropertyInventory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

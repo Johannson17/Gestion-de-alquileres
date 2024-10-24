@@ -86,5 +86,35 @@ namespace UI
                 MessageBox.Show("Error al guardar los cambios: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Obtiene la persona seleccionada
+                var selectedPerson = (Person)dgvPerson.CurrentRow?.DataBoundItem;
+
+                if (selectedPerson == null)
+                {
+                    MessageBox.Show("Seleccione una persona de la lista para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Confirmación de eliminación
+                var confirmation = MessageBox.Show("¿Está seguro de que desea eliminar esta persona?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirmation == DialogResult.Yes)
+                {
+                    // Llama al servicio para eliminar la persona
+                    _personService.DeletePerson(selectedPerson.IdPerson);
+
+                    MessageBox.Show("Persona eliminada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadPersonData(); // Recargar los datos en el DataGridView para reflejar la eliminación
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar la persona: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

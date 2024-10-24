@@ -1,7 +1,9 @@
-﻿using DAO.Implementations.SqlServer;  // Asegúrate de tener el using correcto para el repositorio
-using Domain;
+﻿using Domain;
+using DAO.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DAO.Implementations.SqlServer;
 
 namespace LOGIC
 {
@@ -11,47 +13,43 @@ namespace LOGIC
     /// </summary>
     public class PersonLogic
     {
-        private readonly PersonRepository _personRepository;
+        private readonly IPersonRepository _personRepository;
 
         /// <summary>
-        /// Constructor de la clase PersonLogic que instancia el repositorio de personas.
+        /// Constructor de la clase PersonLogic que inicializa el repositorio de personas.
         /// </summary>
         public PersonLogic()
         {
-            _personRepository = new PersonRepository(); // Instanciamos el repositorio manualmente
+            _personRepository = new PersonRepository(); // Instanciación directa de la DAO.
         }
 
         /// <summary>
-        /// Obtiene todas las personas (propietarios e inquilinos) registradas en el sistema.
+        /// Obtiene todas las personas registradas en el sistema.
         /// </summary>
-        /// <returns>Lista de objetos Person.</returns>
         public List<Person> GetAllPersons()
         {
-            try
-            {
-                return _personRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener la lista de personas.", ex);
-            }
+            return _personRepository.GetAll();
         }
 
         /// <summary>
-        /// Obtiene una persona por su ID.
+        /// Obtiene personas filtradas por su tipo (propietarios o inquilinos).
+        /// </summary>
+        /// <param name="personType">Tipo de persona (Owner o Tenant).</param>
+        public List<Person> GetAllPersonsByType(Person.PersonTypeEnum personType)
+        {
+            return _personRepository.GetAll()
+                                     .Where(p => p.EnumTypePerson == personType)
+                                     .ToList();
+        }
+
+        /// <summary>
+        /// Obtiene una persona por su identificador único.
         /// </summary>
         /// <param name="personId">ID de la persona.</param>
         /// <returns>Objeto Person si se encuentra, de lo contrario null.</returns>
         public Person GetPersonById(Guid personId)
         {
-            try
-            {
-                return _personRepository.GetById(personId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error al obtener la persona con ID: {personId}", ex);
-            }
+            return _personRepository.GetById(personId);
         }
 
         /// <summary>
@@ -61,14 +59,7 @@ namespace LOGIC
         /// <returns>ID de la persona recién creada.</returns>
         public Guid CreatePerson(Person person)
         {
-            try
-            {
-                return _personRepository.Create(person);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al crear la persona.", ex);
-            }
+            return _personRepository.Create(person);
         }
 
         /// <summary>
@@ -77,14 +68,7 @@ namespace LOGIC
         /// <param name="person">Objeto Person que representa a la persona a actualizar.</param>
         public void UpdatePerson(Person person)
         {
-            try
-            {
-                _personRepository.Update(person);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al actualizar la persona.", ex);
-            }
+            _personRepository.Update(person);
         }
 
         /// <summary>
@@ -93,14 +77,7 @@ namespace LOGIC
         /// <param name="personId">ID de la persona a eliminar.</param>
         public void DeletePerson(Guid personId)
         {
-            try
-            {
-                _personRepository.Delete(personId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error al eliminar la persona con ID: {personId}", ex);
-            }
+            _personRepository.Delete(personId);
         }
     }
 }

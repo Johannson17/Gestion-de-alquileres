@@ -9,7 +9,7 @@ using System.Linq;
 namespace Services.Logic
 {
     /// <summary>
-    /// Lógica de negocio para la gestión de usuarios.
+    /// Lógica de negocio para la gestión de usuarios y familias.
     /// </summary>
     public static class UserLogic
     {
@@ -64,8 +64,6 @@ namespace Services.Logic
                     return usuarioDB; // Devolver el usuario válido
                 }
             }
-
-            Console.WriteLine("Validación de usuario fallida.");
             return null; // Si no es válido, devolver null
         }
 
@@ -125,8 +123,6 @@ namespace Services.Logic
                     }
                 }
             }
-
-            Console.WriteLine($"Usuario {user.UserName} actualizado con éxito.");
         }
 
         /// <summary>
@@ -151,8 +147,6 @@ namespace Services.Logic
 
             // Eliminar el usuario de la base de datos
             usuarioRepository.Remove(idUsuario);
-
-            Console.WriteLine($"Usuario {user.UserName} eliminado con éxito.");
         }
 
         /// <summary>
@@ -245,7 +239,7 @@ namespace Services.Logic
                 var nuevaPatente = new Patente
                 {
                     Nombre = formName,
-                    TipoAcceso = TipoAcceso.UI, // Asignar el tipo de acceso como "Read"
+                    TipoAcceso = TipoAcceso.UI, // Asignar el tipo de acceso como "UI"
                     DataKey = formName
                 };
 
@@ -277,8 +271,6 @@ namespace Services.Logic
         /// Agrega una nueva familia al sistema, incluyendo sus accesos (Patentes y otras Familias).
         /// </summary>
         /// <param name="familia">La familia a agregar.</param>
-        /// <exception cref="ArgumentNullException">Si la familia es nula.</exception>
-        /// <exception cref="ArgumentException">Si alguna de las patentes o familias asociadas no existe.</exception>
         public static void AddFamilia(Familia familia)
         {
             if (familia == null)
@@ -288,43 +280,84 @@ namespace Services.Logic
 
             var familiaRepository = FactoryDao.CreateRepository<FamiliaRepository>();
             var patenteRepository = FactoryDao.CreateRepository<PatenteRepository>();
+            var familiaPatenteRepository = FactoryDao.CreateRepository<FamiliaPatenteRepository>();
 
             // Guardar la familia en la base de datos
             familiaRepository.Add(familia);
 
-            // Crear una lista temporal de accesos para evitar modificar la colección durante la iteración
-            var accesosTemp = new List<Acceso>(familia.Accesos);
-
-            // Asignar accesos (Patentes y Familias) a la familia desde la lista temporal
-            foreach (var acceso in accesosTemp)
+            // Relacionar la familia con patentes y otras familias
+            foreach (var acceso in familia.Accesos)
             {
                 if (acceso is Patente patente)
                 {
-                    // Verificar si la patente existe antes de asignarla
-                    Patente existingPatente = patenteRepository.GetById(patente.Id);
-                    if (existingPatente != null)
-                    {
-                        familia.Add(existingPatente);
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"La patente con ID {patente.Id} no existe.", nameof(familia.Accesos));
-                    }
+                    familiaPatenteRepository.Add(familia, patente);
                 }
                 else if (acceso is Familia subFamilia)
                 {
-                    // Verificar si la subfamilia existe antes de asignarla
-                    Familia existingFamilia = familiaRepository.GetById(subFamilia.Id);
-                    if (existingFamilia != null)
-                    {
-                        familia.Add(existingFamilia);
-                    }
-                    else
-                    {
-                        throw new ArgumentException($"La familia con ID {subFamilia.Id} no existe.", nameof(familia.Accesos));
-                    }
+                    // Usar el `FamiliaRepository` para gestionar la relación entre familias
+                    familiaRepository.AddRelacionFamilia(familia, subFamilia);
                 }
             }
+        }
+
+        /// <summary>
+        /// Modifica una familia existente en el sistema, incluyendo sus relaciones.
+        /// </summary>
+        /// <param name="familia">La familia a modificar.</param>
+        public static void UpdateFamilia(Familia familia)
+        {
+            if (familia == null)
+            {
+                throw new ArgumentNullException(nameof(familia), "La familia no puede ser nula.");
+            }
+
+            var familiaRepository = FactoryDao.CreateRepository<FamiliaRepository>();
+            var familiaPatenteRepository = FactoryDao.CreateRepository<FamiliaPatenteRepository>();
+
+            // Actualizar la información de la familia en la base de datos
+            familiaRepository.Update(familia);
+
+            // Eliminar todas las relaciones de la familia con patentes y otras familias
+            familiaPatenteRepository.RemoveByFamilia(familia);
+            familiaRepository.RemoveRelacionesFamilia(familia);
+
+            // Agregar las nuevas relaciones
+            foreach (var acceso in familia.Accesos)
+            {
+                if (acceso is Patente patente)
+                {
+                    // Agregar la relación entre la familia y la patente
+                    familiaPatenteRepository.Add(familia, patente);
+                }
+                else if (acceso is Familia subFamilia)
+                {
+                    // Agregar la relación entre la familia y otra familia
+                    familiaRepository.AddRelacionFamilia(familia, subFamilia);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Elimina una familia del sistema, incluyendo sus relaciones en tablas intermedias.
+        /// </summary>
+        /// <param name="idFamilia">El identificador de la familia a eliminar.</param>
+        public static void DeleteFamilia(Guid idFamilia)
+        {
+            var familiaRepository = FactoryDao.CreateRepository<FamiliaRepository>();
+            var familiaPatenteRepository = FactoryDao.CreateRepository<FamiliaPatenteRepository>();
+
+            Familia familia = familiaRepository.GetById(idFamilia);
+            if (familia == null)
+            {
+                throw new ArgumentException("La familia no existe.", nameof(idFamilia));
+            }
+
+            // Eliminar las relaciones
+            familiaPatenteRepository.RemoveByFamilia(familia);
+            familiaRepository.RemoveRelacionesFamilia(familia);
+
+            // Eliminar la familia
+            familiaRepository.Remove(idFamilia);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Services.Facade
 {
     /// <summary>
-    /// Proporciona servicios relacionados con la gestión de usuarios.
+    /// Proporciona servicios relacionados con la gestión de usuarios y familias.
     /// </summary>
     public static class UserService
     {
@@ -105,7 +105,7 @@ namespace Services.Facade
         /// Obtiene todos los usuarios del sistema.
         /// </summary>
         /// <returns>Una lista de todas las instancias de Usuario.</returns>
-        public static List<Usuario> GetAllUsuarios()
+        public static List<Usuario> GetAllUsers()
         {
             try
             {
@@ -198,6 +198,42 @@ namespace Services.Facade
             {
                 UserLogic.AddFamilia(familia);
                 LoggerService.WriteLog($"Familia agregada con éxito: {familia.Nombre}", TraceLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Modifica una familia existente en el sistema.
+        /// </summary>
+        /// <param name="familia">La familia a modificar.</param>
+        public static void UpdateFamilia(Familia familia)
+        {
+            try
+            {
+                UserLogic.UpdateFamilia(familia);
+                LoggerService.WriteLog($"Familia modificada con éxito: {familia.Nombre}", TraceLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                LoggerService.WriteException(ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Elimina una familia del sistema.
+        /// </summary>
+        /// <param name="idFamilia">El identificador de la familia a eliminar.</param>
+        public static void DeleteFamilia(Guid idFamilia)
+        {
+            try
+            {
+                UserLogic.DeleteFamilia(idFamilia);
+                LoggerService.WriteLog($"Familia eliminada con éxito: {idFamilia}", TraceLevel.Info);
             }
             catch (Exception ex)
             {

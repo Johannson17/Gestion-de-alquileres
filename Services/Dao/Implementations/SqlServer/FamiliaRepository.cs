@@ -105,5 +105,27 @@ namespace Services.Dao.Implementations.SqlServer
 
             return familias;
         }
+
+        /// <summary>
+        /// Elimina todas las relaciones de una familia con otras familias.
+        /// </summary>
+        /// <param name="familia">La familia cuyas relaciones se eliminarán.</param>
+        public void RemoveRelacionesFamilia(Familia familia)
+        {
+            SqlHelper.ExecuteNonQuery("FamiliaFamiliaDeleteByIdFamilia", CommandType.StoredProcedure,
+                new SqlParameter("@IdFamilia", familia.Id));
+        }
+
+        /// <summary>
+        /// Añade una relación entre una familia y otra familia.
+        /// </summary>
+        /// <param name="familia">La familia principal.</param>
+        /// <param name="subFamilia">La familia relacionada a añadir.</param>
+        public void AddRelacionFamilia(Familia familia, Familia subFamilia)
+        {
+            SqlHelper.ExecuteNonQuery("FamiliaFamiliaInsert", CommandType.StoredProcedure,
+                new SqlParameter("@IdFamilia", familia.Id),
+                new SqlParameter("@IdSubFamilia", subFamilia.Id));
+        }
     }
 }

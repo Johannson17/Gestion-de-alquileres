@@ -2595,11 +2595,15 @@ namespace DAO {
             
             private global::System.Data.DataColumn columnIdProperty;
             
-            private global::System.Data.DataColumn columnLitigationProperty;
-            
-            private global::System.Data.DataColumn columnLengthProperty;
-            
             private global::System.Data.DataColumn columnDescriptionProperty;
+            
+            private global::System.Data.DataColumn columnCountryProperty;
+            
+            private global::System.Data.DataColumn columnProvinceProperty;
+            
+            private global::System.Data.DataColumn columnMunicipalityProperty;
+            
+            private global::System.Data.DataColumn columnAddressProperty;
             
             private global::System.Data.DataColumn columnStatusProperty;
             
@@ -2646,25 +2650,41 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn LitigationPropertyColumn {
-                get {
-                    return this.columnLitigationProperty;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn LengthPropertyColumn {
-                get {
-                    return this.columnLengthProperty;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public global::System.Data.DataColumn DescriptionPropertyColumn {
                 get {
                     return this.columnDescriptionProperty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn CountryPropertyColumn {
+                get {
+                    return this.columnCountryProperty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ProvincePropertyColumn {
+                get {
+                    return this.columnProvinceProperty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn MunicipalityPropertyColumn {
+                get {
+                    return this.columnMunicipalityProperty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn AddressPropertyColumn {
+                get {
+                    return this.columnAddressProperty;
                 }
             }
             
@@ -2713,13 +2733,15 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public PropertyRow AddPropertyRow(System.Guid IdProperty, string LitigationProperty, double LengthProperty, string DescriptionProperty, string StatusProperty) {
+            public PropertyRow AddPropertyRow(System.Guid IdProperty, string DescriptionProperty, string CountryProperty, string ProvinceProperty, string MunicipalityProperty, string AddressProperty, string StatusProperty) {
                 PropertyRow rowPropertyRow = ((PropertyRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         IdProperty,
-                        LitigationProperty,
-                        LengthProperty,
                         DescriptionProperty,
+                        CountryProperty,
+                        ProvinceProperty,
+                        MunicipalityProperty,
+                        AddressProperty,
                         StatusProperty};
                 rowPropertyRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPropertyRow);
@@ -2751,9 +2773,11 @@ namespace DAO {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             internal void InitVars() {
                 this.columnIdProperty = base.Columns["IdProperty"];
-                this.columnLitigationProperty = base.Columns["LitigationProperty"];
-                this.columnLengthProperty = base.Columns["LengthProperty"];
                 this.columnDescriptionProperty = base.Columns["DescriptionProperty"];
+                this.columnCountryProperty = base.Columns["CountryProperty"];
+                this.columnProvinceProperty = base.Columns["ProvinceProperty"];
+                this.columnMunicipalityProperty = base.Columns["MunicipalityProperty"];
+                this.columnAddressProperty = base.Columns["AddressProperty"];
                 this.columnStatusProperty = base.Columns["StatusProperty"];
             }
             
@@ -2762,20 +2786,27 @@ namespace DAO {
             private void InitClass() {
                 this.columnIdProperty = new global::System.Data.DataColumn("IdProperty", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnIdProperty);
-                this.columnLitigationProperty = new global::System.Data.DataColumn("LitigationProperty", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnLitigationProperty);
-                this.columnLengthProperty = new global::System.Data.DataColumn("LengthProperty", typeof(double), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnLengthProperty);
                 this.columnDescriptionProperty = new global::System.Data.DataColumn("DescriptionProperty", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDescriptionProperty);
+                this.columnCountryProperty = new global::System.Data.DataColumn("CountryProperty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCountryProperty);
+                this.columnProvinceProperty = new global::System.Data.DataColumn("ProvinceProperty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProvinceProperty);
+                this.columnMunicipalityProperty = new global::System.Data.DataColumn("MunicipalityProperty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMunicipalityProperty);
+                this.columnAddressProperty = new global::System.Data.DataColumn("AddressProperty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnAddressProperty);
                 this.columnStatusProperty = new global::System.Data.DataColumn("StatusProperty", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnStatusProperty);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnIdProperty}, true));
                 this.columnIdProperty.AllowDBNull = false;
                 this.columnIdProperty.Unique = true;
-                this.columnLitigationProperty.MaxLength = 100;
-                this.columnDescriptionProperty.MaxLength = 300;
+                this.columnDescriptionProperty.MaxLength = 8000;
+                this.columnCountryProperty.MaxLength = 50;
+                this.columnProvinceProperty.MaxLength = 50;
+                this.columnMunicipalityProperty.MaxLength = 50;
+                this.columnAddressProperty.MaxLength = 50;
                 this.columnStatusProperty.MaxLength = 50;
             }
             
@@ -4360,38 +4391,6 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public string LitigationProperty {
-                get {
-                    try {
-                        return ((string)(this[this.tableProperty.LitigationPropertyColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'LitigationProperty\' de la tabla \'Property\' es DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableProperty.LitigationPropertyColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public double LengthProperty {
-                get {
-                    try {
-                        return ((double)(this[this.tableProperty.LengthPropertyColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'LengthProperty\' de la tabla \'Property\' es DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableProperty.LengthPropertyColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string DescriptionProperty {
                 get {
                     try {
@@ -4403,6 +4402,70 @@ namespace DAO {
                 }
                 set {
                     this[this.tableProperty.DescriptionPropertyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string CountryProperty {
+                get {
+                    try {
+                        return ((string)(this[this.tableProperty.CountryPropertyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'CountryProperty\' de la tabla \'Property\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProperty.CountryPropertyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string ProvinceProperty {
+                get {
+                    try {
+                        return ((string)(this[this.tableProperty.ProvincePropertyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ProvinceProperty\' de la tabla \'Property\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProperty.ProvincePropertyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string MunicipalityProperty {
+                get {
+                    try {
+                        return ((string)(this[this.tableProperty.MunicipalityPropertyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'MunicipalityProperty\' de la tabla \'Property\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProperty.MunicipalityPropertyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string AddressProperty {
+                get {
+                    try {
+                        return ((string)(this[this.tableProperty.AddressPropertyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'AddressProperty\' de la tabla \'Property\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProperty.AddressPropertyColumn] = value;
                 }
             }
             
@@ -4424,30 +4487,6 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsLitigationPropertyNull() {
-                return this.IsNull(this.tableProperty.LitigationPropertyColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetLitigationPropertyNull() {
-                this[this.tableProperty.LitigationPropertyColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsLengthPropertyNull() {
-                return this.IsNull(this.tableProperty.LengthPropertyColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetLengthPropertyNull() {
-                this[this.tableProperty.LengthPropertyColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsDescriptionPropertyNull() {
                 return this.IsNull(this.tableProperty.DescriptionPropertyColumn);
             }
@@ -4456,6 +4495,54 @@ namespace DAO {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetDescriptionPropertyNull() {
                 this[this.tableProperty.DescriptionPropertyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsCountryPropertyNull() {
+                return this.IsNull(this.tableProperty.CountryPropertyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetCountryPropertyNull() {
+                this[this.tableProperty.CountryPropertyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsProvincePropertyNull() {
+                return this.IsNull(this.tableProperty.ProvincePropertyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetProvincePropertyNull() {
+                this[this.tableProperty.ProvincePropertyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsMunicipalityPropertyNull() {
+                return this.IsNull(this.tableProperty.MunicipalityPropertyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetMunicipalityPropertyNull() {
+                this[this.tableProperty.MunicipalityPropertyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsAddressPropertyNull() {
+                return this.IsNull(this.tableProperty.AddressPropertyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetAddressPropertyNull() {
+                this[this.tableProperty.AddressPropertyColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7843,51 +7930,65 @@ SELECT IdPerson, NamePerson, LastNamePerson, NumberDocumentPerson, TypeDocumentP
             tableMapping.SourceTable = "Table";
             tableMapping.DataSetTable = "Property";
             tableMapping.ColumnMappings.Add("IdProperty", "IdProperty");
-            tableMapping.ColumnMappings.Add("LitigationProperty", "LitigationProperty");
-            tableMapping.ColumnMappings.Add("LengthProperty", "LengthProperty");
             tableMapping.ColumnMappings.Add("DescriptionProperty", "DescriptionProperty");
+            tableMapping.ColumnMappings.Add("CountryProperty", "CountryProperty");
+            tableMapping.ColumnMappings.Add("ProvinceProperty", "ProvinceProperty");
+            tableMapping.ColumnMappings.Add("MunicipalityProperty", "MunicipalityProperty");
+            tableMapping.ColumnMappings.Add("AddressProperty", "AddressProperty");
             tableMapping.ColumnMappings.Add("StatusProperty", "StatusProperty");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[Property] WHERE (([IdProperty] = @Original_IdProperty) AND ((@IsNull_LitigationProperty = 1 AND [LitigationProperty] IS NULL) OR ([LitigationProperty] = @Original_LitigationProperty)) AND ((@IsNull_LengthProperty = 1 AND [LengthProperty] IS NULL) OR ([LengthProperty] = @Original_LengthProperty)) AND ((@IsNull_DescriptionProperty = 1 AND [DescriptionProperty] IS NULL) OR ([DescriptionProperty] = @Original_DescriptionProperty)) AND ((@IsNull_StatusProperty = 1 AND [StatusProperty] IS NULL) OR ([StatusProperty] = @Original_StatusProperty)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Property] WHERE (([IdProperty] = @Original_IdProperty) AND ((@IsNull_DescriptionProperty = 1 AND [DescriptionProperty] IS NULL) OR ([DescriptionProperty] = @Original_DescriptionProperty)) AND ((@IsNull_CountryProperty = 1 AND [CountryProperty] IS NULL) OR ([CountryProperty] = @Original_CountryProperty)) AND ((@IsNull_ProvinceProperty = 1 AND [ProvinceProperty] IS NULL) OR ([ProvinceProperty] = @Original_ProvinceProperty)) AND ((@IsNull_MunicipalityProperty = 1 AND [MunicipalityProperty] IS NULL) OR ([MunicipalityProperty] = @Original_MunicipalityProperty)) AND ((@IsNull_AddressProperty = 1 AND [AddressProperty] IS NULL) OR ([AddressProperty] = @Original_AddressProperty)) AND ((@IsNull_StatusProperty = 1 AND [StatusProperty] IS NULL) OR ([StatusProperty] = @Original_StatusProperty)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_LitigationProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LitigationProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LitigationProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LitigationProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_LengthProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LengthProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LengthProperty", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LengthProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DescriptionProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DescriptionProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CountryProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CountryProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CountryProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CountryProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ProvinceProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProvinceProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ProvinceProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProvinceProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_MunicipalityProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MunicipalityProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MunicipalityProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MunicipalityProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddressProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddressProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddressProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddressProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[Property] ([IdProperty], [LitigationProperty], [LengthProperty], [DescriptionProperty], [StatusProperty]) VALUES (@IdProperty, @LitigationProperty, @LengthProperty, @DescriptionProperty, @StatusProperty);
-SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, StatusProperty FROM Property WHERE (IdProperty = @IdProperty)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Property] ([IdProperty], [DescriptionProperty], [CountryProperty], [ProvinceProperty], [MunicipalityProperty], [AddressProperty], [StatusProperty]) VALUES (@IdProperty, @DescriptionProperty, @CountryProperty, @ProvinceProperty, @MunicipalityProperty, @AddressProperty, @StatusProperty);
+SELECT IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, MunicipalityProperty, AddressProperty, StatusProperty FROM Property WHERE (IdProperty = @IdProperty)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LitigationProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LitigationProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LengthProperty", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LengthProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DescriptionProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CountryProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CountryProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ProvinceProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProvinceProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MunicipalityProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MunicipalityProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddressProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddressProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[Property] SET [IdProperty] = @IdProperty, [LitigationProperty] = @LitigationProperty, [LengthProperty] = @LengthProperty, [DescriptionProperty] = @DescriptionProperty, [StatusProperty] = @StatusProperty WHERE (([IdProperty] = @Original_IdProperty) AND ((@IsNull_LitigationProperty = 1 AND [LitigationProperty] IS NULL) OR ([LitigationProperty] = @Original_LitigationProperty)) AND ((@IsNull_LengthProperty = 1 AND [LengthProperty] IS NULL) OR ([LengthProperty] = @Original_LengthProperty)) AND ((@IsNull_DescriptionProperty = 1 AND [DescriptionProperty] IS NULL) OR ([DescriptionProperty] = @Original_DescriptionProperty)) AND ((@IsNull_StatusProperty = 1 AND [StatusProperty] IS NULL) OR ([StatusProperty] = @Original_StatusProperty)));
-SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, StatusProperty FROM Property WHERE (IdProperty = @IdProperty)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Property] SET [IdProperty] = @IdProperty, [DescriptionProperty] = @DescriptionProperty, [CountryProperty] = @CountryProperty, [ProvinceProperty] = @ProvinceProperty, [MunicipalityProperty] = @MunicipalityProperty, [AddressProperty] = @AddressProperty, [StatusProperty] = @StatusProperty WHERE (([IdProperty] = @Original_IdProperty) AND ((@IsNull_DescriptionProperty = 1 AND [DescriptionProperty] IS NULL) OR ([DescriptionProperty] = @Original_DescriptionProperty)) AND ((@IsNull_CountryProperty = 1 AND [CountryProperty] IS NULL) OR ([CountryProperty] = @Original_CountryProperty)) AND ((@IsNull_ProvinceProperty = 1 AND [ProvinceProperty] IS NULL) OR ([ProvinceProperty] = @Original_ProvinceProperty)) AND ((@IsNull_MunicipalityProperty = 1 AND [MunicipalityProperty] IS NULL) OR ([MunicipalityProperty] = @Original_MunicipalityProperty)) AND ((@IsNull_AddressProperty = 1 AND [AddressProperty] IS NULL) OR ([AddressProperty] = @Original_AddressProperty)) AND ((@IsNull_StatusProperty = 1 AND [StatusProperty] IS NULL) OR ([StatusProperty] = @Original_StatusProperty)));
+SELECT IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, MunicipalityProperty, AddressProperty, StatusProperty FROM Property WHERE (IdProperty = @IdProperty)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LitigationProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LitigationProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LengthProperty", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LengthProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DescriptionProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CountryProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CountryProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ProvinceProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProvinceProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MunicipalityProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MunicipalityProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddressProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddressProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_LitigationProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LitigationProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LitigationProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LitigationProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_LengthProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LengthProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LengthProperty", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LengthProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DescriptionProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DescriptionProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CountryProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CountryProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CountryProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CountryProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ProvinceProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProvinceProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ProvinceProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProvinceProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_MunicipalityProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MunicipalityProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MunicipalityProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MunicipalityProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddressProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddressProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddressProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddressProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusProperty", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
@@ -7905,8 +8006,8 @@ SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, Stat
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, Statu" +
-                "sProperty FROM dbo.Property";
+            this._commandCollection[0].CommandText = "SELECT IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, Munici" +
+                "palityProperty, AddressProperty, StatusProperty\r\nFROM     Property";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -7967,39 +8068,55 @@ SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, Stat
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(System.Guid Original_IdProperty, string Original_LitigationProperty, global::System.Nullable<double> Original_LengthProperty, string Original_DescriptionProperty, string Original_StatusProperty) {
+        public virtual int Delete(System.Guid Original_IdProperty, string Original_DescriptionProperty, string Original_CountryProperty, string Original_ProvinceProperty, string Original_MunicipalityProperty, string Original_AddressProperty, string Original_StatusProperty) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_IdProperty));
-            if ((Original_LitigationProperty == null)) {
+            if ((Original_DescriptionProperty == null)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[2].Value = ((string)(Original_LitigationProperty));
+                this.Adapter.DeleteCommand.Parameters[2].Value = ((string)(Original_DescriptionProperty));
             }
-            if ((Original_LengthProperty.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[4].Value = ((double)(Original_LengthProperty.Value));
-            }
-            else {
+            if ((Original_CountryProperty == null)) {
                 this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((Original_DescriptionProperty == null)) {
+            else {
+                this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[4].Value = ((string)(Original_CountryProperty));
+            }
+            if ((Original_ProvinceProperty == null)) {
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_DescriptionProperty));
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_ProvinceProperty));
             }
-            if ((Original_StatusProperty == null)) {
+            if ((Original_MunicipalityProperty == null)) {
                 this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[8].Value = ((string)(Original_StatusProperty));
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((string)(Original_MunicipalityProperty));
+            }
+            if ((Original_AddressProperty == null)) {
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[10].Value = ((string)(Original_AddressProperty));
+            }
+            if ((Original_StatusProperty == null)) {
+                this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[12].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[12].Value = ((string)(Original_StatusProperty));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -8021,31 +8138,43 @@ SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, Stat
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid IdProperty, string LitigationProperty, global::System.Nullable<double> LengthProperty, string DescriptionProperty, string StatusProperty) {
+        public virtual int Insert(System.Guid IdProperty, string DescriptionProperty, string CountryProperty, string ProvinceProperty, string MunicipalityProperty, string AddressProperty, string StatusProperty) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(IdProperty));
-            if ((LitigationProperty == null)) {
+            if ((DescriptionProperty == null)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(LitigationProperty));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(DescriptionProperty));
             }
-            if ((LengthProperty.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[2].Value = ((double)(LengthProperty.Value));
-            }
-            else {
+            if ((CountryProperty == null)) {
                 this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
-            if ((DescriptionProperty == null)) {
+            else {
+                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(CountryProperty));
+            }
+            if ((ProvinceProperty == null)) {
                 this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(DescriptionProperty));
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(ProvinceProperty));
             }
-            if ((StatusProperty == null)) {
+            if ((MunicipalityProperty == null)) {
                 this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(StatusProperty));
+                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(MunicipalityProperty));
+            }
+            if ((AddressProperty == null)) {
+                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[5].Value = ((string)(AddressProperty));
+            }
+            if ((StatusProperty == null)) {
+                this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[6].Value = ((string)(StatusProperty));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -8067,64 +8196,92 @@ SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, Stat
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid IdProperty, string LitigationProperty, global::System.Nullable<double> LengthProperty, string DescriptionProperty, string StatusProperty, System.Guid Original_IdProperty, string Original_LitigationProperty, global::System.Nullable<double> Original_LengthProperty, string Original_DescriptionProperty, string Original_StatusProperty) {
+        public virtual int Update(System.Guid IdProperty, string DescriptionProperty, string CountryProperty, string ProvinceProperty, string MunicipalityProperty, string AddressProperty, string StatusProperty, System.Guid Original_IdProperty, string Original_DescriptionProperty, string Original_CountryProperty, string Original_ProvinceProperty, string Original_MunicipalityProperty, string Original_AddressProperty, string Original_StatusProperty) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(IdProperty));
-            if ((LitigationProperty == null)) {
+            if ((DescriptionProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(LitigationProperty));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(DescriptionProperty));
             }
-            if ((LengthProperty.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[2].Value = ((double)(LengthProperty.Value));
-            }
-            else {
+            if ((CountryProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
-            if ((DescriptionProperty == null)) {
+            else {
+                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(CountryProperty));
+            }
+            if ((ProvinceProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(DescriptionProperty));
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(ProvinceProperty));
             }
-            if ((StatusProperty == null)) {
+            if ((MunicipalityProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(StatusProperty));
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(MunicipalityProperty));
             }
-            this.Adapter.UpdateCommand.Parameters[5].Value = ((System.Guid)(Original_IdProperty));
-            if ((Original_LitigationProperty == null)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+            if ((AddressProperty == null)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_LitigationProperty));
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(AddressProperty));
             }
-            if ((Original_LengthProperty.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((double)(Original_LengthProperty.Value));
+            if ((StatusProperty == null)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
             else {
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(StatusProperty));
+            }
+            this.Adapter.UpdateCommand.Parameters[7].Value = ((System.Guid)(Original_IdProperty));
+            if ((Original_DescriptionProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
             }
-            if ((Original_DescriptionProperty == null)) {
+            else {
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_DescriptionProperty));
+            }
+            if ((Original_CountryProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(Original_DescriptionProperty));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(Original_CountryProperty));
             }
-            if ((Original_StatusProperty == null)) {
+            if ((Original_ProvinceProperty == null)) {
                 this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(Original_StatusProperty));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(Original_ProvinceProperty));
+            }
+            if ((Original_MunicipalityProperty == null)) {
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((string)(Original_MunicipalityProperty));
+            }
+            if ((Original_AddressProperty == null)) {
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[17].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((string)(Original_AddressProperty));
+            }
+            if ((Original_StatusProperty == null)) {
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[19].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[19].Value = ((string)(Original_StatusProperty));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -8146,8 +8303,8 @@ SELECT IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, Stat
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string LitigationProperty, global::System.Nullable<double> LengthProperty, string DescriptionProperty, string StatusProperty, System.Guid Original_IdProperty, string Original_LitigationProperty, global::System.Nullable<double> Original_LengthProperty, string Original_DescriptionProperty, string Original_StatusProperty) {
-            return this.Update(Original_IdProperty, LitigationProperty, LengthProperty, DescriptionProperty, StatusProperty, Original_IdProperty, Original_LitigationProperty, Original_LengthProperty, Original_DescriptionProperty, Original_StatusProperty);
+        public virtual int Update(string DescriptionProperty, string CountryProperty, string ProvinceProperty, string MunicipalityProperty, string AddressProperty, string StatusProperty, System.Guid Original_IdProperty, string Original_DescriptionProperty, string Original_CountryProperty, string Original_ProvinceProperty, string Original_MunicipalityProperty, string Original_AddressProperty, string Original_StatusProperty) {
+            return this.Update(Original_IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, MunicipalityProperty, AddressProperty, StatusProperty, Original_IdProperty, Original_DescriptionProperty, Original_CountryProperty, Original_ProvinceProperty, Original_MunicipalityProperty, Original_AddressProperty, Original_StatusProperty);
         }
     }
     

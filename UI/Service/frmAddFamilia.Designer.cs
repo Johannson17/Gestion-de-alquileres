@@ -46,16 +46,16 @@
             // chlbAccesos
             // 
             this.chlbAccesos.FormattingEnabled = true;
-            this.chlbAccesos.Location = new System.Drawing.Point(12, 180);
+            this.chlbAccesos.Location = new System.Drawing.Point(12, 146);
             this.chlbAccesos.Name = "chlbAccesos";
-            this.chlbAccesos.Size = new System.Drawing.Size(271, 174);
+            this.chlbAccesos.Size = new System.Drawing.Size(271, 225);
             this.chlbAccesos.TabIndex = 1;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(12, 405);
+            this.btnSave.Location = new System.Drawing.Point(12, 393);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(271, 23);
+            this.btnSave.Size = new System.Drawing.Size(271, 26);
             this.btnSave.TabIndex = 2;
             this.btnSave.Text = "Agregar Rol";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -90,15 +90,16 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(295, 450);
+            this.ClientSize = new System.Drawing.Size(295, 431);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chlbAccesos);
             this.Controls.Add(this.txtName);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmAddFamilia";
-            this.Text = "frmAddFamilia";
+            this.Text = "Añadir Rol";
             this.ResumeLayout(false);
             this.PerformLayout();
 

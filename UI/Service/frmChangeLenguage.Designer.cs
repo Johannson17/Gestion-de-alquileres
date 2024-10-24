@@ -65,9 +65,10 @@
             this.ClientSize = new System.Drawing.Size(723, 487);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.dgvLanguages);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmChangeLanguage";
-            this.Text = "frmChangeLenguage";
+            this.Text = "Agregar Lenguaje";
             ((System.ComponentModel.ISupportInitialize)(this.dgvLanguages)).EndInit();
             this.ResumeLayout(false);
 

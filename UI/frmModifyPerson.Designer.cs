@@ -42,6 +42,7 @@
             this.txtDomicile = new System.Windows.Forms.TextBox();
             this.txtName = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerson)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,6 +51,7 @@
             this.dgvPerson.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPerson.Dock = System.Windows.Forms.DockStyle.Top;
             this.dgvPerson.Location = new System.Drawing.Point(0, 0);
+            this.dgvPerson.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvPerson.Name = "dgvPerson";
             this.dgvPerson.RowHeadersWidth = 51;
             this.dgvPerson.RowTemplate.Height = 24;
@@ -119,7 +121,7 @@
             // txtPhoneNumber
             // 
             this.txtPhoneNumber.Location = new System.Drawing.Point(640, 346);
-            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4);
+            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtPhoneNumber.Multiline = true;
             this.txtPhoneNumber.Name = "txtPhoneNumber";
             this.txtPhoneNumber.Size = new System.Drawing.Size(408, 30);
@@ -128,7 +130,7 @@
             // txtLastName
             // 
             this.txtLastName.Location = new System.Drawing.Point(640, 271);
-            this.txtLastName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtLastName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(408, 30);
@@ -136,8 +138,8 @@
             // 
             // txtDocumentNumber
             // 
-            this.txtDocumentNumber.Location = new System.Drawing.Point(640, 419);
-            this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4);
+            this.txtDocumentNumber.Location = new System.Drawing.Point(640, 418);
+            this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtDocumentNumber.Multiline = true;
             this.txtDocumentNumber.Name = "txtDocumentNumber";
             this.txtDocumentNumber.Size = new System.Drawing.Size(408, 30);
@@ -145,8 +147,8 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(8, 419);
-            this.txtEmail.Margin = new System.Windows.Forms.Padding(4);
+            this.txtEmail.Location = new System.Drawing.Point(8, 418);
+            this.txtEmail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtEmail.Multiline = true;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(408, 30);
@@ -155,7 +157,7 @@
             // txtDomicile
             // 
             this.txtDomicile.Location = new System.Drawing.Point(8, 346);
-            this.txtDomicile.Margin = new System.Windows.Forms.Padding(4);
+            this.txtDomicile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtDomicile.Multiline = true;
             this.txtDomicile.Name = "txtDomicile";
             this.txtDomicile.Size = new System.Drawing.Size(408, 30);
@@ -164,7 +166,7 @@
             // txtName
             // 
             this.txtName.Location = new System.Drawing.Point(8, 271);
-            this.txtName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtName.Multiline = true;
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(408, 30);
@@ -172,8 +174,8 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(8, 472);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSave.Location = new System.Drawing.Point(8, 473);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(1040, 47);
             this.btnSave.TabIndex = 30;
@@ -181,11 +183,23 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(8, 527);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(1040, 25);
+            this.btnDelete.TabIndex = 48;
+            this.btnDelete.Text = "Eliminar persona";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // frmModifyPerson
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1061, 542);
+            this.ClientSize = new System.Drawing.Size(1061, 556);
+            this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.dgvPerson);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label6);
@@ -201,8 +215,9 @@
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "frmModifyPerson";
-            this.Text = "frmModifyPerson";
+            this.Text = "Modificar Persona";
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerson)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -224,5 +239,6 @@
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.DataGridView dgvPerson;
+        private System.Windows.Forms.Button btnDelete;
     }
 }

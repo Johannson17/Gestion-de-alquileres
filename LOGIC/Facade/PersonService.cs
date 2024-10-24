@@ -18,8 +18,7 @@ namespace LOGIC.Facade
         /// </summary>
         public PersonService()
         {
-            // Aquí solo se llama a la lógica, sin interacción con la DAO.
-            _personLogic = new PersonLogic();
+            _personLogic = new PersonLogic(); // Instanciación directa de la lógica.
         }
 
         /// <summary>
@@ -35,6 +34,23 @@ namespace LOGIC.Facade
             catch (Exception ex)
             {
                 throw new Exception("Error al obtener la lista de personas desde el servicio.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene una lista de personas filtrada por su tipo (propietario o inquilino).
+        /// </summary>
+        /// <param name="personType">El tipo de persona (Owner o Tenant).</param>
+        /// <returns>Lista de objetos Person.</returns>
+        public List<Person> GetAllPersonsByType(Person.PersonTypeEnum personType)
+        {
+            try
+            {
+                return _personLogic.GetAllPersonsByType(personType);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener la lista de personas del tipo {personType} desde el servicio.", ex);
             }
         }
 

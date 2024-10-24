@@ -72,6 +72,7 @@ namespace DAO.Implementations.SqlServer
             }
 
             personRow.NamePerson = person.NamePerson;
+            personRow.LastNamePerson = person.LastNamePerson;
             personRow.NumberDocumentPerson = person.NumberDocumentPerson;
             personRow.TypeDocumentPerson = person.TypeDocumentPerson;
             personRow.DomicilePerson = person.DomicilePerson;
@@ -156,6 +157,31 @@ namespace DAO.Implementations.SqlServer
                 PhoneNumberPerson = int.Parse(personRow.PhoneNumberPerson),
                 EnumTypePerson = (PersonTypeEnum)Enum.Parse(typeof(PersonTypeEnum), personRow.TypePerson)
             };
+        }
+
+        /// <summary>
+        /// Obtiene todas las personas filtradas por su tipo (propietarios o inquilinos).
+        /// </summary>
+        /// <param name="personType">El tipo de persona (Owner o Tenant).</param>
+        /// <returns>Una lista de personas filtradas por tipo.</returns>
+        public List<Person> GetAllByType(PersonTypeEnum personType)
+        {
+            var personData = _personTableAdapter.GetData();
+
+            return personData
+                .Where(row => row.TypePerson == personType.ToString())
+                .Select(row => new Person
+                {
+                    IdPerson = row.IdPerson,
+                    NamePerson = row.NamePerson,
+                    LastNamePerson = row.LastNamePerson,
+                    NumberDocumentPerson = row.NumberDocumentPerson,
+                    TypeDocumentPerson = row.TypeDocumentPerson,
+                    DomicilePerson = row.DomicilePerson,
+                    ElectronicDomicilePerson = row.EmailPerson,
+                    PhoneNumberPerson = int.Parse(row.PhoneNumberPerson),
+                    EnumTypePerson = (PersonTypeEnum)Enum.Parse(typeof(PersonTypeEnum), row.TypePerson)
+                }).ToList();
         }
     }
 }
