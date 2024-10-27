@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DAO.Implementations.SqlServer;
+using static Domain.Person;
 
 namespace LOGIC
 {
@@ -78,6 +79,17 @@ namespace LOGIC
         public void DeletePerson(Guid personId)
         {
             _personRepository.Delete(personId);
+        }
+
+        /// <summary>
+        /// Obtiene una persona asociada a una propiedad específica y tipo de persona.
+        /// </summary>
+        /// <param name="propertyId">El ID de la propiedad.</param>
+        /// <param name="personType">El tipo de persona (por ejemplo, Propietario o Inquilino).</param>
+        /// <returns>La persona correspondiente a la propiedad y tipo proporcionados.</returns>
+        public Person GetPersonByPropertyAndType(Guid propertyId, PersonTypeEnum personType)
+        {
+            return _personRepository.GetPersonByPropertyAndType(propertyId, personType);
         }
     }
 }

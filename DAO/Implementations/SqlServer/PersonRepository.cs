@@ -14,6 +14,7 @@ namespace DAO.Implementations.SqlServer
     public class PersonRepository : IPersonRepository
     {
         private readonly PersonTableAdapter _personTableAdapter;
+        private readonly PropertyPersonTableAdapter _propertyPersonTableAdapter;
 
         /// <summary>
         /// Constructor que inicializa el PersonTableAdapter.
@@ -21,6 +22,7 @@ namespace DAO.Implementations.SqlServer
         public PersonRepository()
         {
             _personTableAdapter = new PersonTableAdapter();
+            _propertyPersonTableAdapter = new PropertyPersonTableAdapter();
         }
 
         /// <summary>
@@ -182,6 +184,45 @@ namespace DAO.Implementations.SqlServer
                     PhoneNumberPerson = int.Parse(row.PhoneNumberPerson),
                     EnumTypePerson = (PersonTypeEnum)Enum.Parse(typeof(PersonTypeEnum), row.TypePerson)
                 }).ToList();
+        }
+
+        /// <summary>
+        /// Obtiene una persona asociada a una propiedad específica y tipo de persona.
+        /// </summary>
+        /// <param name="propertyId">El ID de la propiedad.</param>
+        /// <param name="personType">El tipo de persona (por ejemplo, Propietario o Inquilino).</param>
+        /// <returns>La persona correspondiente a la propiedad y tipo proporcionados.</returns>
+        public Person GetPersonByPropertyAndType(Guid propertyId, PersonTypeEnum personType)
+        {
+            // Busca en PropertyPerson la relación entre la propiedad y la persona
+            var propertyPersonRow = _propertyPersonTableAdapter.GetData()
+                .FirstOrDefault(r => r.FkIdProperty == propertyId);
+
+            if (propertyPersonRow == null)
+            {
+                throw new KeyNotFoundException($"No se encontró una persona relacionada para la propiedad con ID: {propertyId}");
+            }
+
+            // Obtiene la persona desde la tabla Person en función del ID y del tipo especificado
+            var personRow = _personTableAdapter.GetData()
+                .FirstOrDefault(p => p.IdPerson == propertyPersonRow.FkIdPerson && p.TypePerson == personType.ToString());
+
+            if (personRow == null)
+            {
+                throw new KeyNotFoundException($"No se encontró una persona de tipo {personType} para la propiedad con ID: {propertyId}");
+            }
+
+            return new Person
+            {
+                IdPerson = personRow.IdPerson,
+                NamePerson = personRow.NamePerson,
+                LastNamePerson = personRow.LastNamePerson,
+                NumberDocumentPerson = personRow.NumberDocumentPerson,
+                TypeDocumentPerson = personRow.TypeDocumentPerson,
+                ElectronicDomicilePerson = personRow.EmailPerson,
+                DomicilePerson = personRow.DomicilePerson,
+                // Cargar otros campos de Person según el modelo
+            };
         }
     }
 }

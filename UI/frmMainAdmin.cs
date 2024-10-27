@@ -123,5 +123,29 @@ namespace UI
             // Mostrar el formulario hijo
             ModifyFamily.Show();
         }
+
+        private void altaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmAddContract
+            frmAddContract AddContract = new frmAddContract();
+
+            // Establecer el formulario frmModifyUser como el padre MDI
+            AddContract.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            AddContract.Show();
+        }
+
+        private void modificaciónBajaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmModifyContract
+            frmModifyContract ModifyContract = new frmModifyContract();
+
+            // Establecer el formulario frmModifyUser como el padre MDI
+            ModifyContract.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            ModifyContract.Show();
+        }
     }
 }

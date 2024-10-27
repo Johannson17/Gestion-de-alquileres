@@ -57,7 +57,7 @@
     <Compile Include="Dao\Implementations\SqlServer\UsuarioFamiliaRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\UsuarioPatenteRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\UsuarioRepository.cs" />
-    <Compile Include="Dao\LoggerDao.cs" />
+    <Compile Include="Dao\Implementations\SqlServer\LoggerDao.cs" />
     <Compile Include="Dao\Contracts\ILoggerDao.cs" />
     <Compile Include="Domain\Composite\Acceso.cs" />
     <Compile Include="Domain\Composite\Familia.cs" />

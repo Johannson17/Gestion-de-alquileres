@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Domain.Person;
 
 namespace DAO.Contracts
 {
@@ -43,5 +44,7 @@ namespace DAO.Contracts
         /// <param name="personId">Identificador único del propietario (Person).</param>
         /// <returns>Objeto Person correspondiente al identificador proporcionado, o null si no se encuentra.</returns>
         Person GetById(Guid personId);
+
+        Person GetPersonByPropertyAndType(Guid propertyId, PersonTypeEnum personType);
     }
 }

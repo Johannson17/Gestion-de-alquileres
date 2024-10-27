@@ -46,11 +46,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmAddContract.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddContract.Designer.cs">
+      <DependentUpon>frmAddContract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddContractClause.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddContractClause.Designer.cs">
+      <DependentUpon>frmAddContractClause.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmAddProperty.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmAddProperty.Designer.cs">
       <DependentUpon>frmAddProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmModifyContract.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmModifyContract.Designer.cs">
+      <DependentUpon>frmModifyContract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmModifyContractClause.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmModifyContractClause.Designer.cs">
+      <DependentUpon>frmModifyContractClause.cs</DependentUpon>
     </Compile>
     <Compile Include="Service\frmAddFamilia.cs">
       <SubType>Form</SubType>
@@ -127,6 +151,18 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmAddContract.resx">
+      <DependentUpon>frmAddContract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddContractClause.resx">
+      <DependentUpon>frmAddContractClause.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmModifyContract.resx">
+      <DependentUpon>frmModifyContract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmModifyContractClause.resx">
+      <DependentUpon>frmModifyContractClause.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Service\frmAddFamilia.resx">
       <DependentUpon>frmAddFamilia.cs</DependentUpon>
     </EmbeddedResource>

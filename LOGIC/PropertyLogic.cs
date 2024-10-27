@@ -4,11 +4,12 @@ using Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Domain.Person;
 
 namespace LOGIC
 {
     /// <summary>
-    /// Clase que gestiona la lógica de negocio para propiedades.
+    /// Clase que gestiona la lógica de negocio para propiedades, incluyendo creación, actualización y manipulación de inventarios asociados.
     /// </summary>
     public class PropertyLogic
     {
@@ -67,6 +68,16 @@ namespace LOGIC
         public void DeleteProperty(Guid propertyId)
         {
             _propertyRepository.Delete(propertyId);
+        }
+
+        /// <summary>
+        /// Obtiene una lista de propiedades filtradas por su estado.
+        /// </summary>
+        /// <param name="status">El estado de las propiedades a obtener (e.g., Disponible, Alquilada).</param>
+        /// <returns>Lista de propiedades que cumplen con el estado especificado.</returns>
+        public List<Property> GetPropertiesByStatus(PropertyStatusEnum status)
+        {
+            return _propertyRepository.GetByStatus(status.ToString());
         }
 
         /// <summary>

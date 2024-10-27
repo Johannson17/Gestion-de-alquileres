@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContractLogic.cs" />
+    <Compile Include="Facade\ContractService.cs" />
     <Compile Include="Facade\PersonService.cs" />
     <Compile Include="Facade\PropertyService.cs" />
     <Compile Include="PersonLogic.cs" />
