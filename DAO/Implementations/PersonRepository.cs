@@ -26,11 +26,37 @@ namespace DAO.Implementations.SqlServer
         }
 
         /// <summary>
+        /// Obtiene la persona asociada a un ID de usuario.
+        /// </summary>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Objeto Person si se encuentra, de lo contrario null.</returns>
+        public Person GetPersonByUserId(Guid userId)
+        {
+            var personData = _personTableAdapter.GetData().FirstOrDefault(p => p.IdUser.ToString() == userId.ToString());
+            if (personData == null)
+                return null;
+
+            return new Person
+            {
+                IdPerson = personData.IdPerson,
+                NamePerson = personData.NamePerson,
+                LastNamePerson = personData.LastNamePerson,
+                NumberDocumentPerson = personData.NumberDocumentPerson,
+                TypeDocumentPerson = personData.TypeDocumentPerson,
+                PhoneNumberPerson = int.Parse(personData.PhoneNumberPerson),
+                ElectronicDomicilePerson = personData.EmailPerson,
+                DomicilePerson = personData.DomicilePerson,
+                EnumTypePerson = (Person.PersonTypeEnum)Enum.Parse(typeof(Person.PersonTypeEnum), personData.TypePerson)
+            };
+        }
+
+        /// <summary>
         /// Inserta una nueva persona en la base de datos y devuelve el ID de la persona creada.
         /// </summary>
         /// <param name="person">La entidad Person que se desea crear.</param>
+        /// <param name="userId">El ID del usuario asociado.</param>
         /// <returns>El ID de la persona creada.</returns>
-        public Guid Create(Person person)
+        public Guid Create(Person person, Guid userId)
         {
             if (person == null)
             {
@@ -41,18 +67,20 @@ namespace DAO.Implementations.SqlServer
 
             _personTableAdapter.Insert(
                 newId,
+                userId.ToString(),
                 person.NamePerson,                  // Nombre
                 person.LastNamePerson,              // Apellido
                 person.NumberDocumentPerson,        // Número de documento
                 person.TypeDocumentPerson,          // Tipo de documento
-                person.PhoneNumberPerson.ToString(),           // Número de teléfono
-                person.ElectronicDomicilePerson,    // Correo electrónico (equivalente a EmailPerson)
+                person.PhoneNumberPerson.ToString(),// Número de teléfono
+                person.ElectronicDomicilePerson,    // Correo electrónico
                 person.DomicilePerson,              // Domicilio
-                person.EnumTypePerson.ToString()          // Tipo de persona
+                person.EnumTypePerson.ToString()   // Tipo de persona
             );
 
             return newId;
         }
+
 
         /// <summary>
         /// Actualiza la información de una persona existente en la base de datos.
@@ -100,6 +128,7 @@ namespace DAO.Implementations.SqlServer
 
             _personTableAdapter.Delete(
                 personRow.IdPerson,
+                personRow.IdUser,
                 personRow.NamePerson,                  // Nombre
                 personRow.LastNamePerson,              // Apellido
                 personRow.NumberDocumentPerson,        // Número de documento

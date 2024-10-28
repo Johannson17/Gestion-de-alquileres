@@ -86,7 +86,8 @@ namespace DAO.Implementations.SqlServer
                 clauseRow.IdContractClause,
                 clauseRow.FkIdContract,
                 clauseRow.TitleClause,
-                clauseRow.DetailClause
+                clauseRow.DetailClause,
+                clauseRow.IdAuxiliar
             );
         }
 
@@ -113,7 +114,7 @@ namespace DAO.Implementations.SqlServer
         /// <returns>Lista de cláusulas asociadas al contrato.</returns>
         public List<ContractClause> GetClausesByContractId(Guid idContract)
         {
-            var clausesData = _contractClauseTableAdapter.GetDataByIdContract(idContract);
+            var clausesData = _contractClauseTableAdapter.GetClauseByContractId(idContract);
             return clausesData.Select(row => new ContractClause
             {
                 IdContractClause = row.IdContractClause,

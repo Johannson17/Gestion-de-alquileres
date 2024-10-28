@@ -11,5 +11,6 @@ namespace Services.Domain
         public Guid FkIdContract { get; set; } // Relación con el contrato
         public string TitleClause { get; set; } // Título de la cláusula
         public string DetailClause { get; set; } // Detalles de la cláusula
+        public int IdAuxiliar { get; set; } // Identificador de la cláusula
     }
 }

@@ -18,7 +18,14 @@ namespace DAO.Contracts
         /// Crea un nuevo propietario (Person) en la base de datos.
         /// </summary>
         /// <param name="person">Objeto Person que se va a crear.</param>
-        Guid Create(Person person);
+        Guid Create(Person person, Guid userId);
+
+        /// <summary>
+        /// Obtiene la persona asociada a un ID de usuario.
+        /// </summary>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Objeto Person si se encuentra, de lo contrario null.</returns>
+        Person GetPersonByUserId(Guid userId);
 
         /// <summary>
         /// Actualiza la información de un propietario (Person) existente en la base de datos.

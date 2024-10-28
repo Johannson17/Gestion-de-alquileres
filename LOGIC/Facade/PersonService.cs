@@ -77,11 +77,11 @@ namespace LOGIC.Facade
         /// </summary>
         /// <param name="person">Objeto Person que representa a la persona a crear.</param>
         /// <returns>ID de la persona recién creada.</returns>
-        public Guid CreatePerson(Person person)
+        public Guid CreatePerson(Person person, Guid userId)
         {
             try
             {
-                return _personLogic.CreatePerson(person);
+                return _personLogic.CreatePerson(person, userId);
             }
             catch (Exception ex)
             {
@@ -130,6 +130,23 @@ namespace LOGIC.Facade
         public Person GetPersonByPropertyAndType(Guid propertyId, PersonTypeEnum personType)
         {
             return _personLogic.GetPersonByPropertyAndType(propertyId, personType);
+        }
+
+        /// <summary>
+        /// Obtiene la persona asociada al ID de usuario.
+        /// </summary>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Objeto Person si se encuentra, de lo contrario null.</returns>
+        public Person GetPersonByUserId(Guid userId)
+        {
+            try
+            {
+                return _personLogic.GetPersonByUserId(userId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener la persona asociada al ID de usuario: {userId}", ex);
+            }
         }
     }
 }

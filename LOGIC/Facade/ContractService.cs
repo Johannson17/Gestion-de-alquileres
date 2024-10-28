@@ -131,5 +131,35 @@ namespace Services.Facade
         {
             return _contractLogic.InitializeContractClauses(owner, tenant, property);
         }
+
+        /// <summary>
+        /// Obtiene todos los contratos en los que una persona logueada es el arrendatario.
+        /// </summary>
+        /// <param name="tenantId">El identificador único (GUID) del arrendatario.</param>
+        /// <returns>Una lista de contratos asociados al arrendatario.</returns>
+        public List<Contract> GetContractsByTenantId(Guid tenantId)
+        {
+            return _contractLogic.GetContractsByTenantId(tenantId);
+        }
+
+        /// <summary>
+        /// Genera un PDF de las cláusulas del contrato en orden de IdAuxiliar.
+        /// </summary>
+        /// <param name="contractId">El identificador único del contrato.</param>
+        /// <param name="outputPath">La ruta de salida para el archivo PDF.</param>
+        public void GenerateContractPDF(Guid contractId, string outputPath)
+        {
+            _contractLogic.GenerateContractPDF(contractId, outputPath);
+        }
+
+        /// <summary>
+        /// Guarda la imagen del contrato en el repositorio.
+        /// </summary>
+        /// <param name="contractId">El identificador único del contrato.</param>
+        /// <param name="imageData">La imagen en formato de arreglo de bytes.</param>
+        public void SaveContractImage(Guid contractId, byte[] imageData)
+        {
+            _contractLogic.SaveContractImage(contractId, imageData);
+        }
     }
 }

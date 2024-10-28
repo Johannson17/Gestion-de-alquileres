@@ -46,13 +46,25 @@
             this.txtPhoneNumber = new System.Windows.Forms.TextBox();
             this.cmbTypeOfDocument = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
+
+            // TabIndex Configurations
+            txtName.TabIndex = 0;
+            txtLastName.TabIndex = 1;
+            txtDomicile.TabIndex = 2;
+            txtPhoneNumber.TabIndex = 3;
+            txtEmail.TabIndex = 4;
+            txtDocumentNumber.TabIndex = 5;
+            cmbTypeOfPerson.TabIndex = 6;
+            cmbTypeOfDocument.TabIndex = 7;
+            btnSave.TabIndex = 8;
+
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(16, 401);
+            this.btnSave.Location = new System.Drawing.Point(13, 319);
             this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(891, 47);
+            this.btnSave.Size = new System.Drawing.Size(891, 28);
             this.btnSave.TabIndex = 1;
             this.btnSave.Text = "Guardar cambios";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -60,7 +72,8 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(16, 122);
+            this.txtName.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtName.Location = new System.Drawing.Point(13, 40);
             this.txtName.Margin = new System.Windows.Forms.Padding(4);
             this.txtName.Multiline = true;
             this.txtName.Name = "txtName";
@@ -69,7 +82,7 @@
             // 
             // txtDomicile
             // 
-            this.txtDomicile.Location = new System.Drawing.Point(16, 197);
+            this.txtDomicile.Location = new System.Drawing.Point(13, 115);
             this.txtDomicile.Margin = new System.Windows.Forms.Padding(4);
             this.txtDomicile.Multiline = true;
             this.txtDomicile.Name = "txtDomicile";
@@ -78,7 +91,7 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(16, 270);
+            this.txtEmail.Location = new System.Drawing.Point(13, 188);
             this.txtEmail.Margin = new System.Windows.Forms.Padding(4);
             this.txtEmail.Multiline = true;
             this.txtEmail.Name = "txtEmail";
@@ -87,7 +100,7 @@
             // 
             // txtDocumentNumber
             // 
-            this.txtDocumentNumber.Location = new System.Drawing.Point(497, 270);
+            this.txtDocumentNumber.Location = new System.Drawing.Point(494, 188);
             this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtDocumentNumber.Multiline = true;
             this.txtDocumentNumber.Name = "txtDocumentNumber";
@@ -96,7 +109,7 @@
             // 
             // txtLastName
             // 
-            this.txtLastName.Location = new System.Drawing.Point(497, 122);
+            this.txtLastName.Location = new System.Drawing.Point(494, 40);
             this.txtLastName.Margin = new System.Windows.Forms.Padding(4);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
@@ -106,7 +119,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 102);
+            this.label1.Location = new System.Drawing.Point(13, 20);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 16);
@@ -116,7 +129,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 177);
+            this.label2.Location = new System.Drawing.Point(13, 95);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 16);
@@ -126,7 +139,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 250);
+            this.label3.Location = new System.Drawing.Point(13, 168);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(138, 16);
@@ -136,7 +149,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 324);
+            this.label4.Location = new System.Drawing.Point(13, 242);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 16);
@@ -146,7 +159,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(493, 102);
+            this.label5.Location = new System.Drawing.Point(490, 20);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(63, 16);
@@ -156,7 +169,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(493, 250);
+            this.label6.Location = new System.Drawing.Point(490, 168);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(147, 16);
@@ -166,7 +179,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(493, 322);
+            this.label7.Location = new System.Drawing.Point(490, 240);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(130, 16);
@@ -176,7 +189,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(493, 177);
+            this.label8.Location = new System.Drawing.Point(490, 95);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(131, 16);
@@ -186,7 +199,7 @@
             // cmbTypeOfPerson
             // 
             this.cmbTypeOfPerson.FormattingEnabled = true;
-            this.cmbTypeOfPerson.Location = new System.Drawing.Point(16, 348);
+            this.cmbTypeOfPerson.Location = new System.Drawing.Point(13, 266);
             this.cmbTypeOfPerson.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTypeOfPerson.Name = "cmbTypeOfPerson";
             this.cmbTypeOfPerson.Size = new System.Drawing.Size(408, 24);
@@ -194,7 +207,7 @@
             // 
             // txtPhoneNumber
             // 
-            this.txtPhoneNumber.Location = new System.Drawing.Point(497, 197);
+            this.txtPhoneNumber.Location = new System.Drawing.Point(494, 115);
             this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtPhoneNumber.Multiline = true;
             this.txtPhoneNumber.Name = "txtPhoneNumber";
@@ -204,7 +217,7 @@
             // cmbTypeOfDocument
             // 
             this.cmbTypeOfDocument.FormattingEnabled = true;
-            this.cmbTypeOfDocument.Location = new System.Drawing.Point(497, 348);
+            this.cmbTypeOfDocument.Location = new System.Drawing.Point(494, 266);
             this.cmbTypeOfDocument.Margin = new System.Windows.Forms.Padding(4);
             this.cmbTypeOfDocument.Name = "cmbTypeOfDocument";
             this.cmbTypeOfDocument.Size = new System.Drawing.Size(408, 24);
@@ -214,7 +227,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(923, 461);
+            this.ClientSize = new System.Drawing.Size(923, 360);
             this.Controls.Add(this.cmbTypeOfDocument);
             this.Controls.Add(this.cmbTypeOfPerson);
             this.Controls.Add(this.label8);

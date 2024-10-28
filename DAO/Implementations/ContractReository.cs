@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using iTextSharp.text;
 
 namespace DAO.Implementations.SqlServer
 {
@@ -28,6 +29,58 @@ namespace DAO.Implementations.SqlServer
         {
             _contractTableAdapter = new ContractTableAdapter();
             _contractClauseTableAdapter = new ContractClauseTableAdapter();
+        }
+
+        /// <summary>
+        /// Genera un archivo PDF con las cláusulas ordenadas de un contrato específico.
+        /// </summary>
+        /// <param name="orderedClauses">Lista de cláusulas ordenadas.</param>
+        /// <param name="outputPath">La ruta de salida para el archivo PDF.</param>
+        public void GenerateContractPDF(List<ContractClause> orderedClauses, string outputPath)
+        {
+            if (orderedClauses == null || orderedClauses.Count == 0)
+            {
+                throw new ArgumentException("No se encontraron cláusulas para el contrato especificado.");
+            }
+
+            // Generar el PDF con las cláusulas ordenadas
+            using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+            {
+                Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 30);
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+                pdfDoc.Open();
+
+                pdfDoc.Add(new Paragraph("Contrato de locación", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16)));
+                pdfDoc.Add(new Paragraph("\n"));
+
+                foreach (var clause in orderedClauses)
+                {
+                    pdfDoc.Add(new Paragraph(clause.TitleClause, FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12)));
+                    pdfDoc.Add(new Paragraph(clause.DetailClause, FontFactory.GetFont(FontFactory.HELVETICA, 10)));
+                    pdfDoc.Add(new Paragraph("\n"));
+                }
+
+                pdfDoc.Close();
+                writer.Close();
+            }
+        }
+
+        /// <summary>
+        /// Guarda la imagen del contrato en la base de datos.
+        /// </summary>
+        /// <param name="contractId">El identificador único del contrato.</param>
+        /// <param name="imageData">La imagen en formato de arreglo de bytes.</param>
+        public void SaveContractImage(Guid contractId, byte[] imageData)
+        {
+            var contract = _contractTableAdapter.GetData().FirstOrDefault(c => c.IdContract == contractId);
+
+            if (contract == null)
+                throw new KeyNotFoundException($"No se encontró un contrato con el ID: {contractId}");
+
+            contract.SignedContract = imageData;
+
+            // Actualiza la fila correspondiente en la base de datos
+            _contractTableAdapter.Update(contract);
         }
 
         /// <summary>
@@ -51,7 +104,8 @@ namespace DAO.Implementations.SqlServer
                 contract.DateStartContract,  // Corresponde a la columna DateStartContract
                 contract.DateFinalContract,  // Corresponde a la columna DateFinalContract
                 contract.AnnualRentPrice,    // Corresponde a la columna AnnualRentPrice
-                contract.StatusContract      // Corresponde a la columna StatusContract
+                contract.StatusContract,  // Corresponde a la columna StatusContract
+                null      
             );
         }
 
@@ -160,7 +214,7 @@ namespace DAO.Implementations.SqlServer
         /// <returns>Una lista de cláusulas asociadas al contrato.</returns>
         public List<ContractClause> GetContractClauses(Guid contractId)
         {
-            var clausesData = _contractClauseTableAdapter.GetDataByIdContract(contractId);
+            var clausesData = _contractClauseTableAdapter.GetClauseByContractId(contractId);
 
             return clausesData.Select(row => new ContractClause
             {

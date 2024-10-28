@@ -19,6 +19,7 @@ namespace Services.Domain
         public string StatusContract { get; set; } // Estado del contrato
         public bool ContractModel { get; set; } // Indica si es un contrato modelo
         public DateTime CreatedAt { get; set; } // Fecha de creación del contrato
+        public byte[] ContractImage { get; set; } // Imagen del contrato firmado en formato de bytes
 
         // Relación con las cláusulas del contrato
         public List<ContractClause> Clauses { get; set; } = new List<ContractClause>();

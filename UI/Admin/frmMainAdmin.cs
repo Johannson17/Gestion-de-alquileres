@@ -47,11 +47,6 @@ namespace UI
             modifyPersonForm.Show();
         }
 
-        private void bajaDeUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void altaDeUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Crear una nueva instancia del formulario frmRegister

@@ -5,6 +5,7 @@ using Services.Dao.Contracts;
 using Services.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Services.Logic
 {
@@ -25,6 +26,16 @@ namespace Services.Logic
         {
             _contractRepository = new ContractRepository();
             _contractClauseRepository = new ContractClauseRepository();
+        }
+
+        /// <summary>
+        /// Guarda la imagen del contrato en el repositorio.
+        /// </summary>
+        /// <param name="contractId">El identificador único del contrato.</param>
+        /// <param name="imageData">La imagen en formato de arreglo de bytes.</param>
+        public void SaveContractImage(Guid contractId, byte[] imageData)
+        {
+            _contractRepository.SaveContractImage(contractId, imageData);
         }
 
         /// <summary>
@@ -203,6 +214,40 @@ namespace Services.Logic
             };
 
             return (clause1, clause2);
+        }
+
+        /// <summary>
+        /// Obtiene todos los contratos asociados a un arrendatario específico.
+        /// </summary>
+        /// <param name="tenantId">El ID del arrendatario.</param>
+        /// <returns>Una lista de contratos donde el usuario es el arrendatario.</returns>
+        public List<Contract> GetContractsByTenantId(Guid tenantId)
+        {
+            return _contractRepository.GetAllContracts()
+                                       .Where(c => c.FkIdTenant == tenantId)
+                                       .ToList();
+        }
+
+        /// <summary>
+        /// Obtiene y ordena las cláusulas de un contrato por IdAuxiliar.
+        /// </summary>
+        /// <param name="contractId">El ID del contrato.</param>
+        /// <returns>Lista de cláusulas ordenadas por IdAuxiliar.</returns>
+        public List<ContractClause> GetOrderedClauses(Guid contractId)
+        {
+            var clauses = _contractClauseRepository.GetClausesByContractId(contractId);
+            return clauses.OrderBy(clause => clause.IdAuxiliar).ToList();
+        }
+
+        /// <summary>
+        /// Genera un PDF de las cláusulas del contrato en orden usando el listado de cláusulas proporcionado.
+        /// </summary>
+        /// <param name="contractId">El ID del contrato.</param>
+        /// <param name="outputPath">La ruta de salida para el archivo PDF.</param>
+        public void GenerateContractPDF(Guid contractId, string outputPath)
+        {
+            var orderedClauses = GetOrderedClauses(contractId);
+            _contractRepository.GenerateContractPDF(orderedClauses, outputPath);
         }
 
         /// <summary>

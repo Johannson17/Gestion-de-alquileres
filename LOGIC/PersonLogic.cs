@@ -25,6 +25,16 @@ namespace LOGIC
         }
 
         /// <summary>
+        /// Obtiene la persona asociada al ID de usuario.
+        /// </summary>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Objeto Person si se encuentra, de lo contrario null.</returns>
+        public Person GetPersonByUserId(Guid userId)
+        {
+            return _personRepository.GetPersonByUserId(userId);
+        }
+
+        /// <summary>
         /// Obtiene todas las personas registradas en el sistema.
         /// </summary>
         public List<Person> GetAllPersons()
@@ -58,9 +68,9 @@ namespace LOGIC
         /// </summary>
         /// <param name="person">Objeto Person que representa a la persona a crear.</param>
         /// <returns>ID de la persona recién creada.</returns>
-        public Guid CreatePerson(Person person)
+        public Guid CreatePerson(Person person, Guid userId)
         {
-            return _personRepository.Create(person);
+            return _personRepository.Create(person, userId);
         }
 
         /// <summary>

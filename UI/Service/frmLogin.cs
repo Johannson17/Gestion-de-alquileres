@@ -4,6 +4,8 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using UI.Helpers;
+using UI.Admin;
+using UI.Tenant;
 
 namespace UI
 {
@@ -70,7 +72,7 @@ namespace UI
                 }
                 else
                 {
-                    mainForm = new frmMainAdmin(); // Aquí deberías abrir el formulario para usuarios estándar
+                    mainForm = new frmMainTenant(user.IdUsuario); // Aquí deberías abrir el formulario para usuarios estándar
                 }
 
                 // Mostrar el formulario principal
@@ -97,13 +99,21 @@ namespace UI
         {
             foreach (var acceso in accesos)
             {
-                if (acceso is Patente patente && patente.Nombre == "Admin")
+                if (acceso is Patente patente && patente.Nombre == "frmMainAdmin")
                 {
                     return true;
                 }
-                else if (acceso is Familia familia && familia.Nombre == "Admin")
+                else if (acceso is Familia familiaAdmin && familiaAdmin.Nombre == "Admin")
                 {
                     return true;
+                }
+                else if (acceso is Familia familiaTenant && familiaTenant.Nombre == "Tenant")
+                {
+                    return false;
+                }
+                else if (acceso is Patente patenteTenant && patenteTenant.Nombre == "frmMainTenant")
+                {
+                    return false;
                 }
             }
             return false;
