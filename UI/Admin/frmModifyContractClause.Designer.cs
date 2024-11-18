@@ -41,7 +41,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(374, 56);
+            this.label2.Location = new System.Drawing.Point(641, 59);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(168, 16);
             this.label2.TabIndex = 9;
@@ -50,7 +50,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(374, 4);
+            this.label1.Location = new System.Drawing.Point(641, 7);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(132, 16);
             this.label1.TabIndex = 8;
@@ -58,7 +58,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(374, 326);
+            this.btnSave.Location = new System.Drawing.Point(641, 329);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(321, 23);
             this.btnSave.TabIndex = 7;
@@ -68,7 +68,7 @@
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(374, 75);
+            this.txtDescription.Location = new System.Drawing.Point(641, 78);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.Size = new System.Drawing.Size(321, 243);
@@ -76,7 +76,7 @@
             // 
             // txtTittle
             // 
-            this.txtTittle.Location = new System.Drawing.Point(374, 23);
+            this.txtTittle.Location = new System.Drawing.Point(641, 26);
             this.txtTittle.Name = "txtTittle";
             this.txtTittle.Size = new System.Drawing.Size(321, 22);
             this.txtTittle.TabIndex = 5;
@@ -88,12 +88,12 @@
             this.dgvContractClauses.Location = new System.Drawing.Point(0, 0);
             this.dgvContractClauses.Name = "dgvContractClauses";
             this.dgvContractClauses.RowTemplate.Height = 24;
-            this.dgvContractClauses.Size = new System.Drawing.Size(368, 390);
+            this.dgvContractClauses.Size = new System.Drawing.Size(635, 390);
             this.dgvContractClauses.TabIndex = 10;
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(374, 355);
+            this.btnDelete.Location = new System.Drawing.Point(641, 358);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(321, 23);
             this.btnDelete.TabIndex = 11;
@@ -105,7 +105,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(707, 390);
+            this.ClientSize = new System.Drawing.Size(974, 390);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.dgvContractClauses);
             this.Controls.Add(this.label2);

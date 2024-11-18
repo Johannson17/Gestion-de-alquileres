@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using DAO.Contracts; // Asegúrate de tener el namespace correcto para el repositorio
+using DAO.Contracts;
 using DAO.Implementations;
-using DAO.Implementations.SqlServer; // Importa la implementación de repositorio si es necesario
-using Domain; // Asegúrate de que tienes el namespace correcto para el modelo Ticket
+using Domain;
 
 namespace LOGIC
 {

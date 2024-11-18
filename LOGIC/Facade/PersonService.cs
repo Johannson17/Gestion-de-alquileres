@@ -2,6 +2,7 @@
 using LOGIC;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static Domain.Person;
 
 namespace LOGIC.Facade
@@ -147,6 +148,22 @@ namespace LOGIC.Facade
             {
                 throw new Exception($"Error al obtener la persona asociada al ID de usuario: {userId}", ex);
             }
+        }
+
+        /// <summary>
+        /// Exporta los datos de personas a un archivo Excel.
+        /// </summary>
+        /// <param name="filePath">Ruta del archivo Excel donde se guardarán los datos.</param>
+        /// <param name="persons">Lista de personas a exportar.</param>
+        public void ExportPersonsToExcel(string filePath, List<Person> persons)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("La ruta del archivo no puede estar vacía.");
+
+            if (persons == null || !persons.Any())
+                throw new ArgumentException("No hay datos de personas para exportar.");
+
+            _personLogic.ExportPersonsToExcel(filePath, persons);
         }
     }
 }

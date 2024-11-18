@@ -11,7 +11,9 @@ namespace Services.Domain
     {
         public Guid IdContract { get; set; } // Identificador del contrato
         public Guid FkIdProperty { get; set; } // Relación con la propiedad
+        public string PropertyAddres { get; set; }
         public Guid FkIdTenant { get; set; } // Relación con el arrendatario
+        public string TenantName { get; set; }
         public Guid FkIdOwner { get; set; } // Relación con el propietario
         public DateTime DateStartContract { get; set; } // Fecha de inicio del contrato
         public DateTime DateFinalContract { get; set; } // Fecha de finalización del contrato

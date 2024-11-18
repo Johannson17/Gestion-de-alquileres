@@ -81,5 +81,12 @@ namespace DAO.Contracts
         /// <param name="propertyId">El ID de la propiedad asociada al inventario.</param>
         /// <param name="inventoryId">El ID del inventario a eliminar.</param>
         void DeleteInventoryById(Guid propertyId, Guid inventoryId);
+
+        /// <summary>
+        /// Genera un archivo Excel con la lista de propiedades proporcionada.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        /// <param name="properties">Lista de propiedades a exportar.</param>
+        void GeneratePropertiesExcel(string filePath, List<Property> properties);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using DAO.Contracts;
-using DAO.Implementations.SqlServer;
+using DAO.Implementations;
 using Domain;
 using Services.Dao.Contracts;
 using Services.Domain;
@@ -275,6 +275,22 @@ namespace Services.Logic
                 throw new InvalidOperationException("El precio de renta anual debe ser mayor a cero.");
             if (contract.DateStartContract >= contract.DateFinalContract)
                 throw new InvalidOperationException("La fecha de inicio debe ser anterior a la fecha de finalización.");
+        }
+
+        /// <summary>
+        /// Solicita al repositorio exportar los contratos visibles en el DataGridView.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        /// <param name="contracts">Lista de contratos visibles.</param>
+        public void ExportContractsToExcel(string filePath, List<Contract> contracts)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("La ruta del archivo no puede estar vacía.", nameof(filePath));
+
+            if (contracts == null || contracts.Count == 0)
+                throw new ArgumentException("No hay contratos para exportar.", nameof(contracts));
+
+            _contractRepository.ExportContractsToExcel(filePath, contracts);
         }
     }
 }

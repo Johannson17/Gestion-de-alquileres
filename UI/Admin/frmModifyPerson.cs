@@ -1,6 +1,7 @@
 ﻿using Domain;
 using LOGIC.Facade; // Asegúrate de que la lógica esté accesible aquí.
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -25,15 +26,38 @@ namespace UI
         {
             try
             {
-                var persons = _personService.GetAllPersons();
-                dgvPerson.DataSource = persons;
-                dgvPerson.Columns["IdPerson"].Visible = false; // Oculta la columna de ID si no es necesaria en la vista
+                var persons = _personService.GetAllPersonsByType(Person.PersonTypeEnum.Tenant);
+
+                // Asignar los datos al DataGridView
+                dgvPerson.DataSource = persons.Select(p => new
+                {
+                    p.IdPerson,
+                    Nombre = p.NamePerson,
+                    Apellido = p.LastNamePerson,
+                    Domicilio = p.DomicilePerson,
+                    DomicilioElectronico = p.ElectronicDomicilePerson, // Sin espacio en el nombre
+                    Telefono = p.PhoneNumberPerson, // Sin tilde en el identificador
+                    NumeroDocumento = p.NumberDocumentPerson // Sin espacio en el nombre
+                }).ToList();
+
+                dgvPerson.Columns["IdPerson"].Visible = false; // Oculta la columna de ID
+
+                // Ajusta los encabezados de las columnas
+                dgvPerson.Columns["Nombre"].HeaderText = "Nombre";
+                dgvPerson.Columns["Apellido"].HeaderText = "Apellido";
+                dgvPerson.Columns["Domicilio"].HeaderText = "Domicilio";
+                dgvPerson.Columns["DomicilioElectronico"].HeaderText = "Domicilio Electrónico";
+                dgvPerson.Columns["Telefono"].HeaderText = "Teléfono";
+                dgvPerson.Columns["NumeroDocumento"].HeaderText = "Número de Documento";
+
+                dgvPerson.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajusta las columnas al ancho del DataGridView
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar los datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         // Evento que se ejecuta al hacer clic en una celda del DataGridView
         private void dgvPerson_CellClick(object sender, DataGridViewCellEventArgs e)

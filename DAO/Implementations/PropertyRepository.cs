@@ -1,13 +1,15 @@
 ﻿using DAO.Contracts;
 using DAO.RentsDataSetTableAdapters;
 using Domain;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using static DAO.RentsDataSet;
 using static Domain.Person;
 
-namespace DAO.Implementations.SqlServer
+namespace DAO.Implementations
 {
     /// <summary>
     /// Repositorio para manejar las operaciones CRUD relacionadas con propiedades en la base de datos.
@@ -313,6 +315,48 @@ namespace DAO.Implementations.SqlServer
                     MunicipalityProperty = row.MunicipalityProperty, // Campo municipalidad
                     AddressProperty = row.AddressProperty           // Campo dirección
                 }).ToList();
+        }
+
+        /// <summary>
+        /// Genera un archivo Excel con la lista de propiedades proporcionada.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        /// <param name="properties">Lista de propiedades a exportar.</param>
+        public void GeneratePropertiesExcel(string filePath, List<Property> properties)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("La ruta del archivo no puede estar vacía.");
+
+            if (properties == null || !properties.Any())
+                throw new ArgumentException("No hay propiedades para exportar.");
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Propiedades");
+
+                // Encabezados
+                worksheet.Cells[1, 1].Value = "Descripción";
+                worksheet.Cells[1, 2].Value = "Estado";
+                worksheet.Cells[1, 3].Value = "País";
+                worksheet.Cells[1, 4].Value = "Provincia";
+                worksheet.Cells[1, 5].Value = "Municipio";
+                worksheet.Cells[1, 6].Value = "Dirección";
+
+                // Datos
+                for (int i = 0; i < properties.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = properties[i].DescriptionProperty ?? "Sin descripción";
+                    worksheet.Cells[i + 2, 2].Value = properties[i].StatusProperty.ToString() ?? "Sin estado";
+                    worksheet.Cells[i + 2, 3].Value = properties[i].CountryProperty ?? "Sin país";
+                    worksheet.Cells[i + 2, 4].Value = properties[i].ProvinceProperty ?? "Sin provincia";
+                    worksheet.Cells[i + 2, 5].Value = properties[i].MunicipalityProperty ?? "Sin municipio";
+                    worksheet.Cells[i + 2, 6].Value = properties[i].AddressProperty ?? "Sin dirección";
+                }
+
+                package.SaveAs(new FileInfo(filePath));
+            }
         }
     }
 }

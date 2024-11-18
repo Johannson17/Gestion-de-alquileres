@@ -18,23 +18,22 @@ namespace UI.Admin
             InitializeComponent();
             _ticketService = new TicketService();
             _propertyService = new PropertyService();
-            LoadTickets(); // Cargar los tickets al inicializar el formulario
 
-            // Suscribirse al evento SelectionChanged del DataGridView
+            LoadTickets();
+
+            // Suscripción a eventos
             dgvTickets.SelectionChanged += dgvTickets_SelectionChanged;
+            btnSave.Click += btnSave_Click;
+            btnImage.Click += btnImage_Click;
         }
 
         private void LoadTickets()
         {
             try
             {
-                // Obtener todos los tickets
-                List<Ticket> tickets = _ticketService.GetAllTickets();
+                var tickets = _ticketService.GetAllTickets();
+                var properties = _propertyService.GetAllProperties();
 
-                // Obtener todas las propiedades
-                List<Property> properties = _propertyService.GetAllProperties();
-
-                // Enriquecer los tickets con la dirección de la propiedad asociada
                 var enrichedTickets = tickets.Select(ticket =>
                 {
                     var property = properties.FirstOrDefault(p => p.IdProperty == ticket.FkIdProperty);
@@ -51,14 +50,16 @@ namespace UI.Admin
                     };
                 }).ToList();
 
-                // Asignar los tickets enriquecidos al DataGridView
                 dgvTickets.DataSource = enrichedTickets;
 
-                // Configurar columnas visibles y sus encabezados
-                dgvTickets.Columns["IdRequest"].Visible = false; // Ocultar ID del ticket
-                dgvTickets.Columns["FkIdProperty"].Visible = false; // Ocultar ID de la propiedad
-                dgvTickets.Columns["FkIdPerson"].Visible = false; // Ocultar ID de la persona
-                dgvTickets.Columns["ImageTicket"].Visible = false; // Ocultar columna de la imagen
+                // Ajustar tamaño de columnas automáticamente para ocupar todo el ancho disponible
+                dgvTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                // Configuración de columnas
+                dgvTickets.Columns["IdRequest"].Visible = false;
+                dgvTickets.Columns["FkIdProperty"].Visible = false;
+                dgvTickets.Columns["FkIdPerson"].Visible = false;
+                dgvTickets.Columns["ImageTicket"].Visible = false;
 
                 dgvTickets.Columns["TitleTicket"].HeaderText = "Título";
                 dgvTickets.Columns["DescriptionTicket"].HeaderText = "Descripción";
@@ -73,70 +74,64 @@ namespace UI.Admin
 
         private void dgvTickets_SelectionChanged(object sender, EventArgs e)
         {
-            // Verificar si hay una fila seleccionada
-            if (dgvTickets.CurrentRow == null)
-                return;
+            if (dgvTickets.CurrentRow == null) return;
 
-            // Obtener el ticket seleccionado
-            dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
+            try
+            {
+                dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
 
-            if (selectedRow == null)
-                return;
+                if (selectedRow == null) return;
 
-            // Asignar los datos del ticket seleccionado a los TextBox
-            txtTitle.Text = selectedRow.TitleTicket;
-            txtDetail.Text = selectedRow.DescriptionTicket;
-            txtProperty.Text = selectedRow.PropertyAddress;
+                // Asignar datos al formulario
+                txtTitle.Text = selectedRow.TitleTicket;
+                txtDetail.Text = selectedRow.DescriptionTicket;
+                txtProperty.Text = selectedRow.PropertyAddress;
 
-            // Llenar el ComboBox con el estado actual y los otros disponibles
-            var availableStatuses = new List<string> { "Pendiente", "En Progreso", "Completado" }; // Personaliza los estados disponibles
-            cmbStatus.DataSource = availableStatuses;
-
-            // Seleccionar el estado actual en el ComboBox
-            cmbStatus.SelectedItem = selectedRow.StatusTicket;
+                var availableStatuses = new List<string> { "Pendiente", "En Progreso", "Completado" };
+                cmbStatus.DataSource = availableStatuses;
+                cmbStatus.SelectedItem = selectedRow.StatusTicket;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al seleccionar el ticket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Validar selección de ticket
             if (dgvTickets.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un ticket para modificar el estado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Seleccione un ticket para modificar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
-                // Obtener el ticket seleccionado
                 dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
-
                 if (selectedRow == null)
                 {
-                    MessageBox.Show("Error al seleccionar el ticket. Intente nuevamente.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error al seleccionar el ticket.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Obtener el ID del ticket y el nuevo estado
                 Guid ticketId = selectedRow.IdRequest;
                 string newStatus = cmbStatus.SelectedItem?.ToString();
 
                 if (string.IsNullOrWhiteSpace(newStatus))
                 {
-                    MessageBox.Show("Por favor, seleccione un estado válido.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Seleccione un estado válido.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Actualizar únicamente el estado del ticket
                 _ticketService.UpdateTicketStatus(ticketId, newStatus);
 
                 MessageBox.Show("Estado del ticket actualizado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Recargar la lista de tickets
                 LoadTickets();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al actualizar el estado del ticket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al guardar los cambios: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -148,38 +143,46 @@ namespace UI.Admin
                 return;
             }
 
-            // Obtener el ticket seleccionado desde el DataGridView
-            dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
-
-            if (selectedRow == null)
+            try
             {
-                MessageBox.Show("Error al obtener los datos del ticket seleccionado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
+                if (selectedRow == null)
+                {
+                    MessageBox.Show("Error al obtener los datos del ticket.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            // Verificar si el ticket tiene una imagen
-            if (selectedRow.ImageTicket == null || selectedRow.ImageTicket.Length == 0)
+                if (selectedRow.ImageTicket == null || selectedRow.ImageTicket.Length == 0)
+                {
+                    MessageBox.Show("El ticket seleccionado no tiene una imagen asociada.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                ShowImage(selectedRow.ImageTicket);
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show("El ticket seleccionado no tiene una imagen asociada.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                MessageBox.Show($"Error al mostrar la imagen: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
 
-            // Mostrar la imagen en un formulario emergente
+        private void ShowImage(byte[] imageBytes)
+        {
             using (Form imageForm = new Form())
             {
                 imageForm.Text = "Imagen del Ticket";
-                imageForm.Size = new Size(600, 400); // Tamaño del formulario
-                imageForm.StartPosition = FormStartPosition.CenterScreen; // Centrar el formulario
+                imageForm.Size = new Size(600, 400);
+                imageForm.StartPosition = FormStartPosition.CenterScreen;
 
                 PictureBox pictureBox = new PictureBox
                 {
-                    Image = Image.FromStream(new System.IO.MemoryStream(selectedRow.ImageTicket)),
+                    Image = Image.FromStream(new System.IO.MemoryStream(imageBytes)),
                     Dock = DockStyle.Fill,
-                    SizeMode = PictureBoxSizeMode.Zoom // Ajustar la imagen al tamaño del PictureBox
+                    SizeMode = PictureBoxSizeMode.Zoom
                 };
 
-                imageForm.Controls.Add(pictureBox); // Agregar el PictureBox al formulario
-                imageForm.ShowDialog(); // Mostrar el formulario como emergente
+                imageForm.Controls.Add(pictureBox);
+                imageForm.ShowDialog();
             }
         }
     }

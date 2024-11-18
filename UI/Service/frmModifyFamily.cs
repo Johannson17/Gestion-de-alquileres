@@ -17,6 +17,8 @@ namespace UI.Service
 
             // Vincular el evento de selección en el DataGridView
             dgvFamilies.SelectionChanged += dgvFamilies_SelectionChanged;
+            btnSave.Click += btnSave_Click;
+            btnDelete.Click += btnDelete_Click;
         }
 
         /// <summary>
@@ -24,77 +26,83 @@ namespace UI.Service
         /// </summary>
         private void LoadFamilies()
         {
-            var familias = UserService.GetAllFamilias();
-
-            // Crear una lista anónima para mostrar los datos de las familias con las patentes concatenadas
-            var familiasData = familias.Select(f => new
+            try
             {
-                f.Id,
-                f.Nombre,
-                Patentes = string.Join(", ", f.Accesos.OfType<Patente>().Select(p => p.Nombre)) // Concatenar los nombres de las patentes
-            }).ToList();
+                var familias = UserService.GetAllFamilias();
 
-            // Asignar la lista de familias al DataGridView
-            dgvFamilies.DataSource = familiasData;
+                var familiasData = familias.Select(f => new
+                {
+                    f.Id,
+                    f.Nombre,
+                    Patentes = string.Join(", ", f.Accesos.OfType<Patente>().Select(p => p.Nombre)) // Concatenar los nombres de las patentes
+                }).ToList();
 
-            // Ajustar las columnas del DataGridView
-            dgvFamilies.Columns["Id"].Visible = false; // Ocultar la columna de Id
-            dgvFamilies.Columns["Nombre"].HeaderText = "Nombre de Familia";
-            dgvFamilies.Columns["Patentes"].HeaderText = "Permisos (Patentes)";
+                dgvFamilies.DataSource = familiasData;
+
+                // Ajustar columnas del DataGridView
+                dgvFamilies.Columns["Id"].Visible = false; // Ocultar la columna de Id
+                dgvFamilies.Columns["Nombre"].HeaderText = "Nombre de Familia";
+                dgvFamilies.Columns["Patentes"].HeaderText = "Permisos (Patentes)";
+                dgvFamilies.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar las familias: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
-        /// Al seleccionar una fila en el DataGridView, cargar los datos de la familia en los TextBox.
+        /// Al seleccionar una fila en el DataGridView, cargar los datos de la familia en los TextBox y CheckedListBox.
         /// </summary>
         private void dgvFamilies_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvFamilies.SelectedRows.Count > 0)
             {
-                // Obtener el Id de la familia seleccionada
-                var selectedFamilyId = (Guid)dgvFamilies.SelectedRows[0].Cells["Id"].Value;
-
-                // Buscar la familia seleccionada en la lista cargada
-                _selectedFamily = UserService.GetAllFamilias().FirstOrDefault(f => f.Id == selectedFamilyId);
-
-                // Rellenar los campos de texto con la información de la familia seleccionada
-                if (_selectedFamily != null)
+                try
                 {
-                    txtName.Text = _selectedFamily.Nombre;
+                    var selectedFamilyId = (Guid)dgvFamilies.SelectedRows[0].Cells["Id"].Value;
+                    _selectedFamily = UserService.GetAllFamilias().FirstOrDefault(f => f.Id == selectedFamilyId);
 
-                    // Cargar accesos (patentes y otras familias)
-                    LoadAccesos(_selectedFamily);
+                    if (_selectedFamily != null)
+                    {
+                        txtName.Text = _selectedFamily.Nombre;
+                        LoadAccesos(_selectedFamily);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al seleccionar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
         /// <summary>
-        /// Cargar los accesos (patentes y familias) en el CheckedListBox y marcar los accesos de la familia seleccionada.
+        /// Cargar los accesos (patentes y familias) en el CheckedListBox y marcar los seleccionados.
         /// </summary>
         private void LoadAccesos(Familia family)
         {
-            // Configurar DisplayMember para mostrar los nombres
-            chlbAccesos.DisplayMember = "Nombre";
-
-            // Limpiar la lista de accesos
-            chlbAccesos.Items.Clear();
-
-            // Cargar patentes
-            var patentes = UserService.GetAllPatentes();
-            foreach (var patente in patentes)
+            try
             {
-                bool isChecked = family.Accesos.Any(a => a is Patente && a.Id == patente.Id);
-                chlbAccesos.Items.Add(patente, isChecked);
-            }
+                chlbAccesos.DisplayMember = "Nombre";
+                chlbAccesos.Items.Clear();
 
-            // Cargar otras familias (excluyendo la misma familia)
-            var familias = UserService.GetAllFamilias();
-            foreach (var otraFamilia in familias)
-            {
-                if (otraFamilia.Id != family.Id) // Evitar añadir la misma familia
+                var patentes = UserService.GetAllPatentes();
+                foreach (var patente in patentes)
+                {
+                    bool isChecked = family.Accesos.Any(a => a is Patente && a.Id == patente.Id);
+                    chlbAccesos.Items.Add(patente, isChecked);
+                }
+
+                var familias = UserService.GetAllFamilias().Where(f => f.Id != family.Id);
+                foreach (var otraFamilia in familias)
                 {
                     bool isChecked = family.Accesos.Any(a => a is Familia && a.Id == otraFamilia.Id);
                     chlbAccesos.Items.Add(otraFamilia, isChecked);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los accesos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -107,33 +115,25 @@ namespace UI.Service
             {
                 if (_selectedFamily != null)
                 {
-                    // Actualizar los datos de la familia seleccionada
                     _selectedFamily.Nombre = txtName.Text;
 
-                    // Limpiar los accesos actuales y agregar los seleccionados
                     _selectedFamily.Accesos.Clear();
-                    for (int i = 0; i < chlbAccesos.CheckedItems.Count; i++)
+                    foreach (var item in chlbAccesos.CheckedItems)
                     {
-                        var acceso = chlbAccesos.CheckedItems[i] as Acceso;
-                        if (acceso != null)
+                        if (item is Acceso acceso)
                         {
                             _selectedFamily.Add(acceso);
                         }
                     }
 
-                    // Guardar los cambios en la base de datos
                     UserService.UpdateFamilia(_selectedFamily);
 
-                    // Mostrar un mensaje de éxito
                     MessageBox.Show("Familia modificada con éxito.", "Modificación de Familia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Recargar el DataGridView para mostrar los cambios
                     LoadFamilies();
                 }
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
                 MessageBox.Show($"Error al modificar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -147,25 +147,19 @@ namespace UI.Service
             {
                 if (_selectedFamily != null)
                 {
-                    // Confirmar la eliminación
                     var confirmResult = MessageBox.Show("¿Está seguro de que desea eliminar esta familia?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                     if (confirmResult == DialogResult.Yes)
                     {
-                        // Eliminar la familia en la base de datos
                         UserService.DeleteFamilia(_selectedFamily.Id);
 
-                        // Mostrar un mensaje de éxito
                         MessageBox.Show("Familia eliminada con éxito.", "Eliminación de Familia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        // Recargar el DataGridView para mostrar los cambios
                         LoadFamilies();
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
                 MessageBox.Show($"Error al eliminar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

@@ -64,6 +64,12 @@
     <Compile Include="Admin\frmAddProperty.Designer.cs">
       <DependentUpon>frmAddProperty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Admin\frmContractsReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Admin\frmContractsReport.Designer.cs">
+      <DependentUpon>frmContractsReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Admin\frmModifyContract.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,10 +88,22 @@
     <Compile Include="Admin\frmModifyTicket.Designer.cs">
       <DependentUpon>frmModifyTicket.cs</DependentUpon>
     </Compile>
-    <Compile Include="Admin\frmUsers.cs">
+    <Compile Include="Admin\frmPropertiesReport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Admin\frmUsers.Designer.cs">
+    <Compile Include="Admin\frmPropertiesReport.Designer.cs">
+      <DependentUpon>frmPropertiesReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\frmTenantsReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Admin\frmTenantsReport.Designer.cs">
+      <DependentUpon>frmTenantsReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service\frmUsers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmUsers.Designer.cs">
       <DependentUpon>frmUsers.cs</DependentUpon>
     </Compile>
     <Compile Include="Service\frmAddFamilia.cs">
@@ -169,11 +187,23 @@
     <Compile Include="Tenant\frmContract.Designer.cs">
       <DependentUpon>frmContract.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tenant\frmContractsReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tenant\frmContractsReport.Designer.cs">
+      <DependentUpon>frmContractsReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tenant\frmMainTenant.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tenant\frmMainTenant.Designer.cs">
       <DependentUpon>frmMainTenant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tenant\frmPropertiesReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tenant\frmPropertiesReport.Designer.cs">
+      <DependentUpon>frmPropertiesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Tenant\frmTicket.cs">
       <SubType>Form</SubType>
@@ -187,6 +217,9 @@
     <EmbeddedResource Include="Admin\frmAddContractClause.resx">
       <DependentUpon>frmAddContractClause.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Admin\frmContractsReport.resx">
+      <DependentUpon>frmContractsReport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Admin\frmModifyContract.resx">
       <DependentUpon>frmModifyContract.cs</DependentUpon>
     </EmbeddedResource>
@@ -196,7 +229,13 @@
     <EmbeddedResource Include="Admin\frmModifyTicket.resx">
       <DependentUpon>frmModifyTicket.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Admin\frmUsers.resx">
+    <EmbeddedResource Include="Admin\frmPropertiesReport.resx">
+      <DependentUpon>frmPropertiesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Admin\frmTenantsReport.resx">
+      <DependentUpon>frmTenantsReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Service\frmUsers.resx">
       <DependentUpon>frmUsers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Service\frmAddFamilia.resx">
@@ -250,8 +289,14 @@
     <EmbeddedResource Include="Tenant\frmContract.resx">
       <DependentUpon>frmContract.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tenant\frmContractsReport.resx">
+      <DependentUpon>frmContractsReport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tenant\frmMainTenant.resx">
       <DependentUpon>frmMainTenant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tenant\frmPropertiesReport.resx">
+      <DependentUpon>frmPropertiesReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tenant\frmTicket.resx">
       <DependentUpon>frmTicket.cs</DependentUpon>

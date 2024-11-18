@@ -115,5 +115,15 @@ namespace LOGIC.Facade
                 throw new Exception("No tienes ninguna propiedad alquilada.", ex);
             }
         }
+
+        /// <summary>
+        /// Exporta una lista de propiedades a un archivo Excel.
+        /// </summary>
+        /// <param name="filePath">La ruta donde se guardará el archivo Excel.</param>
+        /// <param name="properties">Lista de propiedades a exportar.</param>
+        public void ExportPropertiesToExcel(string filePath, List<Property> properties)
+        {
+            _propertyLogic.ExportPropertiesToExcel(filePath, properties);
+        }
     }
 }

@@ -10,19 +10,20 @@ namespace UI
     public partial class frmModifyProperty : Form
     {
         private readonly PropertyService _propertyService;
-        private List<Property> _properties; // Lista de propiedades cargadas
-        private Property _currentProperty; // Propiedad seleccionada
+        private List<Property> _properties;
+        private Property _currentProperty;
 
         public frmModifyProperty()
         {
             InitializeComponent();
             _propertyService = new PropertyService();
 
-            // Cargar todas las propiedades al iniciar el formulario
             LoadProperties();
 
-            // Vincular el evento SelectionChanged del DataGridView
             dgvProperty.SelectionChanged += dgvProperties_SelectionChanged;
+            btnSave.Click += btnSave_Click;
+            btnDelete.Click += btnDelete_Click;
+            btnEditInventory.Click += btnEditInventory_Click;
         }
 
         /// <summary>
@@ -32,16 +33,13 @@ namespace UI
         {
             try
             {
-                // Obtener todas las propiedades
                 _properties = _propertyService.GetAllProperties();
 
-                // Limpiar el DataGridView
                 dgvProperty.Columns.Clear();
 
-                // Asignar los datos al DataGridView directamente desde la lista de propiedades
                 dgvProperty.DataSource = _properties.Select(p => new
                 {
-                    p.IdProperty, // Este se usa internamente, pero está oculto
+                    p.IdProperty,
                     p.DescriptionProperty,
                     p.StatusProperty,
                     p.CountryProperty,
@@ -50,11 +48,9 @@ namespace UI
                     p.AddressProperty
                 }).ToList();
 
-                // Ocultar la columna IdProperty
                 dgvProperty.Columns["IdProperty"].Visible = false;
-
-                // Ajustar el ancho de las columnas automáticamente
                 dgvProperty.AutoResizeColumns();
+                dgvProperty.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
             }
             catch (Exception ex)
             {
@@ -63,26 +59,18 @@ namespace UI
         }
 
         /// <summary>
-        /// Maneja el evento de selección de una fila en el DataGridView.
-        /// Llena los campos del formulario con los datos de la propiedad seleccionada.
+        /// Maneja el evento de selección en el DataGridView.
         /// </summary>
         private void dgvProperties_SelectionChanged(object sender, EventArgs e)
         {
-            // Verificar que hay filas seleccionadas en el DataGridView
             if (dgvProperty.SelectedRows.Count > 0)
             {
                 try
                 {
-                    // Obtener el índice de la fila seleccionada
-                    var selectedRowIndex = dgvProperty.SelectedRows[0].Index;
+                    var selectedPropertyId = (Guid)dgvProperty.SelectedRows[0].Cells["IdProperty"].Value;
 
-                    // Obtener la propiedad seleccionada usando el IdProperty
-                    var selectedPropertyId = (Guid)dgvProperty.Rows[selectedRowIndex].Cells["IdProperty"].Value;
+                    _currentProperty = _propertyService.GetProperty(selectedPropertyId);
 
-                    // Buscar la propiedad en la lista cargada
-                    _currentProperty = _propertyService.GetProperty(selectedPropertyId); // Cargar propiedad con inventario
-
-                    // Si la propiedad es encontrada, cargar los datos en los TextBox
                     if (_currentProperty != null)
                     {
                         txtAddress.Text = _currentProperty.AddressProperty;
@@ -91,7 +79,6 @@ namespace UI
                         txtProvince.Text = _currentProperty.ProvinceProperty;
                         txtDescription.Text = _currentProperty.DescriptionProperty;
 
-                        // Cargar el ComboBox de Estado con el enum
                         LoadStatusComboBox(_currentProperty.StatusProperty);
                     }
                     else
@@ -107,38 +94,33 @@ namespace UI
         }
 
         /// <summary>
-        /// Cargar el ComboBox de Estados con valores del enum PropertyStatusEnum.
+        /// Cargar los estados en el ComboBox.
         /// </summary>
         private void LoadStatusComboBox(PropertyStatusEnum currentStatus)
         {
             cmbStatus.DataSource = Enum.GetValues(typeof(PropertyStatusEnum)).Cast<PropertyStatusEnum>().ToList();
-            cmbStatus.SelectedItem = currentStatus; // Seleccionar el estado actual
+            cmbStatus.SelectedItem = currentStatus;
         }
 
         /// <summary>
-        /// Guardar los cambios realizados en la propiedad.
+        /// Guardar los cambios en la propiedad.
         /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
-                // Actualizar los datos de la propiedad
                 _currentProperty.AddressProperty = txtAddress.Text;
                 _currentProperty.CountryProperty = txtCountry.Text;
                 _currentProperty.MunicipalityProperty = txtMunicipality.Text;
                 _currentProperty.ProvinceProperty = txtProvince.Text;
                 _currentProperty.DescriptionProperty = txtDescription.Text;
-                _currentProperty.StatusProperty = (PropertyStatusEnum)cmbStatus.SelectedItem; // Convertir el valor seleccionado a enum
+                _currentProperty.StatusProperty = (PropertyStatusEnum)cmbStatus.SelectedItem;
 
-                // Guardar los cambios
                 _propertyService.UpdateProperty(_currentProperty);
 
                 MessageBox.Show("Propiedad actualizada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Recargar el DataGridView con los cambios
                 LoadProperties();
-
-                // Reseleccionar la propiedad modificada en el DataGridView
                 ReselectCurrentProperty();
             }
             catch (Exception ex)
@@ -148,7 +130,7 @@ namespace UI
         }
 
         /// <summary>
-        /// Reseleccionar la propiedad modificada en el DataGridView.
+        /// Seleccionar nuevamente la propiedad modificada.
         /// </summary>
         private void ReselectCurrentProperty()
         {
@@ -173,12 +155,10 @@ namespace UI
 
                 if (confirmResult == DialogResult.Yes)
                 {
-                    // Eliminar la propiedad
                     _propertyService.DeleteProperty(_currentProperty.IdProperty);
 
                     MessageBox.Show("Propiedad eliminada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Recargar las propiedades después de la eliminación
                     LoadProperties();
                 }
             }
@@ -189,27 +169,23 @@ namespace UI
         }
 
         /// <summary>
-        /// Botón para editar el inventario de la propiedad seleccionada.
+        /// Editar el inventario de la propiedad seleccionada.
         /// </summary>
         private void btnEditInventory_Click(object sender, EventArgs e)
         {
             try
             {
-                // Verificar si hay una propiedad seleccionada
                 if (_currentProperty == null)
                 {
                     MessageBox.Show("Debe seleccionar una propiedad primero.", "Propiedad no seleccionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Abrir el formulario para editar el inventario (sin restricciones, aunque no tenga inventario)
                 var modifyInventoryForm = new frmModifyPropertyInventory(_currentProperty);
 
-                // Mostrar el formulario de inventario y verificar si se guardaron los cambios
                 if (modifyInventoryForm.ShowDialog() == DialogResult.OK)
                 {
-                    // Si se guardaron los cambios en el inventario, actualiza los datos de la propiedad
-                    dgvProperty.Refresh(); // Refrescar el DataGridView para reflejar los cambios
+                    LoadProperties();
                 }
             }
             catch (Exception ex)

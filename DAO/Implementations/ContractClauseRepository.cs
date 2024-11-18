@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DAO.Implementations.SqlServer
+namespace DAO.Implementations
 {
     /// <summary>
     /// Repositorio para la gestión de cláusulas de contratos (ContractClause).

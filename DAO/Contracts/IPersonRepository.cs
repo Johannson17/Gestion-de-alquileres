@@ -53,5 +53,7 @@ namespace DAO.Contracts
         Person GetById(Guid personId);
 
         Person GetPersonByPropertyAndType(Guid propertyId, PersonTypeEnum personType);
+
+        void ExportPersonsToExcel(string filePath, List<Person> persons);
     }
 }

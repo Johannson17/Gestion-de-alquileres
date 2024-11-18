@@ -166,5 +166,21 @@ namespace Services.Facade
         {
             _contractLogic.SaveContractImage(contractId, imageData);
         }
+
+        /// <summary>
+        /// Exporta los contratos visibles en el DataGridView a un archivo Excel.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        /// <param name="contracts">Lista de contratos visibles.</param>
+        public void ExportContractsToExcel(string filePath, List<Contract> contracts)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("La ruta del archivo no puede estar vacía.", nameof(filePath));
+
+            if (contracts == null || contracts.Count == 0)
+                throw new ArgumentException("No hay contratos para exportar.", nameof(contracts));
+
+            _contractLogic.ExportContractsToExcel(filePath, contracts);
+        }
     }
 }

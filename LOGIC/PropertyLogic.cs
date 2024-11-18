@@ -1,5 +1,5 @@
 ﻿using DAO.Contracts;
-using DAO.Implementations.SqlServer;
+using DAO.Implementations;
 using Domain;
 using Services.Logic;
 using System;
@@ -129,6 +129,16 @@ namespace LOGIC
 
             // Obtener y retornar las propiedades correspondientes a los IDs de contratos activos
             return GetAllProperties().Where(p => propertyIds.Contains(p.IdProperty)).ToList();
+        }
+
+        /// <summary>
+        /// Genera un archivo Excel con las propiedades proporcionadas.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo.</param>
+        /// <param name="properties">Lista de propiedades a exportar.</param>
+        public void ExportPropertiesToExcel(string filePath, List<Property> properties)
+        {
+            _propertyRepository.GeneratePropertiesExcel(filePath, properties);
         }
     }
 }

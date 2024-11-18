@@ -12,151 +12,190 @@ namespace UI
     {
         private readonly ContractService _contractService;
         private readonly Contract _contract;
-        private Guid _selectedClauseId; // Variable para almacenar el ID de la cláusula seleccionada
+        private Guid _selectedClauseId;
 
         public frmModifyContractClause(Contract contract)
         {
             InitializeComponent();
             _contractService = new ContractService();
             _contract = contract;
+            _selectedClauseId = Guid.Empty;
+
             this.Load += frmModifyContractClause_Load;
-            dgvContractClauses.CellClick += dgvContractClauses_CellClick; // Vincula el evento CellClick
-            _selectedClauseId = Guid.Empty; // Inicializa sin selección
+            dgvContractClauses.CellClick += dgvContractClauses_CellClick;
+            btnSave.Click += btnSave_Click;
+            btnDelete.Click += btnDelete_Click;
         }
 
+        /// <summary>
+        /// Carga inicial de las cláusulas del contrato.
+        /// </summary>
         private void frmModifyContractClause_Load(object sender, EventArgs e)
         {
             LoadClauses();
         }
 
+        /// <summary>
+        /// Cargar las cláusulas del contrato actual en el DataGridView.
+        /// </summary>
         private void LoadClauses()
         {
-            // Obtiene las cláusulas del contrato actual usando el ID del contrato
-            var clauses = _contractService.GetContractClauses(_contract.IdContract);
-
-            // Configurar solo las columnas que deseas mostrar
-            var displayClauses = clauses.Select(clause => new
+            try
             {
-                clause.IdContractClause, // Incluye el ID de la cláusula para uso interno
-                clause.TitleClause,
-                clause.DetailClause
-            }).ToList();
+                var clauses = _contractService.GetContractClauses(_contract.IdContract);
 
-            dgvContractClauses.DataSource = displayClauses;
+                var displayClauses = clauses.Select(clause => new
+                {
+                    clause.IdContractClause,
+                    clause.TitleClause,
+                    clause.DetailClause
+                }).ToList();
 
-            // Configurar los encabezados de las columnas
-            dgvContractClauses.Columns["IdContractClause"].Visible = false; // Ocultar la columna de ID
-            dgvContractClauses.Columns["TitleClause"].HeaderText = "Título de la Cláusula";
-            dgvContractClauses.Columns["DetailClause"].HeaderText = "Descripción de la Cláusula";
+                dgvContractClauses.DataSource = displayClauses;
+
+                dgvContractClauses.Columns["IdContractClause"].Visible = false;
+                dgvContractClauses.Columns["TitleClause"].HeaderText = "Título de la Cláusula";
+                dgvContractClauses.Columns["DetailClause"].HeaderText = "Descripción de la Cláusula";
+
+                dgvContractClauses.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar las cláusulas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
+        /// <summary>
+        /// Maneja el clic en una celda del DataGridView para mostrar los datos de la cláusula seleccionada.
+        /// </summary>
         private void dgvContractClauses_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                // Obtener la cláusula seleccionada
-                var selectedClause = _contractService.GetContractClauses(_contract.IdContract)[e.RowIndex];
-                if (selectedClause != null)
+                try
                 {
-                    // Guardar el ID de la cláusula seleccionada
-                    _selectedClauseId = selectedClause.IdContractClause;
+                    var selectedClause = _contractService.GetContractClauses(_contract.IdContract)[e.RowIndex];
 
-                    // Mostrar los datos en los campos de texto
-                    txtTittle.Text = selectedClause.TitleClause;
-                    txtDescription.Text = selectedClause.DetailClause;
+                    if (selectedClause != null)
+                    {
+                        _selectedClauseId = selectedClause.IdContractClause;
+                        txtTittle.Text = selectedClause.TitleClause;
+                        txtDescription.Text = selectedClause.DetailClause;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al seleccionar la cláusula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
+        /// <summary>
+        /// Guarda los cambios realizados en la cláusula o agrega una nueva.
+        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtTittle.Text) || string.IsNullOrWhiteSpace(txtDescription.Text))
+            try
             {
-                MessageBox.Show("Por favor, complete ambos campos antes de guardar la cláusula.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+                if (string.IsNullOrWhiteSpace(txtTittle.Text) || string.IsNullOrWhiteSpace(txtDescription.Text))
+                {
+                    MessageBox.Show("Por favor, complete ambos campos antes de guardar la cláusula.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-            // Si se ha seleccionado una cláusula, preguntar si desea modificarla o crear una nueva
-            if (_selectedClauseId != Guid.Empty)
+                if (_selectedClauseId != Guid.Empty)
+                {
+                    var result = MessageBox.Show("¿Desea modificar la cláusula seleccionada o crear una nueva?", "Guardar cláusula",
+                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        var clause = new ContractClause
+                        {
+                            IdContractClause = _selectedClauseId,
+                            FkIdContract = _contract.IdContract,
+                            TitleClause = txtTittle.Text,
+                            DetailClause = txtDescription.Text
+                        };
+
+                        _contractService.UpdateContractClause(clause);
+                        MessageBox.Show("Cláusula modificada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (result == DialogResult.No)
+                    {
+                        AddNewClause();
+                    }
+                }
+                else
+                {
+                    AddNewClause();
+                }
+
+                ClearForm();
+                LoadClauses();
+            }
+            catch (Exception ex)
             {
-                var result = MessageBox.Show("¿Desea modificar la cláusula seleccionada o crear una nueva?", "Guardar cláusula",
-                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                MessageBox.Show($"Error al guardar la cláusula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Agrega una nueva cláusula al contrato.
+        /// </summary>
+        private void AddNewClause()
+        {
+            var newClause = new ContractClause
+            {
+                IdContractClause = Guid.NewGuid(),
+                FkIdContract = _contract.IdContract,
+                TitleClause = txtTittle.Text,
+                DetailClause = txtDescription.Text
+            };
+
+            _contractService.AddContractClause(newClause);
+            MessageBox.Show("Cláusula agregada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// Elimina la cláusula seleccionada.
+        /// </summary>
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_selectedClauseId == Guid.Empty)
+                {
+                    MessageBox.Show("Por favor, seleccione una cláusula para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var result = MessageBox.Show("¿Está seguro de que desea eliminar la cláusula seleccionada?", "Confirmar eliminación",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
-                    // Modificar la cláusula seleccionada
-                    var clause = new ContractClause
-                    {
-                        IdContractClause = _selectedClauseId,
-                        FkIdContract = _contract.IdContract,
-                        TitleClause = txtTittle.Text,
-                        DetailClause = txtDescription.Text
-                    };
+                    _contractService.DeleteContractClause(_selectedClauseId);
+                    MessageBox.Show("Cláusula eliminada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    _contractService.UpdateContractClause(clause);
-                    MessageBox.Show("Cláusula modificada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ClearForm();
+                    LoadClauses();
                 }
-                else if (result == DialogResult.No)
-                {
-                    // Crear una nueva cláusula
-                    var newClause = new ContractClause
-                    {
-                        IdContractClause = Guid.NewGuid(),
-                        FkIdContract = _contract.IdContract,
-                        TitleClause = txtTittle.Text,
-                        DetailClause = txtDescription.Text
-                    };
-
-                    _contractService.AddContractClause(newClause);
-                    MessageBox.Show("Cláusula agregada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                // Si el resultado es Cancel, no se realiza ninguna acción.
             }
-            else
+            catch (Exception ex)
             {
-                // Si no se ha seleccionado una cláusula, crear una nueva
-                var newClause = new ContractClause
-                {
-                    IdContractClause = Guid.NewGuid(),
-                    FkIdContract = _contract.IdContract,
-                    TitleClause = txtTittle.Text,
-                    DetailClause = txtDescription.Text
-                };
-
-                _contractService.AddContractClause(newClause);
-                MessageBox.Show("Cláusula agregada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Error al eliminar la cláusula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            // Limpiar el formulario y actualizar el DataGridView
-            _selectedClauseId = Guid.Empty; // Restablecer la selección
-            txtTittle.Clear();
-            txtDescription.Clear();
-            LoadClauses();
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Limpia los campos del formulario.
+        /// </summary>
+        private void ClearForm()
         {
-            if (_selectedClauseId == Guid.Empty)
-            {
-                MessageBox.Show("Por favor, seleccione una cláusula para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var result = MessageBox.Show("¿Está seguro de que desea eliminar la cláusula seleccionada?", "Confirmar eliminación",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-                // Eliminar la cláusula seleccionada
-                _contractService.DeleteContractClause(_selectedClauseId);
-                MessageBox.Show("Cláusula eliminada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Restablecer la selección y actualizar el DataGridView
-                _selectedClauseId = Guid.Empty;
-                txtTittle.Clear();
-                txtDescription.Clear();
-                LoadClauses();
-            }
+            _selectedClauseId = Guid.Empty;
+            txtTittle.Clear();
+            txtDescription.Clear();
         }
     }
 }

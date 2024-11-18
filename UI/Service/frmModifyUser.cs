@@ -45,28 +45,32 @@ namespace UI.Service
         /// </summary>
         private void LoadUsers()
         {
-            var users = UserService.GetAllUsers();
-
-            // Crear una lista anónima con los datos relevantes, incluidos los nombres de roles y permisos
-            var usersData = users.Select(user => new
+            try
             {
-                user.IdUsuario,
-                user.UserName,
-                Password = user.Password, // Mostrar la contraseña (puedes decidir si enmascararla o no)
-                Roles = string.Join(", ", user.Accesos.OfType<Familia>().Select(f => f.Nombre)), // Mostrar nombres de roles
-                Permisos = string.Join(", ", user.Accesos.OfType<Patente>().Select(p => p.Nombre)) // Mostrar nombres de permisos
-            }).ToList();
+                var users = UserService.GetAllUsers();
 
-            dgvUsers.DataSource = usersData;
+                var usersData = users.Select(user => new
+                {
+                    user.IdUsuario,
+                    user.UserName,
+                    Password = user.Password, // Mostrar la contraseña si es necesario
+                    Roles = string.Join(", ", user.Accesos.OfType<Familia>().Select(f => f.Nombre)),
+                    Permisos = string.Join(", ", user.Accesos.OfType<Patente>().Select(p => p.Nombre))
+                }).ToList();
 
-            // Ocultar la columna de ID si no es necesaria
-            dgvUsers.Columns["IdUsuario"].Visible = false;
+                dgvUsers.DataSource = usersData;
 
-            // Ajustar ancho de columnas y nombres amigables
-            dgvUsers.Columns["UserName"].HeaderText = "Nombre de usuario";
-            dgvUsers.Columns["Password"].HeaderText = "Contraseña";
-            dgvUsers.Columns["Roles"].HeaderText = "Roles";
-            dgvUsers.Columns["Permisos"].HeaderText = "Permisos";
+                dgvUsers.Columns["IdUsuario"].Visible = false;
+                dgvUsers.Columns["UserName"].HeaderText = "Nombre de usuario";
+                dgvUsers.Columns["Password"].HeaderText = "Contraseña";
+                dgvUsers.Columns["Roles"].HeaderText = "Roles";
+                dgvUsers.Columns["Permisos"].HeaderText = "Permisos";
+                dgvUsers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar usuarios: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>

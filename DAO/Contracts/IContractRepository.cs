@@ -67,5 +67,11 @@ namespace Services.Dao.Contracts
         /// <param name="contractId">El identificador único del contrato.</param>
         /// <param name="imageData">La imagen en formato de arreglo de bytes.</param>
         void SaveContractImage(Guid contractId, byte[] imageData);
+
+        /// <summary>
+        /// Genera un archivo Excel con los datos de los contratos.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        void ExportContractsToExcel(string filePath, List<Contract> contracts);
     }
 }

@@ -56,5 +56,29 @@ namespace UI.Tenant
             // Mostrar el formulario hijo
             Ticket.Show();
         }
+
+        private void propiedadesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmPropertiesReport, pasando el ID del inquilino
+            frmPropertiesReport PropertiesReport = new frmPropertiesReport(_loggedInPerson.IdPerson);
+
+            // Establecer el formulario frmPropertiesReport como el padre MDI
+            PropertiesReport.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            PropertiesReport.Show();
+        }
+
+        private void contratosToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmContractsReport, pasando el ID del inquilino
+            frmContractsReport ontractsReport = new frmContractsReport(_loggedInPerson.IdPerson);
+
+            // Establecer el formulario frmContractsReport como el padre MDI
+            ontractsReport.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            ontractsReport.Show();
+        }
     }
 }

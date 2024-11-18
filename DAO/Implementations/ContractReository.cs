@@ -10,9 +10,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using iTextSharp.text;
+using static DAO.RentsDataSet;
 
-namespace DAO.Implementations.SqlServer
+namespace DAO.Implementations
 {
     /// <summary>
     /// Implementación del repositorio de contratos utilizando ContractTableAdapter.
@@ -178,7 +181,8 @@ namespace DAO.Implementations.SqlServer
                 DateStartContract = row.DateStartContract,
                 DateFinalContract = row.DateFinalContract,
                 AnnualRentPrice = row.AnnualRentPrice,
-                StatusContract = row.StatusContract
+                StatusContract = row.StatusContract,
+                ContractImage = row.IsSignedContractNull() ? Array.Empty<byte>() : row.SignedContract
             }).ToList();
         }
 
@@ -204,7 +208,8 @@ namespace DAO.Implementations.SqlServer
                 DateStartContract = contractRow.DateStartContract,
                 DateFinalContract = contractRow.DateFinalContract,
                 AnnualRentPrice = contractRow.AnnualRentPrice,
-                StatusContract = contractRow.StatusContract
+                StatusContract = contractRow.StatusContract,
+                ContractImage = contractRow.IsSignedContractNull() ? Array.Empty<byte>() : contractRow.SignedContract
             };
         }
 
@@ -245,9 +250,58 @@ namespace DAO.Implementations.SqlServer
                     DateStartContract = row.DateStartContract,
                     DateFinalContract = row.DateFinalContract,
                     AnnualRentPrice = row.AnnualRentPrice,
-                    StatusContract = row.StatusContract
+                    StatusContract = row.StatusContract,
+                    ContractImage = row.IsSignedContractNull() ? Array.Empty<byte>() : row.SignedContract
                 }).ToList();
         }
 
+        /// <summary>
+        /// Genera un archivo Excel con los datos visibles en el DataGridView.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        /// <param name="contracts">Lista de contratos visibles.</param>
+        public void ExportContractsToExcel(string filePath, List<Contract> contracts)
+        {
+            if (contracts == null || contracts.Count == 0)
+                throw new InvalidOperationException("No hay contratos para exportar.");
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage excelPackage = new ExcelPackage())
+            {
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Reporte de Contratos");
+
+                // Encabezados
+                worksheet.Cells[1, 1].Value = "Propiedad";
+                worksheet.Cells[1, 2].Value = "Fecha Inicio";
+                worksheet.Cells[1, 3].Value = "Fecha Fin";
+                worksheet.Cells[1, 4].Value = "Precio Anual";
+                worksheet.Cells[1, 5].Value = "Estado";
+                worksheet.Cells[1, 6].Value = "DNI Arrendatario";
+
+                for (int i = 1; i <= 7; i++)
+                {
+                    worksheet.Cells[1, i].Style.Font.Bold = true;
+                    worksheet.Cells[1, i].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[1, i].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                // Datos
+                for (int i = 0; i < contracts.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = contracts[i].PropertyAddres.ToString();
+                    worksheet.Cells[i + 2, 2].Value = contracts[i].DateStartContract.ToString("yyyy-MM-dd");
+                    worksheet.Cells[i + 2, 3].Value = contracts[i].DateFinalContract.ToString("yyyy-MM-dd");
+                    worksheet.Cells[i + 2, 4].Value = contracts[i].AnnualRentPrice;
+                    worksheet.Cells[i + 2, 5].Value = contracts[i].StatusContract;
+                    worksheet.Cells[i + 2, 6].Value = contracts[i].TenantName.ToString();
+                }
+
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                FileInfo fileInfo = new FileInfo(filePath);
+                excelPackage.SaveAs(fileInfo);
+            }
+        }
     }
 }

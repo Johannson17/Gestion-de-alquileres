@@ -155,5 +155,41 @@ namespace UI
             // Mostrar el formulario hijo
             ModifyTicket.Show();
         }
+
+        private void contratosToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmContractsReport
+            frmContractsReport ContractsReport = new frmContractsReport();
+
+            // Establecer el formulario frmContractsReport como el padre MDI
+            ContractsReport.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            ContractsReport.Show();
+        }
+
+        private void propiedadesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmPropertiesReport
+            frmPropertiesReport PropertiesReport = new frmPropertiesReport();
+
+            // Establecer el formulario frmPropertiesReport como el padre MDI
+            PropertiesReport.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            PropertiesReport.Show();
+        }
+
+        private void arrendatariosToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmTenantsReport
+            frmTenantsReport TenantsReport = new frmTenantsReport();
+
+            // Establecer el formulario frmTenantsReport como el padre MDI
+            TenantsReport.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            TenantsReport.Show();
+        }
     }
 }

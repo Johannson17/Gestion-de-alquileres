@@ -1,12 +1,14 @@
 ﻿using DAO.Contracts;
 using DAO.RentsDataSetTableAdapters;
 using Domain;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using static Domain.Person;
 
-namespace DAO.Implementations.SqlServer
+namespace DAO.Implementations
 {
     /// <summary>
     /// Implementación del repositorio de personas utilizando el PersonTableAdapter.
@@ -252,6 +254,61 @@ namespace DAO.Implementations.SqlServer
                 DomicilePerson = personRow.DomicilePerson,
                 // Cargar otros campos de Person según el modelo
             };
+        }
+
+        /// <summary>
+        /// Genera un archivo Excel con la lista de personas proporcionada.
+        /// </summary>
+        /// <param name="filePath">Ruta donde se guardará el archivo Excel.</param>
+        /// <param name="persons">Lista de personas a exportar.</param>
+        public void ExportPersonsToExcel(string filePath, List<Person> persons)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("La ruta del archivo no puede estar vacía.");
+
+            if (persons == null || !persons.Any())
+                throw new ArgumentException("No hay datos de personas para exportar.");
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Reporte de Personas");
+
+                // Encabezados
+                worksheet.Cells[1, 1].Value = "Nombre";
+                worksheet.Cells[1, 2].Value = "Apellido";
+                worksheet.Cells[1, 3].Value = "Domicilio";
+                worksheet.Cells[1, 4].Value = "Correo Electrónico";
+                worksheet.Cells[1, 5].Value = "Teléfono";
+                worksheet.Cells[1, 6].Value = "Tipo de Documento";
+                worksheet.Cells[1, 6].Value = "Número de Documento";
+
+                for (int i = 1; i <= 6; i++)
+                {
+                    worksheet.Cells[1, i].Style.Font.Bold = true;
+                    worksheet.Cells[1, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[1, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                }
+
+                // Datos
+                for (int i = 0; i < persons.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = persons[i].NamePerson ?? "Sin Nombre";
+                    worksheet.Cells[i + 2, 2].Value = persons[i].LastNamePerson ?? "Sin Apellido";
+                    worksheet.Cells[i + 2, 3].Value = persons[i].DomicilePerson ?? "Sin Domicilio";
+                    worksheet.Cells[i + 2, 4].Value = persons[i].ElectronicDomicilePerson ?? "Sin Correo Electrónico";
+                    worksheet.Cells[i + 2, 5].Value = persons[i].PhoneNumberPerson.ToString() ?? "Sin Teléfono";
+                    worksheet.Cells[i + 2, 6].Value = persons[i].TypeDocumentPerson ?? "Sin Tipo de Documento";
+                    worksheet.Cells[i + 2, 6].Value = persons[i].NumberDocumentPerson.ToString() ?? "Sin Documento";
+                }
+
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                // Guardar el archivo
+                var fileInfo = new FileInfo(filePath);
+                package.SaveAs(fileInfo);
+            }
         }
     }
 }

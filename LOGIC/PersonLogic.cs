@@ -3,7 +3,7 @@ using DAO.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DAO.Implementations.SqlServer;
+using DAO.Implementations;
 using static Domain.Person;
 
 namespace LOGIC
@@ -101,5 +101,22 @@ namespace LOGIC
         {
             return _personRepository.GetPersonByPropertyAndType(propertyId, personType);
         }
+
+        /// <summary>
+        /// Llama al DAO para generar un archivo Excel con los datos de las personas.
+        /// </summary>
+        /// <param name="filePath">Ruta del archivo Excel donde se guardarán los datos.</param>
+        /// <param name="persons">Lista de personas a exportar.</param>
+        public void ExportPersonsToExcel(string filePath, List<Person> persons)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("La ruta del archivo no puede estar vacía.");
+
+            if (persons == null || !persons.Any())
+                throw new ArgumentException("No hay datos de personas para exportar.");
+
+            _personRepository.ExportPersonsToExcel(filePath, persons);
+        }
+
     }
 }
