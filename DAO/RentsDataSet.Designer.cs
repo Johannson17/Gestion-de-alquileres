@@ -1918,11 +1918,13 @@ namespace DAO {
             
             private global::System.Data.DataColumn columnFkIdPerson;
             
-            private global::System.Data.DataColumn columnTitleMaintReq;
+            private global::System.Data.DataColumn columnTitleTicket;
             
-            private global::System.Data.DataColumn columnDescriptionMaintReq;
+            private global::System.Data.DataColumn columnDescriptionTicket;
             
-            private global::System.Data.DataColumn columnStatusMaintenanceRequest;
+            private global::System.Data.DataColumn columnStatusTicket;
+            
+            private global::System.Data.DataColumn columnImageTicket;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
@@ -1983,25 +1985,33 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn TitleMaintReqColumn {
+            public global::System.Data.DataColumn TitleTicketColumn {
                 get {
-                    return this.columnTitleMaintReq;
+                    return this.columnTitleTicket;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn DescriptionMaintReqColumn {
+            public global::System.Data.DataColumn DescriptionTicketColumn {
                 get {
-                    return this.columnDescriptionMaintReq;
+                    return this.columnDescriptionTicket;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn StatusMaintenanceRequestColumn {
+            public global::System.Data.DataColumn StatusTicketColumn {
                 get {
-                    return this.columnStatusMaintenanceRequest;
+                    return this.columnStatusTicket;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn ImageTicketColumn {
+                get {
+                    return this.columnImageTicket;
                 }
             }
             
@@ -2042,15 +2052,16 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public MaintenanceRequestRow AddMaintenanceRequestRow(System.Guid IdRequest, PropertyRow parentPropertyRowByFK__Maintenan__FkIdP__7A3223E8, PersonRow parentPersonRowByFK__Maintenan__FkIdP__7B264821, string TitleMaintReq, string DescriptionMaintReq, string StatusMaintenanceRequest) {
+            public MaintenanceRequestRow AddMaintenanceRequestRow(System.Guid IdRequest, PropertyRow parentPropertyRowByFK__Maintenan__FkIdP__7A3223E8, PersonRow parentPersonRowByFK__Maintenan__FkIdP__7B264821, string TitleTicket, string DescriptionTicket, string StatusTicket, byte[] ImageTicket) {
                 MaintenanceRequestRow rowMaintenanceRequestRow = ((MaintenanceRequestRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         IdRequest,
                         null,
                         null,
-                        TitleMaintReq,
-                        DescriptionMaintReq,
-                        StatusMaintenanceRequest};
+                        TitleTicket,
+                        DescriptionTicket,
+                        StatusTicket,
+                        ImageTicket};
                 if ((parentPropertyRowByFK__Maintenan__FkIdP__7A3223E8 != null)) {
                     columnValuesArray[1] = parentPropertyRowByFK__Maintenan__FkIdP__7A3223E8[0];
                 }
@@ -2089,9 +2100,10 @@ namespace DAO {
                 this.columnIdRequest = base.Columns["IdRequest"];
                 this.columnFkIdProperty = base.Columns["FkIdProperty"];
                 this.columnFkIdPerson = base.Columns["FkIdPerson"];
-                this.columnTitleMaintReq = base.Columns["TitleMaintReq"];
-                this.columnDescriptionMaintReq = base.Columns["DescriptionMaintReq"];
-                this.columnStatusMaintenanceRequest = base.Columns["StatusMaintenanceRequest"];
+                this.columnTitleTicket = base.Columns["TitleTicket"];
+                this.columnDescriptionTicket = base.Columns["DescriptionTicket"];
+                this.columnStatusTicket = base.Columns["StatusTicket"];
+                this.columnImageTicket = base.Columns["ImageTicket"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2103,19 +2115,21 @@ namespace DAO {
                 base.Columns.Add(this.columnFkIdProperty);
                 this.columnFkIdPerson = new global::System.Data.DataColumn("FkIdPerson", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFkIdPerson);
-                this.columnTitleMaintReq = new global::System.Data.DataColumn("TitleMaintReq", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnTitleMaintReq);
-                this.columnDescriptionMaintReq = new global::System.Data.DataColumn("DescriptionMaintReq", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnDescriptionMaintReq);
-                this.columnStatusMaintenanceRequest = new global::System.Data.DataColumn("StatusMaintenanceRequest", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnStatusMaintenanceRequest);
+                this.columnTitleTicket = new global::System.Data.DataColumn("TitleTicket", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTitleTicket);
+                this.columnDescriptionTicket = new global::System.Data.DataColumn("DescriptionTicket", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDescriptionTicket);
+                this.columnStatusTicket = new global::System.Data.DataColumn("StatusTicket", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnStatusTicket);
+                this.columnImageTicket = new global::System.Data.DataColumn("ImageTicket", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnImageTicket);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnIdRequest}, true));
                 this.columnIdRequest.AllowDBNull = false;
                 this.columnIdRequest.Unique = true;
-                this.columnTitleMaintReq.MaxLength = 100;
-                this.columnDescriptionMaintReq.MaxLength = 300;
-                this.columnStatusMaintenanceRequest.MaxLength = 50;
+                this.columnTitleTicket.MaxLength = 100;
+                this.columnDescriptionTicket.MaxLength = 300;
+                this.columnStatusTicket.MaxLength = 50;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4036,52 +4050,67 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public string TitleMaintReq {
+            public string TitleTicket {
                 get {
                     try {
-                        return ((string)(this[this.tableMaintenanceRequest.TitleMaintReqColumn]));
+                        return ((string)(this[this.tableMaintenanceRequest.TitleTicketColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'TitleMaintReq\' de la tabla \'MaintenanceRequest\' es DBNull" +
-                                ".", e);
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'TitleTicket\' de la tabla \'MaintenanceRequest\' es DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMaintenanceRequest.TitleMaintReqColumn] = value;
+                    this[this.tableMaintenanceRequest.TitleTicketColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public string DescriptionMaintReq {
+            public string DescriptionTicket {
                 get {
                     try {
-                        return ((string)(this[this.tableMaintenanceRequest.DescriptionMaintReqColumn]));
+                        return ((string)(this[this.tableMaintenanceRequest.DescriptionTicketColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'DescriptionMaintReq\' de la tabla \'MaintenanceRequest\' es " +
-                                "DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'DescriptionTicket\' de la tabla \'MaintenanceRequest\' es DB" +
+                                "Null.", e);
                     }
                 }
                 set {
-                    this[this.tableMaintenanceRequest.DescriptionMaintReqColumn] = value;
+                    this[this.tableMaintenanceRequest.DescriptionTicketColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public string StatusMaintenanceRequest {
+            public string StatusTicket {
                 get {
                     try {
-                        return ((string)(this[this.tableMaintenanceRequest.StatusMaintenanceRequestColumn]));
+                        return ((string)(this[this.tableMaintenanceRequest.StatusTicketColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'StatusMaintenanceRequest\' de la tabla \'MaintenanceRequest" +
-                                "\' es DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'StatusTicket\' de la tabla \'MaintenanceRequest\' es DBNull." +
+                                "", e);
                     }
                 }
                 set {
-                    this[this.tableMaintenanceRequest.StatusMaintenanceRequestColumn] = value;
+                    this[this.tableMaintenanceRequest.StatusTicketColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public byte[] ImageTicket {
+                get {
+                    try {
+                        return ((byte[])(this[this.tableMaintenanceRequest.ImageTicketColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ImageTicket\' de la tabla \'MaintenanceRequest\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaintenanceRequest.ImageTicketColumn] = value;
                 }
             }
             
@@ -4133,38 +4162,50 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsTitleMaintReqNull() {
-                return this.IsNull(this.tableMaintenanceRequest.TitleMaintReqColumn);
+            public bool IsTitleTicketNull() {
+                return this.IsNull(this.tableMaintenanceRequest.TitleTicketColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetTitleMaintReqNull() {
-                this[this.tableMaintenanceRequest.TitleMaintReqColumn] = global::System.Convert.DBNull;
+            public void SetTitleTicketNull() {
+                this[this.tableMaintenanceRequest.TitleTicketColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsDescriptionMaintReqNull() {
-                return this.IsNull(this.tableMaintenanceRequest.DescriptionMaintReqColumn);
+            public bool IsDescriptionTicketNull() {
+                return this.IsNull(this.tableMaintenanceRequest.DescriptionTicketColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetDescriptionMaintReqNull() {
-                this[this.tableMaintenanceRequest.DescriptionMaintReqColumn] = global::System.Convert.DBNull;
+            public void SetDescriptionTicketNull() {
+                this[this.tableMaintenanceRequest.DescriptionTicketColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsStatusMaintenanceRequestNull() {
-                return this.IsNull(this.tableMaintenanceRequest.StatusMaintenanceRequestColumn);
+            public bool IsStatusTicketNull() {
+                return this.IsNull(this.tableMaintenanceRequest.StatusTicketColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetStatusMaintenanceRequestNull() {
-                this[this.tableMaintenanceRequest.StatusMaintenanceRequestColumn] = global::System.Convert.DBNull;
+            public void SetStatusTicketNull() {
+                this[this.tableMaintenanceRequest.StatusTicketColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsImageTicketNull() {
+                return this.IsNull(this.tableMaintenanceRequest.ImageTicketColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetImageTicketNull() {
+                this[this.tableMaintenanceRequest.ImageTicketColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -7038,58 +7079,61 @@ SELECT IdInventoryProperty, FkIdProperty, NameInventory, DescriptionInventory FR
             tableMapping.ColumnMappings.Add("IdRequest", "IdRequest");
             tableMapping.ColumnMappings.Add("FkIdProperty", "FkIdProperty");
             tableMapping.ColumnMappings.Add("FkIdPerson", "FkIdPerson");
-            tableMapping.ColumnMappings.Add("TitleMaintReq", "TitleMaintReq");
-            tableMapping.ColumnMappings.Add("DescriptionMaintReq", "DescriptionMaintReq");
-            tableMapping.ColumnMappings.Add("StatusMaintenanceRequest", "StatusMaintenanceRequest");
+            tableMapping.ColumnMappings.Add("TitleTicket", "TitleTicket");
+            tableMapping.ColumnMappings.Add("DescriptionTicket", "DescriptionTicket");
+            tableMapping.ColumnMappings.Add("StatusTicket", "StatusTicket");
+            tableMapping.ColumnMappings.Add("ImageTicket", "ImageTicket");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[MaintenanceRequest] WHERE (([IdRequest] = @Original_IdRequest) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdPerson = 1 AND [FkIdPerson] IS NULL) OR ([FkIdPerson] = @Original_FkIdPerson)) AND ((@IsNull_TitleMaintReq = 1 AND [TitleMaintReq] IS NULL) OR ([TitleMaintReq] = @Original_TitleMaintReq)) AND ((@IsNull_DescriptionMaintReq = 1 AND [DescriptionMaintReq] IS NULL) OR ([DescriptionMaintReq] = @Original_DescriptionMaintReq)) AND ((@IsNull_StatusMaintenanceRequest = 1 AND [StatusMaintenanceRequest] IS NULL) OR ([StatusMaintenanceRequest] = @Original_StatusMaintenanceRequest)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [MaintenanceRequest] WHERE (([IdRequest] = @Original_IdRequest) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdPerson = 1 AND [FkIdPerson] IS NULL) OR ([FkIdPerson] = @Original_FkIdPerson)) AND ((@IsNull_TitleTicket = 1 AND [TitleTicket] IS NULL) OR ([TitleTicket] = @Original_TitleTicket)) AND ((@IsNull_DescriptionTicket = 1 AND [DescriptionTicket] IS NULL) OR ([DescriptionTicket] = @Original_DescriptionTicket)) AND ((@IsNull_StatusTicket = 1 AND [StatusTicket] IS NULL) OR ([StatusTicket] = @Original_StatusTicket)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IdRequest", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdRequest", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_FkIdProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_FkIdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_FkIdPerson", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdPerson", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_FkIdPerson", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdPerson", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_TitleMaintReq", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleMaintReq", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TitleMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleMaintReq", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DescriptionMaintReq", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionMaintReq", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DescriptionMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionMaintReq", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusMaintenanceRequest", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusMaintenanceRequest", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusMaintenanceRequest", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusMaintenanceRequest", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_TitleTicket", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleTicket", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TitleTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleTicket", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DescriptionTicket", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionTicket", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DescriptionTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionTicket", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusTicket", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusTicket", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusTicket", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[MaintenanceRequest] ([IdRequest], [FkIdProperty], [FkIdPerson], [TitleMaintReq], [DescriptionMaintReq], [StatusMaintenanceRequest]) VALUES (@IdRequest, @FkIdProperty, @FkIdPerson, @TitleMaintReq, @DescriptionMaintReq, @StatusMaintenanceRequest);
-SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, StatusMaintenanceRequest FROM MaintenanceRequest WHERE (IdRequest = @IdRequest)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [MaintenanceRequest] ([IdRequest], [FkIdProperty], [FkIdPerson], [TitleTicket], [DescriptionTicket], [StatusTicket], [ImageTicket]) VALUES (@IdRequest, @FkIdProperty, @FkIdPerson, @TitleTicket, @DescriptionTicket, @StatusTicket, @ImageTicket);
+SELECT IdRequest, FkIdProperty, FkIdPerson, TitleTicket, DescriptionTicket, StatusTicket, ImageTicket FROM MaintenanceRequest WHERE (IdRequest = @IdRequest)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdRequest", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdRequest", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdPerson", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdPerson", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TitleMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleMaintReq", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DescriptionMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionMaintReq", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusMaintenanceRequest", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusMaintenanceRequest", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TitleTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DescriptionTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ImageTicket", global::System.Data.SqlDbType.Image, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ImageTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[MaintenanceRequest] SET [IdRequest] = @IdRequest, [FkIdProperty] = @FkIdProperty, [FkIdPerson] = @FkIdPerson, [TitleMaintReq] = @TitleMaintReq, [DescriptionMaintReq] = @DescriptionMaintReq, [StatusMaintenanceRequest] = @StatusMaintenanceRequest WHERE (([IdRequest] = @Original_IdRequest) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdPerson = 1 AND [FkIdPerson] IS NULL) OR ([FkIdPerson] = @Original_FkIdPerson)) AND ((@IsNull_TitleMaintReq = 1 AND [TitleMaintReq] IS NULL) OR ([TitleMaintReq] = @Original_TitleMaintReq)) AND ((@IsNull_DescriptionMaintReq = 1 AND [DescriptionMaintReq] IS NULL) OR ([DescriptionMaintReq] = @Original_DescriptionMaintReq)) AND ((@IsNull_StatusMaintenanceRequest = 1 AND [StatusMaintenanceRequest] IS NULL) OR ([StatusMaintenanceRequest] = @Original_StatusMaintenanceRequest)));
-SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, StatusMaintenanceRequest FROM MaintenanceRequest WHERE (IdRequest = @IdRequest)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [MaintenanceRequest] SET [IdRequest] = @IdRequest, [FkIdProperty] = @FkIdProperty, [FkIdPerson] = @FkIdPerson, [TitleTicket] = @TitleTicket, [DescriptionTicket] = @DescriptionTicket, [StatusTicket] = @StatusTicket, [ImageTicket] = @ImageTicket WHERE (([IdRequest] = @Original_IdRequest) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdPerson = 1 AND [FkIdPerson] IS NULL) OR ([FkIdPerson] = @Original_FkIdPerson)) AND ((@IsNull_TitleTicket = 1 AND [TitleTicket] IS NULL) OR ([TitleTicket] = @Original_TitleTicket)) AND ((@IsNull_DescriptionTicket = 1 AND [DescriptionTicket] IS NULL) OR ([DescriptionTicket] = @Original_DescriptionTicket)) AND ((@IsNull_StatusTicket = 1 AND [StatusTicket] IS NULL) OR ([StatusTicket] = @Original_StatusTicket)));
+SELECT IdRequest, FkIdProperty, FkIdPerson, TitleTicket, DescriptionTicket, StatusTicket, ImageTicket FROM MaintenanceRequest WHERE (IdRequest = @IdRequest)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdRequest", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdRequest", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdPerson", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdPerson", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TitleMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleMaintReq", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DescriptionMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionMaintReq", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusMaintenanceRequest", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusMaintenanceRequest", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TitleTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DescriptionTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ImageTicket", global::System.Data.SqlDbType.Image, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ImageTicket", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IdRequest", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdRequest", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_FkIdProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_FkIdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_FkIdPerson", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdPerson", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_FkIdPerson", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdPerson", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_TitleMaintReq", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleMaintReq", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TitleMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleMaintReq", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DescriptionMaintReq", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionMaintReq", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DescriptionMaintReq", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionMaintReq", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusMaintenanceRequest", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusMaintenanceRequest", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusMaintenanceRequest", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusMaintenanceRequest", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_TitleTicket", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleTicket", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TitleTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TitleTicket", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DescriptionTicket", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionTicket", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DescriptionTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DescriptionTicket", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusTicket", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusTicket", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusTicket", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusTicket", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7105,8 +7149,8 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, S" +
-                "tatusMaintenanceRequest FROM dbo.MaintenanceRequest";
+            this._commandCollection[0].CommandText = "SELECT        IdRequest, FkIdProperty, FkIdPerson, TitleTicket, DescriptionTicket" +
+                ", StatusTicket, ImageTicket\r\nFROM            MaintenanceRequest";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -7167,7 +7211,7 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(System.Guid Original_IdRequest, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdPerson, string Original_TitleMaintReq, string Original_DescriptionMaintReq, string Original_StatusMaintenanceRequest) {
+        public virtual int Delete(System.Guid Original_IdRequest, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdPerson, string Original_TitleTicket, string Original_DescriptionTicket, string Original_StatusTicket) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_IdRequest));
             if ((Original_FkIdProperty.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -7185,29 +7229,29 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
                 this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((Original_TitleMaintReq == null)) {
+            if ((Original_TitleTicket == null)) {
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_TitleMaintReq));
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_TitleTicket));
             }
-            if ((Original_DescriptionMaintReq == null)) {
+            if ((Original_DescriptionTicket == null)) {
                 this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[8].Value = ((string)(Original_DescriptionMaintReq));
+                this.Adapter.DeleteCommand.Parameters[8].Value = ((string)(Original_DescriptionTicket));
             }
-            if ((Original_StatusMaintenanceRequest == null)) {
+            if ((Original_StatusTicket == null)) {
                 this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[10].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[10].Value = ((string)(Original_StatusMaintenanceRequest));
+                this.Adapter.DeleteCommand.Parameters[10].Value = ((string)(Original_StatusTicket));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -7229,7 +7273,7 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid IdRequest, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdPerson, string TitleMaintReq, string DescriptionMaintReq, string StatusMaintenanceRequest) {
+        public virtual int Insert(System.Guid IdRequest, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdPerson, string TitleTicket, string DescriptionTicket, string StatusTicket, byte[] ImageTicket) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(IdRequest));
             if ((FkIdProperty.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((System.Guid)(FkIdProperty.Value));
@@ -7243,23 +7287,29 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
             else {
                 this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
-            if ((TitleMaintReq == null)) {
+            if ((TitleTicket == null)) {
                 this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(TitleMaintReq));
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(TitleTicket));
             }
-            if ((DescriptionMaintReq == null)) {
+            if ((DescriptionTicket == null)) {
                 this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(DescriptionMaintReq));
+                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(DescriptionTicket));
             }
-            if ((StatusMaintenanceRequest == null)) {
+            if ((StatusTicket == null)) {
                 this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[5].Value = ((string)(StatusMaintenanceRequest));
+                this.Adapter.InsertCommand.Parameters[5].Value = ((string)(StatusTicket));
+            }
+            if ((ImageTicket == null)) {
+                this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[6].Value = ((byte[])(ImageTicket));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -7281,7 +7331,7 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid IdRequest, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdPerson, string TitleMaintReq, string DescriptionMaintReq, string StatusMaintenanceRequest, System.Guid Original_IdRequest, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdPerson, string Original_TitleMaintReq, string Original_DescriptionMaintReq, string Original_StatusMaintenanceRequest) {
+        public virtual int Update(System.Guid IdRequest, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdPerson, string TitleTicket, string DescriptionTicket, string StatusTicket, byte[] ImageTicket, System.Guid Original_IdRequest, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdPerson, string Original_TitleTicket, string Original_DescriptionTicket, string Original_StatusTicket) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(IdRequest));
             if ((FkIdProperty.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = ((System.Guid)(FkIdProperty.Value));
@@ -7295,64 +7345,70 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
             else {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
-            if ((TitleMaintReq == null)) {
+            if ((TitleTicket == null)) {
                 this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(TitleMaintReq));
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(TitleTicket));
             }
-            if ((DescriptionMaintReq == null)) {
+            if ((DescriptionTicket == null)) {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(DescriptionMaintReq));
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(DescriptionTicket));
             }
-            if ((StatusMaintenanceRequest == null)) {
+            if ((StatusTicket == null)) {
                 this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(StatusMaintenanceRequest));
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(StatusTicket));
             }
-            this.Adapter.UpdateCommand.Parameters[6].Value = ((System.Guid)(Original_IdRequest));
-            if ((Original_FkIdProperty.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((System.Guid)(Original_FkIdProperty.Value));
+            if ((ImageTicket == null)) {
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((byte[])(ImageTicket));
+            }
+            this.Adapter.UpdateCommand.Parameters[7].Value = ((System.Guid)(Original_IdRequest));
+            if ((Original_FkIdProperty.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((System.Guid)(Original_FkIdProperty.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
             }
             if ((Original_FkIdPerson.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((System.Guid)(Original_FkIdPerson.Value));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((System.Guid)(Original_FkIdPerson.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
             }
-            if ((Original_TitleMaintReq == null)) {
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((string)(Original_TitleMaintReq));
-            }
-            if ((Original_DescriptionMaintReq == null)) {
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
+            if ((Original_TitleTicket == null)) {
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((string)(Original_DescriptionMaintReq));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(Original_TitleTicket));
             }
-            if ((Original_StatusMaintenanceRequest == null)) {
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
+            if ((Original_DescriptionTicket == null)) {
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[16].Value = ((string)(Original_StatusMaintenanceRequest));
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((string)(Original_DescriptionTicket));
+            }
+            if ((Original_StatusTicket == null)) {
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[17].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((string)(Original_StatusTicket));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -7374,8 +7430,8 @@ SELECT IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, 
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdPerson, string TitleMaintReq, string DescriptionMaintReq, string StatusMaintenanceRequest, System.Guid Original_IdRequest, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdPerson, string Original_TitleMaintReq, string Original_DescriptionMaintReq, string Original_StatusMaintenanceRequest) {
-            return this.Update(Original_IdRequest, FkIdProperty, FkIdPerson, TitleMaintReq, DescriptionMaintReq, StatusMaintenanceRequest, Original_IdRequest, Original_FkIdProperty, Original_FkIdPerson, Original_TitleMaintReq, Original_DescriptionMaintReq, Original_StatusMaintenanceRequest);
+        public virtual int Update(global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdPerson, string TitleTicket, string DescriptionTicket, string StatusTicket, byte[] ImageTicket, System.Guid Original_IdRequest, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdPerson, string Original_TitleTicket, string Original_DescriptionTicket, string Original_StatusTicket) {
+            return this.Update(Original_IdRequest, FkIdProperty, FkIdPerson, TitleTicket, DescriptionTicket, StatusTicket, ImageTicket, Original_IdRequest, Original_FkIdProperty, Original_FkIdPerson, Original_TitleTicket, Original_DescriptionTicket, Original_StatusTicket);
         }
     }
     

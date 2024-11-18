@@ -54,7 +54,7 @@ namespace Services.Logic
             // Generar nuevo ID y fecha de inicio del contrato
             contract.IdContract = Guid.NewGuid();
             contract.DateStartContract = DateTime.Now;
-            contract.StatusContract = "Activo";
+            contract.StatusContract = "Inactivo";
 
             // Agregar contrato en el repositorio de contratos
             _contractRepository.AddContract(contract);
@@ -223,9 +223,12 @@ namespace Services.Logic
         /// <returns>Una lista de contratos donde el usuario es el arrendatario.</returns>
         public List<Contract> GetContractsByTenantId(Guid tenantId)
         {
-            return _contractRepository.GetAllContracts()
-                                       .Where(c => c.FkIdTenant == tenantId)
-                                       .ToList();
+            return _contractRepository.GetAllContracts().Where(c => c.FkIdTenant == tenantId).ToList();
+        }
+
+        public List<Contract> GetContractsByTenantIdAndStatus(Guid tenantId, string Status)
+        {
+            return _contractRepository.GetAllContracts().Where(c => c.FkIdTenant == tenantId && c.StatusContract == Status).ToList();
         }
 
         /// <summary>

@@ -78,6 +78,7 @@ namespace DAO.Implementations.SqlServer
                 throw new KeyNotFoundException($"No se encontró un contrato con el ID: {contractId}");
 
             contract.SignedContract = imageData;
+            contract.StatusContract = "Activo";
 
             // Actualiza la fila correspondiente en la base de datos
             _contractTableAdapter.Update(contract);

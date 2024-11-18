@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using UI.Admin;
 using UI.Service;
 
 namespace UI
@@ -112,7 +113,7 @@ namespace UI
             // Crear una nueva instancia del formulario frmModifyFamily
             frmModifyFamily ModifyFamily = new frmModifyFamily();
 
-            // Establecer el formulario frmModifyUser como el padre MDI
+            // Establecer el formulario frmModifyFamily como el padre MDI
             ModifyFamily.MdiParent = this;
 
             // Mostrar el formulario hijo
@@ -124,7 +125,7 @@ namespace UI
             // Crear una nueva instancia del formulario frmAddContract
             frmAddContract AddContract = new frmAddContract();
 
-            // Establecer el formulario frmModifyUser como el padre MDI
+            // Establecer el formulario frmAddContract como el padre MDI
             AddContract.MdiParent = this;
 
             // Mostrar el formulario hijo
@@ -136,11 +137,23 @@ namespace UI
             // Crear una nueva instancia del formulario frmModifyContract
             frmModifyContract ModifyContract = new frmModifyContract();
 
-            // Establecer el formulario frmModifyUser como el padre MDI
+            // Establecer el formulario frmModifyContract como el padre MDI
             ModifyContract.MdiParent = this;
 
             // Mostrar el formulario hijo
             ModifyContract.Show();
+        }
+
+        private void ticketsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmModifyTicket
+            frmModifyTicket ModifyTicket = new frmModifyTicket();
+
+            // Establecer el formulario frmModifyTicket como el padre MDI
+            ModifyTicket.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            ModifyTicket.Show();
         }
     }
 }

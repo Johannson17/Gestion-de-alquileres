@@ -29,7 +29,7 @@ namespace UI.Tenant
         private void LoadContracts()
         {
             // Obtener todos los contratos que no están activos
-            List<Contract> contracts = _contractService.GetContractsByTenantId(_loggedInTenantId);
+            List<Contract> contracts = _contractService.GetContractsByTenantIdAndStatus(_loggedInTenantId, "Inactivo");
 
             // Obtener las propiedades para extraer la dirección
             var properties = _propertyService.GetAllProperties().ToDictionary(p => p.IdProperty, p => p.AddressProperty);
@@ -53,7 +53,7 @@ namespace UI.Tenant
             dgvContracts.Columns["StartDate"].HeaderText = "Fecha de Inicio";
             dgvContracts.Columns["EndDate"].HeaderText = "Fecha de Finalización";
             dgvContracts.Columns["AnnualRentPrice"].HeaderText = "Precio Mensual";
-            dgvContracts.Columns["IsActive"].HeaderText = "Estado ";
+            dgvContracts.Columns["IsActive"].HeaderText = "Estado";
         }
 
 
@@ -65,7 +65,8 @@ namespace UI.Tenant
                 return;
             }
 
-            var selectedContract = (Contract)dgvContracts.CurrentRow.DataBoundItem;
+            var selectedRow = dgvContracts.CurrentRow.DataBoundItem;
+            var idContract = (Guid)selectedRow.GetType().GetProperty("IdContract").GetValue(selectedRow);
 
             // Abre el diálogo para seleccionar la imagen
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -79,7 +80,7 @@ namespace UI.Tenant
                     byte[] contractImage = File.ReadAllBytes(openFileDialog.FileName);
 
                     // Llama al servicio para guardar la imagen del contrato en la base de datos
-                    _contractService.SaveContractImage(selectedContract.IdContract, contractImage);
+                    _contractService.SaveContractImage(idContract, contractImage);
 
                     MessageBox.Show("Contrato e imagen guardados exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -99,7 +100,9 @@ namespace UI.Tenant
                 return;
             }
 
-            var selectedContract = (Contract)dgvContracts.CurrentRow.DataBoundItem;
+            // Obtener el DataBoundItem del tipo anónimo y extraer el IdContract
+            var selectedRow = dgvContracts.CurrentRow.DataBoundItem;
+            var idContract = (Guid)selectedRow.GetType().GetProperty("IdContract").GetValue(selectedRow);
 
             // Usar FolderBrowserDialog para seleccionar la carpeta de destino
             using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
@@ -109,14 +112,15 @@ namespace UI.Tenant
                 if (folderDialog.ShowDialog() == DialogResult.OK)
                 {
                     // Ruta del archivo PDF en la carpeta seleccionada
-                    string outputPath = Path.Combine(folderDialog.SelectedPath, $"Contrato_{selectedContract.IdContract}.pdf");
+                    string outputPath = Path.Combine(folderDialog.SelectedPath, $"Contrato_{idContract}.pdf");
 
                     // Generar el PDF
-                    _contractService.GenerateContractPDF(selectedContract.IdContract, outputPath);
+                    _contractService.GenerateContractPDF(idContract, outputPath);
 
                     MessageBox.Show($"Contrato descargado en: {outputPath}", "Descarga Completa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
+
     }
 }

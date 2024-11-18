@@ -98,5 +98,22 @@ namespace LOGIC.Facade
         {
             return _propertyLogic.GetPropertiesByStatus(status);
         }
+
+        /// <summary>
+        /// Obtiene las propiedades para las que el inquilino tiene un contrato activo.
+        /// </summary>
+        /// <param name="tenantId">El ID del inquilino.</param>
+        /// <returns>Lista de propiedades con contratos activos para el inquilino.</returns>
+        public List<Property> GetActivePropertiesByTenantId(Guid tenantId)
+        {
+            try
+            {
+                return _propertyLogic.GetActivePropertiesByTenantId(tenantId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No tienes ninguna propiedad alquilada.", ex);
+            }
+        }
     }
 }

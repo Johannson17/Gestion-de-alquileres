@@ -142,6 +142,11 @@ namespace Services.Facade
             return _contractLogic.GetContractsByTenantId(tenantId);
         }
 
+        public List<Contract> GetContractsByTenantIdAndStatus(Guid tenantId, string Status)
+        {
+            return _contractLogic.GetContractsByTenantIdAndStatus(tenantId, Status);
+        }
+
         /// <summary>
         /// Genera un PDF de las cláusulas del contrato en orden de IdAuxiliar.
         /// </summary>

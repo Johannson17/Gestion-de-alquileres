@@ -1,10 +1,13 @@
 ﻿using DAO.Contracts;
 using DAO.Implementations.SqlServer;
 using Domain;
+using Services.Logic;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using static Domain.Person;
+using Services.Domain;
 
 namespace LOGIC
 {
@@ -13,6 +16,7 @@ namespace LOGIC
     /// </summary>
     public class PropertyLogic
     {
+        private readonly ContractLogic _contractLogic;
         private readonly IPropertyRepository _propertyRepository;
 
         /// <summary>
@@ -21,6 +25,7 @@ namespace LOGIC
         public PropertyLogic()
         {
             _propertyRepository = new PropertyRepository();
+            _contractLogic = new ContractLogic();
         }
 
         /// <summary>
@@ -98,6 +103,32 @@ namespace LOGIC
         public void RemoveInventoryFromProperty(Guid propertyId, Guid inventoryId)
         {
             _propertyRepository.DeleteInventoryById(propertyId, inventoryId);
+        }
+
+        /// <summary>
+        /// Obtiene las propiedades para las que el inquilino tiene un contrato activo.
+        /// </summary>
+        /// <param name="tenantId">El ID del inquilino.</param>
+        /// <returns>Lista de propiedades con contratos activos para el inquilino.</returns>
+        public List<Property> GetActivePropertiesByTenantId(Guid tenantId)
+        {
+            List<Contract> activeContracts;
+
+            try
+            {
+                // Intentar obtener los contratos activos del inquilino
+                activeContracts = _contractLogic.GetContractsByTenantIdAndStatus(tenantId, "Activo");
+            }
+            catch (NullReferenceException ex)
+            {
+                throw new Exception("No tienes ninguna propiedad alquilada.", ex);
+            }
+
+            // Extraer los IDs de las propiedades de estos contratos
+            var propertyIds = activeContracts.Select(c => c.FkIdProperty).Distinct();
+
+            // Obtener y retornar las propiedades correspondientes a los IDs de contratos activos
+            return GetAllProperties().Where(p => propertyIds.Contains(p.IdProperty)).ToList();
         }
     }
 }

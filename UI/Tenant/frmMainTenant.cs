@@ -44,5 +44,17 @@ namespace UI.Tenant
             // Mostrar el formulario hijo
             Contract.Show();
         }
+
+        private void ticketsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Crear una nueva instancia del formulario frmTicket, pasando el ID del inquilino
+            frmTicket Ticket = new frmTicket(_loggedInPerson.IdPerson);
+
+            // Establecer el formulario frmTicket como el padre MDI
+            Ticket.MdiParent = this;
+
+            // Mostrar el formulario hijo
+            Ticket.Show();
+        }
     }
 }

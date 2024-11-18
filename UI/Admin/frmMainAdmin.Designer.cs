@@ -110,21 +110,21 @@
             // altaToolStripMenuItem
             // 
             this.altaToolStripMenuItem.Name = "altaToolStripMenuItem";
-            this.altaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.altaToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.altaToolStripMenuItem.Text = "Alta";
             this.altaToolStripMenuItem.Click += new System.EventHandler(this.altaToolStripMenuItem_Click);
             // 
             // modificaciónBajaToolStripMenuItem
             // 
             this.modificaciónBajaToolStripMenuItem.Name = "modificaciónBajaToolStripMenuItem";
-            this.modificaciónBajaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modificaciónBajaToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.modificaciónBajaToolStripMenuItem.Text = "Modificación/Baja";
             this.modificaciónBajaToolStripMenuItem.Click += new System.EventHandler(this.modificaciónBajaToolStripMenuItem_Click);
             // 
             // pagosToolStripMenuItem
             // 
             this.pagosToolStripMenuItem.Name = "pagosToolStripMenuItem";
-            this.pagosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pagosToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.pagosToolStripMenuItem.Text = "Pagos";
             // 
             // propiedadesToolStripMenuItem
@@ -139,14 +139,14 @@
             // altaToolStripMenuItem1
             // 
             this.altaToolStripMenuItem1.Name = "altaToolStripMenuItem1";
-            this.altaToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.altaToolStripMenuItem1.Size = new System.Drawing.Size(171, 22);
             this.altaToolStripMenuItem1.Text = "Alta";
             this.altaToolStripMenuItem1.Click += new System.EventHandler(this.altaToolStripMenuItem1_Click);
             // 
             // modificaciónBajaToolStripMenuItem1
             // 
             this.modificaciónBajaToolStripMenuItem1.Name = "modificaciónBajaToolStripMenuItem1";
-            this.modificaciónBajaToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.modificaciónBajaToolStripMenuItem1.Size = new System.Drawing.Size(171, 22);
             this.modificaciónBajaToolStripMenuItem1.Text = "Modificación/Baja";
             this.modificaciónBajaToolStripMenuItem1.Click += new System.EventHandler(this.modificaciónBajaToolStripMenuItem1_Click);
             // 
@@ -155,6 +155,7 @@
             this.ticketsToolStripMenuItem.Name = "ticketsToolStripMenuItem";
             this.ticketsToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.ticketsToolStripMenuItem.Text = "Tickets";
+            this.ticketsToolStripMenuItem.Click += new System.EventHandler(this.ticketsToolStripMenuItem_Click);
             // 
             // configuraciónToolStripMenuItem
             // 

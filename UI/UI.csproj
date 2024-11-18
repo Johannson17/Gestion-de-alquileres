@@ -76,6 +76,12 @@
     <Compile Include="Admin\frmModifyContractClause.Designer.cs">
       <DependentUpon>frmModifyContractClause.cs</DependentUpon>
     </Compile>
+    <Compile Include="Admin\frmModifyTicket.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Admin\frmModifyTicket.Designer.cs">
+      <DependentUpon>frmModifyTicket.cs</DependentUpon>
+    </Compile>
     <Compile Include="Admin\frmUsers.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,12 @@
     <Compile Include="Tenant\frmMainTenant.Designer.cs">
       <DependentUpon>frmMainTenant.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tenant\frmTicket.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tenant\frmTicket.Designer.cs">
+      <DependentUpon>frmTicket.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Admin\frmAddContract.resx">
       <DependentUpon>frmAddContract.cs</DependentUpon>
     </EmbeddedResource>
@@ -180,6 +192,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Admin\frmModifyContractClause.resx">
       <DependentUpon>frmModifyContractClause.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Admin\frmModifyTicket.resx">
+      <DependentUpon>frmModifyTicket.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Admin\frmUsers.resx">
       <DependentUpon>frmUsers.cs</DependentUpon>
@@ -237,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tenant\frmMainTenant.resx">
       <DependentUpon>frmMainTenant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tenant\frmTicket.resx">
+      <DependentUpon>frmTicket.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="I18n\idioma.es-AR" />
     <None Include="Properties\Settings.settings">

@@ -37,7 +37,7 @@ namespace UI
         private void LoadContracts()
         {
             // Obtener todos los contratos que no están activos
-            _originalContracts = _contractService.GetContractsByStatus("Inactivo");
+            _originalContracts = _contractService.GetAllContracts();
 
             // Obtener las propiedades para extraer la dirección
             var properties = _propertyService.GetAllProperties().ToDictionary(p => p.IdProperty, p => p.AddressProperty);
