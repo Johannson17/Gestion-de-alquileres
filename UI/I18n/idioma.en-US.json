@@ -117,7 +117,9 @@
   "Agregar persona": "Add person",
   "Alta": "Add",
   "Modificación/Baja": "Modify/Delete",
+  "Modificacion/Baja": "Modify/Delete",
   "Configuración": "Configuration",
+  "Configuracion": "Configuration",
   "Configuración:": "Configuration:",
   "Usuarios y permisos": "Users and permissions",
   "Usuarios y permisos:": "Users and permissions:",
@@ -347,7 +349,12 @@
   "Error al cargar idiomas": "Error loading languages",
   "Error al aplicar el idioma.": "Error applying language.",
   "Tickets": "Tickets",
-  "País": "Country",
-  "Dirección": "Address",
-  "El archivo se guardó exitosamente.": "The file was saved successfully."
+  "Copias de seguridad": "Backup and Restore",
+  "Generar copia": "Generate backup",
+  "Restaurar copia": "Restore backup",
+  "Restaurar copia de seguridad": "Restore backup",
+  "Copias de seguridad disponibles:": "Available backups:",
+  "Respaldo generado con éxito.": "Backup generated successfully",
+  "Error al generar el respaldo:": "Error generating the backup:",
+  "Copias de seguridad y restauración": "Backup and Restore"
 }

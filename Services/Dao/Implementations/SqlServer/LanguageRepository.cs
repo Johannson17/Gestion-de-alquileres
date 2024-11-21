@@ -5,6 +5,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Services.Dao.Implementations
 {
@@ -37,9 +38,6 @@ namespace Services.Dao.Implementations
             }
         }
 
-        /// <summary>
-        /// Carga todas las traducciones desde el archivo de idioma con formato clave=valor.
-        /// </summary>
         public Dictionary<string, string> LoadAllTranslations(string language)
         {
             Dictionary<string, string> translations = new Dictionary<string, string>();
@@ -52,13 +50,12 @@ namespace Services.Dao.Implementations
 
             try
             {
-                // Leer el archivo con detección automática de codificación
-                string jsonContent = ReadJsonFileWithEncodingFallback(filePath);
+                // Leer el archivo usando Encoding.Default
+                string jsonContent = ReadJsonFile(filePath);
 
                 // Deserializar el JSON al diccionario
                 translations = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
 
-                // Validar contenido
                 if (translations == null || translations.Count == 0)
                 {
                     throw new InvalidOperationException("El archivo de idioma no contiene datos válidos.");
@@ -76,48 +73,30 @@ namespace Services.Dao.Implementations
             return translations;
         }
 
-        /// <summary>
-        /// Lee el contenido de un archivo JSON utilizando una codificación predeterminada con detección automática de marcas de orden de bytes (BOM).
-        /// </summary>
-        /// <param name="filePath">La ruta completa del archivo JSON a leer.</param>
-        /// <returns>El contenido del archivo como una cadena.</returns>
-        /// <exception cref="FileNotFoundException">Se lanza si el archivo especificado no existe.</exception>
-        /// <exception cref="IOException">Se lanza si ocurre un error al leer el archivo.</exception>
-        /// <remarks>
-        /// Este método utiliza <see cref="System.Text.Encoding.Default"/> como codificación predeterminada y detecta automáticamente 
-        /// la codificación del archivo si contiene marcas de orden de bytes (BOM). Es útil para archivos con codificaciones no estándar.
-        /// </remarks>
-        private string ReadJsonFileWithEncodingFallback(string filePath)
+        private string ReadJsonFile(string filePath)
         {
-            using (var reader = new StreamReader(filePath, System.Text.Encoding.Default, detectEncodingFromByteOrderMarks: true))
+            // Leer el contenido del archivo con Encoding.Default
+            using (var reader = new StreamReader(filePath, Encoding.Default))
             {
                 return reader.ReadToEnd();
             }
         }
 
-        /// <summary>
-        /// Agrega una nueva traducción o actualiza una existente en el archivo de idioma.
-        /// </summary>
         public void AddTranslation(string language, string key, string value)
         {
-            string filePath = Path.Combine(basePath, $"idioma.{language}");
+            string filePath = Path.Combine(basePath, $"idioma.{language}.json");
 
-            // Cargar las traducciones actuales
             var translations = LoadAllTranslations(language);
 
-            // Agregar o actualizar la traducción
             translations[key] = value;
 
-            // Guardar las traducciones actualizadas
             SaveAllTranslations(filePath, translations);
         }
 
-        /// <summary>
-        /// Guarda todas las traducciones en el archivo especificado.
-        /// </summary>
         private void SaveAllTranslations(string filePath, Dictionary<string, string> translations)
         {
-            using (StreamWriter writer = new StreamWriter(filePath))
+            // Guardar las traducciones en un archivo usando Encoding.Default
+            using (var writer = new StreamWriter(filePath, false, Encoding.Default))
             {
                 foreach (var translation in translations)
                 {
@@ -126,42 +105,39 @@ namespace Services.Dao.Implementations
             }
         }
 
-        /// <summary>
-        /// Guarda una traducción en el archivo de idioma proporcionado.
-        /// </summary>
         public void SaveTranslation(string key, string value, string languageFile)
         {
-            string filePath = Path.Combine(basePath, languageFile); // El archivo proporcionado ya tiene el nombre completo
+            string filePath = Path.Combine(basePath, languageFile);
 
             if (!File.Exists(filePath))
             {
-                File.Create(filePath).Dispose(); // Crear el archivo si no existe
+                // Crear el archivo con Encoding.Default si no existe
+                using (var writer = new StreamWriter(filePath, false, Encoding.Default))
+                {
+                    writer.Write(string.Empty);
+                }
             }
 
-            var lines = new List<string>(File.ReadAllLines(filePath));
+            var lines = new List<string>(File.ReadAllLines(filePath, Encoding.Default));
             bool keyExists = false;
 
             for (int i = 0; i < lines.Count; i++)
             {
                 if (lines[i].StartsWith($"{key}="))
                 {
-                    lines[i] = $"{key}={value}"; // Actualizar el valor si la clave ya existe
+                    lines[i] = $"{key}={value}";
                     keyExists = true;
                 }
             }
 
             if (!keyExists)
             {
-                lines.Add($"{key}={value}"); // Agregar nueva clave-valor si no existe
+                lines.Add($"{key}={value}");
             }
 
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines, Encoding.Default);
         }
 
-        /// <summary>
-        /// Obtiene una lista de todos los idiomas disponibles en la carpeta de idiomas.
-        /// </summary>
-        /// <returns>Lista de códigos de idiomas disponibles, como "es-AR" o "en-US".</returns>
         public List<string> GetAvailableLanguages()
         {
             List<string> languages = new List<string>();
@@ -175,7 +151,7 @@ namespace Services.Dao.Implementations
                     var parts = fileName.Split('.');
                     if (parts.Length > 1)
                     {
-                        languages.Add(parts[1]); // Extraer "es-AR", "en-US", etc.
+                        languages.Add(parts[1]);
                     }
                 }
             }
@@ -183,14 +159,9 @@ namespace Services.Dao.Implementations
             return languages;
         }
 
-        /// <summary>
-        /// Verifica si un archivo de idioma existe para un idioma dado.
-        /// </summary>
-        /// <param name="language">Idioma para verificar.</param>
-        /// <returns>True si el archivo existe, de lo contrario, false.</returns>
         public bool LanguageFileExists(string language)
         {
-            string filePath = Path.Combine(basePath, $"idioma.{language}");
+            string filePath = Path.Combine(basePath, $"idioma.{language}.json");
             return File.Exists(filePath);
         }
     }

@@ -25,10 +25,13 @@ namespace UI
                 {
                     dgvLanguages.Columns.Add("Key", LanguageService.Translate("Clave"));
                     dgvLanguages.Columns.Add("Value", LanguageService.Translate("Valor"));
+
+                    dgvLanguages.Columns[0].FillWeight = 50;
+                    dgvLanguages.Columns[1].FillWeight = 50;
                 }
 
                 // Obtener todas las traducciones desde la capa de servicio
-                var translations = LanguageService.LoadAllTranslations("es-AR");
+                var translations = LanguageService.LoadAllTranslations("en-US");
 
                 // Cargar las traducciones en el DataGridView
                 dgvLanguages.Rows.Clear(); // Limpiar cualquier dato anterior

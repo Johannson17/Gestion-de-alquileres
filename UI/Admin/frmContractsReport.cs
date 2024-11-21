@@ -188,6 +188,7 @@ namespace UI.Admin
                     return matchesStatus && matchesProperty && matchesTenant;
                 }).ToList();
 
+                // Incluir ContractImage en la proyección
                 dgvContracts.DataSource = filteredContracts.Select(contract => new
                 {
                     IdContract = contract.IdContract,
@@ -200,7 +201,8 @@ namespace UI.Admin
                     IsActive = contract.StatusContract,
                     TenantDni = _tenantDniMapping.ContainsKey(contract.FkIdTenant)
                         ? _tenantDniMapping[contract.FkIdTenant]
-                        : LanguageService.Translate("DNI no encontrado")
+                        : LanguageService.Translate("DNI no encontrado"),
+                    ContractImage = contract.ContractImage // Incluye la imagen aquí
                 }).ToList();
             }
             catch (Exception ex)

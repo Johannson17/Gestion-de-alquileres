@@ -45,15 +45,15 @@
             this.modificaciónDeUsuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.altaDeRolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modificacionDeRolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copiasDeSeguridadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generarCopiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restaurarCopiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.idiomasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmbLanguage = new System.Windows.Forms.ToolStripComboBox();
             this.reportesToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.arrendatariosToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.propiedadesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.contratosToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.copiasDeSeguridadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generarCopiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restaurarCopiaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,8 +95,8 @@
             // modificaciónBajaToolStripMenuItem2
             // 
             this.modificaciónBajaToolStripMenuItem2.Name = "modificaciónBajaToolStripMenuItem2";
-            this.modificaciónBajaToolStripMenuItem2.Size = new System.Drawing.Size(214, 26);
-            this.modificaciónBajaToolStripMenuItem2.Text = "Modificación/Baja";
+            this.modificaciónBajaToolStripMenuItem2.Size = new System.Drawing.Size(224, 26);
+            this.modificaciónBajaToolStripMenuItem2.Text = "Modificacion/Baja";
             this.modificaciónBajaToolStripMenuItem2.Click += new System.EventHandler(this.modificaciónBajaToolStripMenuItem2_Click);
             // 
             // contratosToolStripMenuItem
@@ -118,8 +118,8 @@
             // modificaciónBajaToolStripMenuItem
             // 
             this.modificaciónBajaToolStripMenuItem.Name = "modificaciónBajaToolStripMenuItem";
-            this.modificaciónBajaToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
-            this.modificaciónBajaToolStripMenuItem.Text = "Modificación/Baja";
+            this.modificaciónBajaToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.modificaciónBajaToolStripMenuItem.Text = "Modificacion/Baja";
             this.modificaciónBajaToolStripMenuItem.Click += new System.EventHandler(this.modificaciónBajaToolStripMenuItem_Click);
             // 
             // propiedadesToolStripMenuItem
@@ -141,8 +141,8 @@
             // modificaciónBajaToolStripMenuItem1
             // 
             this.modificaciónBajaToolStripMenuItem1.Name = "modificaciónBajaToolStripMenuItem1";
-            this.modificaciónBajaToolStripMenuItem1.Size = new System.Drawing.Size(214, 26);
-            this.modificaciónBajaToolStripMenuItem1.Text = "Modificación/Baja";
+            this.modificaciónBajaToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.modificaciónBajaToolStripMenuItem1.Text = "Modificacion/Baja";
             this.modificaciónBajaToolStripMenuItem1.Click += new System.EventHandler(this.modificaciónBajaToolStripMenuItem1_Click);
             // 
             // ticketsToolStripMenuItem
@@ -161,7 +161,7 @@
             this.cmbLanguage});
             this.configuraciónToolStripMenuItem.Name = "configuraciónToolStripMenuItem";
             this.configuraciónToolStripMenuItem.Size = new System.Drawing.Size(116, 24);
-            this.configuraciónToolStripMenuItem.Text = "Configuración";
+            this.configuraciónToolStripMenuItem.Text = "Configuracion";
             // 
             // usuariosToolStripMenuItem
             // 
@@ -201,6 +201,29 @@
             this.modificacionDeRolesToolStripMenuItem.Size = new System.Drawing.Size(258, 26);
             this.modificacionDeRolesToolStripMenuItem.Text = "Modificacion de roles";
             this.modificacionDeRolesToolStripMenuItem.Click += new System.EventHandler(this.modificacionDeRolesToolStripMenuItem_Click);
+            // 
+            // copiasDeSeguridadToolStripMenuItem
+            // 
+            this.copiasDeSeguridadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generarCopiaToolStripMenuItem,
+            this.restaurarCopiaToolStripMenuItem});
+            this.copiasDeSeguridadToolStripMenuItem.Name = "copiasDeSeguridadToolStripMenuItem";
+            this.copiasDeSeguridadToolStripMenuItem.Size = new System.Drawing.Size(228, 26);
+            this.copiasDeSeguridadToolStripMenuItem.Text = "Copias de seguridad";
+            // 
+            // generarCopiaToolStripMenuItem
+            // 
+            this.generarCopiaToolStripMenuItem.Name = "generarCopiaToolStripMenuItem";
+            this.generarCopiaToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
+            this.generarCopiaToolStripMenuItem.Text = "Generar copia";
+            this.generarCopiaToolStripMenuItem.Click += new System.EventHandler(this.generarCopiaToolStripMenuItem_Click);
+            // 
+            // restaurarCopiaToolStripMenuItem
+            // 
+            this.restaurarCopiaToolStripMenuItem.Name = "restaurarCopiaToolStripMenuItem";
+            this.restaurarCopiaToolStripMenuItem.Size = new System.Drawing.Size(195, 26);
+            this.restaurarCopiaToolStripMenuItem.Text = "Restaurar copia";
+            this.restaurarCopiaToolStripMenuItem.Click += new System.EventHandler(this.restaurarCopiaToolStripMenuItem_Click);
             // 
             // idiomasToolStripMenuItem
             // 
@@ -245,29 +268,6 @@
             this.contratosToolStripMenuItem1.Size = new System.Drawing.Size(182, 26);
             this.contratosToolStripMenuItem1.Text = "Contratos";
             this.contratosToolStripMenuItem1.Click += new System.EventHandler(this.contratosToolStripMenuItem1_Click);
-            // 
-            // copiasDeSeguridadToolStripMenuItem
-            // 
-            this.copiasDeSeguridadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generarCopiaToolStripMenuItem,
-            this.restaurarCopiaToolStripMenuItem});
-            this.copiasDeSeguridadToolStripMenuItem.Name = "copiasDeSeguridadToolStripMenuItem";
-            this.copiasDeSeguridadToolStripMenuItem.Size = new System.Drawing.Size(228, 26);
-            this.copiasDeSeguridadToolStripMenuItem.Text = "Copias de seguridad";
-            // 
-            // generarCopiaToolStripMenuItem
-            // 
-            this.generarCopiaToolStripMenuItem.Name = "generarCopiaToolStripMenuItem";
-            this.generarCopiaToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.generarCopiaToolStripMenuItem.Text = "Generar copia";
-            this.generarCopiaToolStripMenuItem.Click += new System.EventHandler(this.generarCopiaToolStripMenuItem_Click);
-            // 
-            // restaurarCopiaToolStripMenuItem
-            // 
-            this.restaurarCopiaToolStripMenuItem.Name = "restaurarCopiaToolStripMenuItem";
-            this.restaurarCopiaToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.restaurarCopiaToolStripMenuItem.Text = "Restaurar copia";
-            this.restaurarCopiaToolStripMenuItem.Click += new System.EventHandler(this.restaurarCopiaToolStripMenuItem_Click);
             // 
             // frmMainAdmin
             // 
