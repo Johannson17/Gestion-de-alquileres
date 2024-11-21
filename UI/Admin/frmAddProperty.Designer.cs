@@ -69,9 +69,9 @@
             this.label8.Location = new System.Drawing.Point(513, 90);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 16);
+            this.label8.Size = new System.Drawing.Size(67, 16);
             this.label8.TabIndex = 44;
-            this.label8.Text = "Municipio";
+            this.label8.Text = "Municipio:";
             // 
             // label7
             // 
@@ -79,9 +79,9 @@
             this.label7.Location = new System.Drawing.Point(513, 325);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 16);
+            this.label7.Size = new System.Drawing.Size(53, 16);
             this.label7.TabIndex = 43;
-            this.label7.Text = "Estado";
+            this.label7.Text = "Estado:";
             // 
             // label5
             // 
@@ -89,9 +89,9 @@
             this.label5.Location = new System.Drawing.Point(513, 15);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 16);
+            this.label5.Size = new System.Drawing.Size(37, 16);
             this.label5.TabIndex = 41;
-            this.label5.Text = "Pais: ";
+            this.label5.Text = "País:";
             // 
             // label4
             // 
@@ -131,7 +131,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(67, 16);
             this.label1.TabIndex = 37;
-            this.label1.Text = "Direccion:";
+            this.label1.Text = "Dirección:";
             // 
             // txtMunicipality
             // 

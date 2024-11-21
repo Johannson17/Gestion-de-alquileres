@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Services.Facade;
 
 namespace UI.Admin
 {
@@ -45,20 +46,23 @@ namespace UI.Admin
 
                 dgvProperties.Columns["IdProperty"].Visible = false;
 
-                // Asignar nombres en español a las columnas
-                dgvProperties.Columns["DescriptionProperty"].HeaderText = "Descripción";
-                dgvProperties.Columns["StatusProperty"].HeaderText = "Estado";
-                dgvProperties.Columns["CountryProperty"].HeaderText = "País";
-                dgvProperties.Columns["ProvinceProperty"].HeaderText = "Provincia";
-                dgvProperties.Columns["MunicipalityProperty"].HeaderText = "Municipio";
-                dgvProperties.Columns["AddressProperty"].HeaderText = "Dirección";
+                // Asignar nombres traducidos a las columnas
+                dgvProperties.Columns["DescriptionProperty"].HeaderText = LanguageService.Translate("Descripción");
+                dgvProperties.Columns["StatusProperty"].HeaderText = LanguageService.Translate("Estado");
+                dgvProperties.Columns["CountryProperty"].HeaderText = LanguageService.Translate("País");
+                dgvProperties.Columns["ProvinceProperty"].HeaderText = LanguageService.Translate("Provincia");
+                dgvProperties.Columns["MunicipalityProperty"].HeaderText = LanguageService.Translate("Municipio");
+                dgvProperties.Columns["AddressProperty"].HeaderText = LanguageService.Translate("Dirección");
 
                 dgvProperties.AutoResizeColumns();
                 dgvProperties.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar las propiedades: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error al cargar las propiedades")}: {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -69,20 +73,22 @@ namespace UI.Admin
         {
             try
             {
-                // Convertir los valores de StatusProperty a cadenas
                 var statusValues = _properties
                     .Select(p => p.StatusProperty.ToString())
                     .Distinct()
                     .ToList();
 
                 cmbStatus.Items.Clear();
-                cmbStatus.Items.Add("Todos"); // Agregar la opción "Todos"
-                cmbStatus.Items.AddRange(statusValues.ToArray()); // Agregar los valores convertidos a string
+                cmbStatus.Items.Add(LanguageService.Translate("Todos")); // Agregar la opción "Todos"
+                cmbStatus.Items.AddRange(statusValues.ToArray());
                 cmbStatus.SelectedIndex = 0; // Seleccionar el primer elemento por defecto
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar opciones en los ComboBox: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error al cargar opciones en los ComboBox:")} {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -95,12 +101,10 @@ namespace UI.Admin
             {
                 string selectedStatus = cmbStatus.SelectedItem?.ToString();
 
-                // Si el filtro es "Todos", obtener todas las propiedades
-                List<Property> filteredProperties = selectedStatus == "Todos"
-                    ? _propertyService.GetAllProperties() // Llama a GetAllProperties cuando no hay filtro
+                List<Property> filteredProperties = selectedStatus == LanguageService.Translate("Todos")
+                    ? _propertyService.GetAllProperties()
                     : _propertyService.GetPropertiesByStatus((PropertyStatusEnum)Enum.Parse(typeof(PropertyStatusEnum), selectedStatus));
 
-                // Actualiza el DataGridView con las propiedades filtradas
                 dgvProperties.DataSource = filteredProperties.Select(p => new
                 {
                     p.IdProperty,
@@ -118,7 +122,10 @@ namespace UI.Admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al filtrar las propiedades: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error al filtrar las propiedades")}: {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -131,13 +138,12 @@ namespace UI.Admin
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    saveFileDialog.Filter = "Archivos de Excel (*.xlsx)|*.xlsx";
-                    saveFileDialog.Title = "Guardar Reporte de Propiedades";
+                    saveFileDialog.Filter = LanguageService.Translate("Archivos de Excel (*.xlsx)|*.xlsx");
+                    saveFileDialog.Title = LanguageService.Translate("Guardar Reporte de Propiedades");
                     saveFileDialog.FileName = "ReportePropiedades.xlsx";
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        // Extraer las propiedades visibles en el DataGridView
                         var propertiesToExport = dgvProperties.Rows
                             .Cast<DataGridViewRow>()
                             .Where(row => !row.IsNewRow)
@@ -152,16 +158,21 @@ namespace UI.Admin
                             })
                             .ToList();
 
-                        // Llamar al servicio para exportar las propiedades
                         _propertyService.ExportPropertiesToExcel(saveFileDialog.FileName, propertiesToExport);
 
-                        MessageBox.Show("El archivo se guardó exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(
+                            LanguageService.Translate("El archivo se guardó exitosamente"),
+                            LanguageService.Translate("Éxito"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al exportar el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error al exportar el archivo")}: {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

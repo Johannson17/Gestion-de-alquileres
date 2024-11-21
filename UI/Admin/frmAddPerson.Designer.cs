@@ -46,18 +46,6 @@
             this.txtPhoneNumber = new System.Windows.Forms.TextBox();
             this.cmbTypeOfDocument = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
-
-            // TabIndex Configurations
-            txtName.TabIndex = 0;
-            txtLastName.TabIndex = 1;
-            txtDomicile.TabIndex = 2;
-            txtPhoneNumber.TabIndex = 3;
-            txtEmail.TabIndex = 4;
-            txtDocumentNumber.TabIndex = 5;
-            cmbTypeOfPerson.TabIndex = 6;
-            cmbTypeOfDocument.TabIndex = 7;
-            btnSave.TabIndex = 8;
-
             // 
             // btnSave
             // 
@@ -122,9 +110,9 @@
             this.label1.Location = new System.Drawing.Point(13, 20);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 16);
+            this.label1.Size = new System.Drawing.Size(59, 16);
             this.label1.TabIndex = 20;
-            this.label1.Text = "Nombre: ";
+            this.label1.Text = "Nombre:";
             // 
             // label2
             // 
@@ -142,9 +130,9 @@
             this.label3.Location = new System.Drawing.Point(13, 168);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(138, 16);
+            this.label3.Size = new System.Drawing.Size(135, 16);
             this.label3.TabIndex = 22;
-            this.label3.Text = "Domicilio electronico: ";
+            this.label3.Text = "Domicilio electronico:";
             // 
             // label4
             // 
@@ -162,9 +150,9 @@
             this.label5.Location = new System.Drawing.Point(490, 20);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 16);
+            this.label5.Size = new System.Drawing.Size(60, 16);
             this.label5.TabIndex = 24;
-            this.label5.Text = "Apellido: ";
+            this.label5.Text = "Apellido:";
             // 
             // label6
             // 
@@ -182,9 +170,9 @@
             this.label7.Location = new System.Drawing.Point(490, 240);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(130, 16);
+            this.label7.Size = new System.Drawing.Size(127, 16);
             this.label7.TabIndex = 26;
-            this.label7.Text = "Tipo de documento: ";
+            this.label7.Text = "Tipo de documento:";
             // 
             // label8
             // 
@@ -192,9 +180,9 @@
             this.label8.Location = new System.Drawing.Point(490, 95);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(131, 16);
+            this.label8.Size = new System.Drawing.Size(128, 16);
             this.label8.TabIndex = 27;
-            this.label8.Text = "Numero de telefono: ";
+            this.label8.Text = "Numero de telefono:";
             // 
             // cmbTypeOfPerson
             // 

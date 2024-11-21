@@ -61,15 +61,20 @@ namespace UI.Service
                 dgvUsers.DataSource = usersData;
 
                 dgvUsers.Columns["IdUsuario"].Visible = false;
-                dgvUsers.Columns["UserName"].HeaderText = "Nombre de usuario";
-                dgvUsers.Columns["Password"].HeaderText = "Contraseña";
-                dgvUsers.Columns["Roles"].HeaderText = "Roles";
-                dgvUsers.Columns["Permisos"].HeaderText = "Permisos";
+                dgvUsers.Columns["UserName"].HeaderText = LanguageService.Translate("Nombre de usuario");
+                dgvUsers.Columns["Password"].HeaderText = LanguageService.Translate("Contraseña");
+                dgvUsers.Columns["Roles"].HeaderText = LanguageService.Translate("Roles");
+                dgvUsers.Columns["Permisos"].HeaderText = LanguageService.Translate("Permisos");
                 dgvUsers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar usuarios: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar usuarios:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -235,14 +240,24 @@ namespace UI.Service
                 // Guardar los cambios en la base de datos
                 UserService.Update(_selectedUser);
 
-                MessageBox.Show("Usuario actualizado con éxito.", "Modificación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageService.Translate("Usuario actualizado con éxito."),
+                    LanguageService.Translate("Modificación"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
 
                 // Recargar el DataGridView para mostrar los cambios
                 LoadUsers();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al actualizar el usuario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al actualizar el usuario:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -254,14 +269,24 @@ namespace UI.Service
             try
             {
                 // Confirmar eliminación
-                var confirmResult = MessageBox.Show("¿Está seguro de que desea eliminar este usuario?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var confirmResult = MessageBox.Show(
+                    LanguageService.Translate("¿Está seguro de que desea eliminar este usuario?"),
+                    LanguageService.Translate("Confirmar eliminación"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
 
                 if (confirmResult == DialogResult.Yes)
                 {
                     // Eliminar el usuario
                     UserService.Delete(_selectedUser.IdUsuario);
 
-                    MessageBox.Show("Usuario eliminado con éxito.", "Eliminación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Usuario eliminado con éxito."),
+                        LanguageService.Translate("Eliminación"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
 
                     // Recargar el DataGridView para reflejar los cambios
                     LoadUsers();
@@ -276,7 +301,12 @@ namespace UI.Service
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar el usuario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar el usuario:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

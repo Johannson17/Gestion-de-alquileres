@@ -8,37 +8,37 @@ using UI.Helpers;
 namespace UI
 {
     /// <summary>
-    /// Formulario de registro de usuarios. Permite registrar un nuevo usuario en el sistema, asignándole patentes y familias.
+    /// User registration form. Allows registering a new user in the system, assigning roles and permissions.
     /// </summary>
     public partial class frmRegister : Form
     {
         /// <summary>
-        /// Constructor que inicializa el formulario de registro de usuarios.
+        /// Constructor that initializes the user registration form.
         /// </summary>
         public frmRegister()
         {
             InitializeComponent();
-            btnRegister.Enabled = false; // El botón de registro comienza deshabilitado
+            btnRegister.Enabled = false; // The register button starts disabled
 
-            // Inicializar los ComboBox como vacíos
+            // Initialize ComboBoxes as empty
             cmbFamilias.Items.Clear();
             cmbPatentes.Items.Clear();
 
-            // Asignar eventos para la validación en tiempo real
+            // Assign events for real-time validation
             txtPassword.TextChanged += ValidatePasswords;
             txtConfirmPassword.TextChanged += ValidatePasswords;
 
-            // Asignar eventos para cargar los datos cuando se despliegan los ComboBoxes
+            // Assign events to load data when ComboBoxes are dropped down
             cmbFamilias.DropDown += cmbFamilias_DropDown;
             cmbPatentes.DropDown += cmbPatentes_DropDown;
 
-            // Establecer los ComboBox sin ninguna selección inicial
+            // Set ComboBoxes with no initial selection
             cmbFamilias.SelectedIndex = -1;
             cmbPatentes.SelectedIndex = -1;
         }
 
         /// <summary>
-        /// Cargar familias cuando se despliega el ComboBox de familias.
+        /// Load families when the family ComboBox is dropped down.
         /// </summary>
         private void cmbFamilias_DropDown(object sender, EventArgs e)
         {
@@ -49,7 +49,7 @@ namespace UI
         }
 
         /// <summary>
-        /// Cargar patentes cuando se despliega el ComboBox de patentes.
+        /// Load permissions when the permissions ComboBox is dropped down.
         /// </summary>
         private void cmbPatentes_DropDown(object sender, EventArgs e)
         {
@@ -60,14 +60,14 @@ namespace UI
         }
 
         /// <summary>
-        /// Carga las familias disponibles en el ComboBox correspondiente.
+        /// Load available families into the corresponding ComboBox.
         /// </summary>
         private void LoadFamilias()
         {
             if (cmbFamilias.Items.Count == 0)
             {
-                // Añadir un elemento vacío para permitir no seleccionar nada
-                cmbFamilias.Items.Add(new Familia { Nombre = "<Ninguna>", Id = Guid.Empty });
+                // Add an empty item to allow no selection
+                cmbFamilias.Items.Add(new Familia { Nombre = "<None>", Id = Guid.Empty });
 
                 var familias = UserService.GetAllFamilias();
                 foreach (var familia in familias)
@@ -77,19 +77,19 @@ namespace UI
 
                 cmbFamilias.DisplayMember = "Nombre";
                 cmbFamilias.ValueMember = "Id";
-                cmbFamilias.SelectedIndex = -1; // Sin selección predeterminada
+                cmbFamilias.SelectedIndex = -1; // No default selection
             }
         }
 
         /// <summary>
-        /// Carga las patentes disponibles en el ComboBox correspondiente.
+        /// Load available permissions into the corresponding ComboBox.
         /// </summary>
         private void LoadPatentes()
         {
             if (cmbPatentes.Items.Count == 0)
             {
-                // Añadir un elemento vacío para permitir no seleccionar nada
-                cmbPatentes.Items.Add(new Patente { Nombre = "<Ninguna>", Id = Guid.Empty });
+                // Add an empty item to allow no selection
+                cmbPatentes.Items.Add(new Patente { Nombre = "<None>", Id = Guid.Empty });
 
                 var patentes = UserService.GetAllPatentes();
                 foreach (var patente in patentes)
@@ -99,13 +99,13 @@ namespace UI
 
                 cmbPatentes.DisplayMember = "Nombre";
                 cmbPatentes.ValueMember = "Id";
-                cmbPatentes.SelectedIndex = -1; // Sin selección predeterminada
+                cmbPatentes.SelectedIndex = -1; // No default selection
             }
         }
 
         /// <summary>
-        /// Valida que las contraseñas ingresadas en los campos de texto coincidan.
-        /// Si coinciden, habilita el botón de registro; de lo contrario, lo deshabilita y resalta los campos en rojo.
+        /// Validate that the passwords entered in the text fields match.
+        /// If they match, enable the register button; otherwise, disable it and highlight the fields in red.
         /// </summary>
         private void ValidatePasswords(object sender, EventArgs e)
         {
@@ -124,24 +124,24 @@ namespace UI
         }
 
         /// <summary>
-        /// Maneja el evento de clic del botón de registro. Intenta registrar un nuevo usuario con los datos proporcionados.
+        /// Handles the click event of the register button. Attempts to register a new user with the provided data.
         /// </summary>
         private void btnRegister_Click(object sender, EventArgs e)
         {
             try
             {
-                // Crear una nueva instancia de Usuario
+                // Create a new User instance
                 var user = new Usuario
                 {
                     UserName = txtUsername.Text,
-                    Password = txtPassword.Text // La contraseña se encriptará en la lógica
+                    Password = txtPassword.Text // Password will be encrypted in logic
                 };
 
-                // Asignar Familias y Patentes seleccionadas al usuario
+                // Assign selected roles and permissions to the user
                 var selectedFamilia = (Familia)cmbFamilias.SelectedItem;
                 var selectedPatente = (Patente)cmbPatentes.SelectedItem;
 
-                // Comprobar si al menos uno de los dos está seleccionado
+                // Check if at least one of the two is selected
                 if (selectedFamilia == null || selectedFamilia.Id == Guid.Empty)
                 {
                     selectedFamilia = null;
@@ -154,7 +154,7 @@ namespace UI
 
                 if (selectedFamilia == null && selectedPatente == null)
                 {
-                    MessageBox.Show("Debe seleccionar al menos un rol o un permiso.");
+                    MessageBox.Show("You must select at least one role or permission.");
                     return;
                 }
 
@@ -168,29 +168,29 @@ namespace UI
                     user.Accesos.Add(selectedPatente);
                 }
 
-                // Registrar el usuario en la base de datos usando la lógica del backend a través de la fachada
+                // Register the user in the database using backend logic through the facade
                 UserService.Register(user);
 
-                // Mostrar un mensaje de éxito
-                MessageBox.Show("Usuario registrado con éxito.", "Registro", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Show a success message
+                MessageBox.Show("User registered successfully.", "Registration", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Abrir el formulario principal de administrador
+                // Open the main administrator form
                 frmMainAdmin mainForm = new frmMainAdmin();
                 mainForm.Show();
 
-                // Cerrar el formulario de registro
+                // Close the registration form
                 this.Close();
             }
             catch (Exception ex)
             {
-                // Manejo de excepciones
-                MessageBox.Show($"Error al registrar el usuario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Exception handling
+                MessageBox.Show($"Error registering the user: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         /// <summary>
-        /// Maneja el evento de clic del botón para añadir una nueva Familia. 
-        /// Abre un subformulario para agregar una nueva Familia.
+        /// Handles the click event of the button to add a new Family.
+        /// Opens a subform to add a new Family.
         /// </summary>
         private void btnAddFamilia_Click(object sender, EventArgs e)
         {
@@ -198,7 +198,7 @@ namespace UI
             {
                 if (addFamiliaForm.ShowDialog() == DialogResult.OK)
                 {
-                    // Actualizar el ComboBox de familias
+                    // Update the family ComboBox
                     LoadFamilias();
                 }
             }

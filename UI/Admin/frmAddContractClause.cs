@@ -33,49 +33,77 @@ namespace UI
 
         private void LoadClauseData()
         {
-            // Obtiene el título y descripción desde ContractService
-            var (Clause1, Clause2) = _contractService.GetPredefinedClause(_clauseIndex, _owner, _tenant, _property);
+            try
+            {
+                // Obtiene el título y descripción desde ContractService
+                var (Clause1, Clause2) = _contractService.GetPredefinedClause(_clauseIndex, _owner, _tenant, _property);
 
-            // Configura los campos según si es una cláusula predefinida o no
-            if (_clauseIndex <= 1)
-            {
-                // Para cláusulas predefinidas, se muestra el título y la descripción
-                txtTittle.Text = Clause1.TitleClause.ToString();
-                txtDescription.Text = Clause1.DetailClause.ToString();
-                txtTittle.ReadOnly = true;
-                txtDescription.ReadOnly = true;
+                // Configura los campos según si es una cláusula predefinida o no
+                if (_clauseIndex <= 1)
+                {
+                    txtTittle.Text = Clause1.TitleClause.ToString();
+                    txtDescription.Text = Clause1.DetailClause.ToString();
+                    txtTittle.ReadOnly = true;
+                    txtDescription.ReadOnly = true;
+                }
+                else if (_clauseIndex == 2)
+                {
+                    txtTittle.Text = Clause2.TitleClause.ToString();
+                    txtDescription.Text = Clause2.DetailClause.ToString();
+                    txtTittle.ReadOnly = true;
+                    txtDescription.ReadOnly = true;
+                }
+                else
+                {
+                    txtTittle.Text = string.Empty;
+                    txtDescription.Text = string.Empty;
+                    txtTittle.ReadOnly = false;
+                    txtDescription.ReadOnly = false;
+                }
             }
-            else if (_clauseIndex <= 2)
+            catch (Exception ex)
             {
-                // Para cláusulas predefinidas, se muestra el título y la descripción
-                txtTittle.Text = Clause2.TitleClause.ToString();
-                txtDescription.Text = Clause2.DetailClause.ToString();
-                txtTittle.ReadOnly = true;
-                txtDescription.ReadOnly = true;
-            }
-            else
-            {
-                // Para cláusulas adicionales, el usuario puede escribir libremente
-                txtTittle.Text = string.Empty;
-                txtDescription.Text = string.Empty;
-                txtTittle.ReadOnly = false;
-                txtDescription.ReadOnly = false;
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los datos de la cláusula") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Crear una nueva cláusula con los datos del formulario y almacenarla en la propiedad NewClause
-            NewClause = new ContractClause
+            try
             {
-                IdContractClause = Guid.NewGuid(),
-                FkIdContract = _contract.IdContract,
-                TitleClause = txtTittle.Text,
-                DetailClause = txtDescription.Text
-            };
+                // Crear una nueva cláusula con los datos del formulario y almacenarla en la propiedad NewClause
+                NewClause = new ContractClause
+                {
+                    IdContractClause = Guid.NewGuid(),
+                    FkIdContract = _contract.IdContract,
+                    TitleClause = txtTittle.Text,
+                    DetailClause = txtDescription.Text
+                };
 
-            DialogResult = DialogResult.OK;
-            Close();
+                MessageBox.Show(
+                    LanguageService.Translate("Cláusula guardada exitosamente."),
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar la cláusula") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
     }
 }

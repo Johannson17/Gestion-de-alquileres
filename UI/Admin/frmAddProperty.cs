@@ -1,5 +1,6 @@
 ﻿using Domain;
 using LOGIC.Facade;
+using Services.Facade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los propietarios: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los propietarios") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -67,7 +73,12 @@ namespace UI
                 };
 
                 // Preguntar al usuario si desea agregar inventario
-                var result = MessageBox.Show("¿Desea agregar inventario a esta propiedad?", "Agregar inventario", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = MessageBox.Show(
+                    LanguageService.Translate("¿Desea agregar inventario a esta propiedad?"),
+                    LanguageService.Translate("Agregar inventario"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
                 if (result == DialogResult.Yes)
                 {
@@ -79,13 +90,23 @@ namespace UI
                 // Después de agregar el inventario (si es necesario), guardar la propiedad con su inventario
                 await _propertyService.CreatePropertyAsync(_newProperty);
 
-                MessageBox.Show("Propiedad y su inventario guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageService.Translate("Propiedad y su inventario guardados correctamente."),
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
 
                 ClearForm();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar la propiedad: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar la propiedad") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Domain;
 using LOGIC.Facade;
+using Services.Facade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace UI
         }
 
         /// <summary>
-        /// Cargar todas las propiedades en el DataGridView.
+        /// Load all properties into the DataGridView.
         /// </summary>
         private void LoadProperties()
         {
@@ -50,16 +51,21 @@ namespace UI
 
                 dgvProperty.Columns["IdProperty"].Visible = false;
                 dgvProperty.AutoResizeColumns();
-                dgvProperty.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
+                dgvProperty.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Adjust columns to full width
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar las propiedades: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar las propiedades") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Maneja el evento de selección en el DataGridView.
+        /// Handle selection change event in the DataGridView.
         /// </summary>
         private void dgvProperties_SelectionChanged(object sender, EventArgs e)
         {
@@ -83,18 +89,28 @@ namespace UI
                     }
                     else
                     {
-                        MessageBox.Show("No se encontró la propiedad seleccionada.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(
+                            LanguageService.Translate("No se encontró la propiedad seleccionada"),
+                            LanguageService.Translate("Error"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al seleccionar la propiedad: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("Error al seleccionar la propiedad") + ": " + ex.Message,
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
             }
         }
 
         /// <summary>
-        /// Cargar los estados en el ComboBox.
+        /// Load statuses into the ComboBox.
         /// </summary>
         private void LoadStatusComboBox(PropertyStatusEnum currentStatus)
         {
@@ -103,7 +119,7 @@ namespace UI
         }
 
         /// <summary>
-        /// Guardar los cambios en la propiedad.
+        /// Save changes to the selected property.
         /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -118,19 +134,29 @@ namespace UI
 
                 _propertyService.UpdateProperty(_currentProperty);
 
-                MessageBox.Show("Propiedad actualizada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageService.Translate("Propiedad actualizada correctamente"),
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
 
                 LoadProperties();
                 ReselectCurrentProperty();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al actualizar la propiedad: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al actualizar la propiedad") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Seleccionar nuevamente la propiedad modificada.
+        /// Reselect the modified property.
         /// </summary>
         private void ReselectCurrentProperty()
         {
@@ -145,31 +171,46 @@ namespace UI
         }
 
         /// <summary>
-        /// Eliminar la propiedad seleccionada.
+        /// Delete the selected property.
         /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             try
             {
-                var confirmResult = MessageBox.Show("¿Está seguro de eliminar esta propiedad?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var confirmResult = MessageBox.Show(
+                    LanguageService.Translate("¿Está seguro de eliminar esta propiedad?"),
+                    LanguageService.Translate("Confirmar eliminación"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
 
                 if (confirmResult == DialogResult.Yes)
                 {
                     _propertyService.DeleteProperty(_currentProperty.IdProperty);
 
-                    MessageBox.Show("Propiedad eliminada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Propiedad eliminada correctamente"),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
 
                     LoadProperties();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al eliminar la propiedad: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar la propiedad") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Editar el inventario de la propiedad seleccionada.
+        /// Edit inventory of the selected property.
         /// </summary>
         private void btnEditInventory_Click(object sender, EventArgs e)
         {
@@ -177,7 +218,12 @@ namespace UI
             {
                 if (_currentProperty == null)
                 {
-                    MessageBox.Show("Debe seleccionar una propiedad primero.", "Propiedad no seleccionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Debe seleccionar una propiedad primero"),
+                        LanguageService.Translate("Propiedad no seleccionada"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
@@ -190,7 +236,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al abrir el formulario de inventario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al abrir el formulario de inventario") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

@@ -3,6 +3,7 @@ using Services.Factory;
 using Services.Logic;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Services.Facade
 {
@@ -11,6 +12,73 @@ namespace Services.Facade
     /// </summary>
     public static class LanguageService
     {
+        private static string currentLanguage = CultureInfo.CurrentCulture.Name; // Idioma predeterminado según el sistema
+
+        /// <summary>
+        /// Obtiene el idioma actual seleccionado.
+        /// </summary>
+        /// <returns>El idioma actual.</returns>
+        public static string GetCurrentLanguage()
+        {
+            return currentLanguage;
+        }
+
+        /// <summary>
+        /// Establece el idioma actual seleccionado y actualiza la configuración de globalización.
+        /// </summary>
+        /// <param name="language">El idioma a establecer.</param>
+        public static void SetCurrentLanguage(string language)
+        {
+            ValidateParameter(language, nameof(language));
+            currentLanguage = language;
+
+            try
+            {
+                // Cambiar la cultura del hilo actual para reflejar el nuevo idioma
+                CultureInfo newCulture = new CultureInfo(language);
+                CultureInfo.DefaultThreadCurrentCulture = newCulture;
+                CultureInfo.DefaultThreadCurrentUICulture = newCulture;
+            }
+            catch (CultureNotFoundException ex)
+            {
+                LogException(ex, nameof(SetCurrentLanguage));
+                throw new InvalidOperationException($"El idioma '{language}' no es válido.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene la lista de idiomas disponibles.
+        /// </summary>
+        /// <returns>Lista de idiomas disponibles.</returns>
+        public static List<string> GetAvailableLanguages()
+        {
+            return LanguageLogic.GetAvailableLanguages();
+        }
+
+        /// <summary>
+        /// Valida que un parámetro no sea nulo o vacío.
+        /// </summary>
+        /// <param name="parameter">Parámetro a validar.</param>
+        /// <param name="parameterName">Nombre del parámetro.</param>
+        private static void ValidateParameter(string parameter, string parameterName)
+        {
+            if (string.IsNullOrEmpty(parameter))
+            {
+                throw new ArgumentException($"El parámetro '{parameterName}' no puede ser nulo o estar vacío.", parameterName);
+            }
+        }
+
+        /// <summary>
+        /// Registra excepciones en el logger con información adicional.
+        /// </summary>
+        /// <param name="ex">Excepción ocurrida.</param>
+        /// <param name="methodName">Nombre del método donde ocurrió la excepción.</param>
+        private static void LogException(Exception ex, string methodName)
+        {
+            LoggerService.WriteLog($"Error en {methodName}: {ex.Message}", System.Diagnostics.TraceLevel.Error);
+            LoggerService.WriteException(ex);
+        }
+
         /// <summary>
         /// Guarda las traducciones modificadas en un archivo de idioma existente.
         /// </summary>
@@ -18,7 +86,17 @@ namespace Services.Facade
         /// <param name="languageFile">Nombre del archivo de idioma a modificar.</param>
         public static void SaveTranslations(Dictionary<string, string> translations, string languageFile)
         {
-            LanguageLogic.SaveTranslations(translations, languageFile);
+            ValidateParameter(languageFile, nameof(languageFile));
+
+            try
+            {
+                LanguageLogic.SaveTranslations(translations, languageFile);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex, nameof(SaveTranslations));
+                throw;
+            }
         }
 
         /// <summary>
@@ -28,36 +106,35 @@ namespace Services.Facade
         /// <param name="newLanguageFile">Nombre del nuevo archivo de idioma.</param>
         public static void SaveTranslationsToNewFile(Dictionary<string, string> translations, string newLanguageFile)
         {
-            LanguageLogic.SaveTranslationsToNewFile(translations, newLanguageFile);
+            ValidateParameter(newLanguageFile, nameof(newLanguageFile));
+
+            try
+            {
+                LanguageLogic.SaveTranslationsToNewFile(translations, newLanguageFile);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex, nameof(SaveTranslationsToNewFile));
+                throw;
+            }
         }
 
         /// <summary>
         /// Traduce una clave especificada utilizando la lógica de negocio.
         /// </summary>
         /// <param name="key">La clave que se desea traducir.</param>
+        /// <param name="defaultValue">Valor predeterminado si no se encuentra la clave.</param>
         /// <returns>El valor de la traducción asociado a la clave especificada.</returns>
-        public static string Translate(string key)
+        public static string Translate(string key, string defaultValue = null)
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("La clave no puede ser nula o estar vacía.", nameof(key));
-            }
-
             try
             {
                 return LanguageLogic.Translate(key);
             }
-            catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException)
             {
-                // Registrar excepción en la bitácora
-                LoggerService.WriteException(ex);
-                throw new InvalidOperationException($"La clave '{key}' no existe en las traducciones cargadas.", ex);
-            }
-            catch (Exception ex)
-            {
-                // Registrar excepción en la bitácora
-                LoggerService.WriteException(ex);
-                throw new InvalidOperationException($"Error al traducir la clave '{key}'", ex);
+                // Retorna el valor predeterminado si no existe la clave
+                return defaultValue ?? key;
             }
         }
 
@@ -69,20 +146,9 @@ namespace Services.Facade
         /// <param name="value">El valor de la clave a agregar.</param>
         public static void AddTranslation(string language, string key, string value)
         {
-            if (string.IsNullOrEmpty(language))
-            {
-                throw new ArgumentException("El idioma no puede ser nulo o estar vacío.", nameof(language));
-            }
-
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("La clave no puede ser nula o estar vacía.", nameof(key));
-            }
-
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("El valor no puede ser nulo o estar vacío.", nameof(value));
-            }
+            ValidateParameter(language, nameof(language));
+            ValidateParameter(key, nameof(key));
+            ValidateParameter(value, nameof(value));
 
             try
             {
@@ -90,13 +156,13 @@ namespace Services.Facade
             }
             catch (InvalidOperationException ex)
             {
-                LoggerService.WriteException(ex);
+                LogException(ex, nameof(AddTranslation));
                 throw new InvalidOperationException($"La clave '{key}' ya existe en el idioma '{language}'.", ex);
             }
             catch (Exception ex)
             {
-                LoggerService.WriteException(ex);
-                throw new InvalidOperationException($"Error al agregar la traducción para la clave '{key}' en el idioma '{language}'.", ex);
+                LogException(ex, nameof(AddTranslation));
+                throw;
             }
         }
 
@@ -106,10 +172,7 @@ namespace Services.Facade
         /// <param name="language">El idioma para recargar las traducciones.</param>
         public static void ReloadLanguages(string language)
         {
-            if (string.IsNullOrEmpty(language))
-            {
-                throw new ArgumentException("El idioma no puede ser nulo o estar vacío.", nameof(language));
-            }
+            ValidateParameter(language, nameof(language));
 
             try
             {
@@ -117,7 +180,7 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                LoggerService.WriteException(ex);
+                LogException(ex, nameof(ReloadLanguages));
                 throw new InvalidOperationException($"Error al recargar los archivos de idioma: {language}.", ex);
             }
         }
@@ -134,7 +197,7 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                LoggerService.WriteException(ex);
+                LogException(ex, nameof(GetLanguages));
                 throw new InvalidOperationException("Error al obtener la lista de claves de traducción.", ex);
             }
         }
@@ -147,20 +210,9 @@ namespace Services.Facade
         /// <param name="newLanguageFile">Nombre del archivo de idioma donde se guardará la traducción.</param>
         public static void SaveTranslation(string key, string translation, string newLanguageFile)
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("La clave no puede ser nula o estar vacía.", nameof(key));
-            }
-
-            if (string.IsNullOrEmpty(translation))
-            {
-                throw new ArgumentException("La traducción no puede ser nula o estar vacía.", nameof(translation));
-            }
-
-            if (string.IsNullOrEmpty(newLanguageFile))
-            {
-                throw new ArgumentException("El archivo de idioma no puede ser nulo o estar vacío.", nameof(newLanguageFile));
-            }
+            ValidateParameter(key, nameof(key));
+            ValidateParameter(translation, nameof(translation));
+            ValidateParameter(newLanguageFile, nameof(newLanguageFile));
 
             try
             {
@@ -169,7 +221,7 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                LoggerService.WriteException(ex);
+                LogException(ex, nameof(SaveTranslation));
                 throw;
             }
         }
@@ -181,10 +233,7 @@ namespace Services.Facade
         /// <returns>Diccionario con las traducciones del idioma.</returns>
         public static Dictionary<string, string> LoadAllTranslations(string language)
         {
-            if (string.IsNullOrEmpty(language))
-            {
-                throw new ArgumentException("El idioma no puede ser nulo o estar vacío.", nameof(language));
-            }
+            ValidateParameter(language, nameof(language));
 
             try
             {
@@ -192,7 +241,7 @@ namespace Services.Facade
             }
             catch (Exception ex)
             {
-                LoggerService.WriteException(ex);
+                LogException(ex, nameof(LoadAllTranslations));
                 throw new InvalidOperationException($"Error al cargar todas las traducciones del idioma: {language}.", ex);
             }
         }

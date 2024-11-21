@@ -140,7 +140,7 @@
             this.Controls.Add(this.dgvContracts);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmContractsReport";
-            this.Text = "frmContractsReport";
+            this.Text = "Reporte de contratos";
             ((System.ComponentModel.ISupportInitialize)(this.dgvContracts)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

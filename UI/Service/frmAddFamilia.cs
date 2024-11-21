@@ -64,7 +64,12 @@ namespace UI
                 UserService.AddFamilia(nuevaFamilia);
 
                 // Mostrar un mensaje de éxito
-                MessageBox.Show("Familia agregada con éxito.", "Registro de Familia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageService.Translate("Familia agregada con éxito."),
+                    LanguageService.Translate("Registro de Familia"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
 
                 // Cerrar el formulario de alta de familia
                 this.Close();
@@ -72,7 +77,12 @@ namespace UI
             catch (Exception ex)
             {
                 // Manejo de excepciones
-                MessageBox.Show($"Error al agregar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al agregar la familia:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

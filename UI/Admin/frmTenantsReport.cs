@@ -1,14 +1,9 @@
 ﻿using LOGIC.Facade;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Domain;
+using Services.Facade;
 
 namespace UI.Admin
 {
@@ -45,19 +40,24 @@ namespace UI.Admin
                 dgvPersons.Columns["IdPerson"].Visible = false; // Oculta la columna de ID
 
                 // Ajusta los encabezados de las columnas
-                dgvPersons.Columns["Nombre"].HeaderText = "Nombre";
-                dgvPersons.Columns["Apellido"].HeaderText = "Apellido";
-                dgvPersons.Columns["Domicilio"].HeaderText = "Domicilio";
-                dgvPersons.Columns["DomicilioElectronico"].HeaderText = "Domicilio Electrónico";
-                dgvPersons.Columns["Telefono"].HeaderText = "Teléfono";
-                dgvPersons.Columns["TipoDocumento"].HeaderText = "Tipo de Documento"; // Encabezado para el nuevo campo
-                dgvPersons.Columns["NumeroDocumento"].HeaderText = "Número de Documento";
+                dgvPersons.Columns["Nombre"].HeaderText = LanguageService.Translate("Nombre");
+                dgvPersons.Columns["Apellido"].HeaderText = LanguageService.Translate("Apellido");
+                dgvPersons.Columns["Domicilio"].HeaderText = LanguageService.Translate("Domicilio");
+                dgvPersons.Columns["DomicilioElectronico"].HeaderText = LanguageService.Translate("Domicilio Electrónico");
+                dgvPersons.Columns["Telefono"].HeaderText = LanguageService.Translate("Teléfono");
+                dgvPersons.Columns["TipoDocumento"].HeaderText = LanguageService.Translate("Tipo de Documento"); // Encabezado para el nuevo campo
+                dgvPersons.Columns["NumeroDocumento"].HeaderText = LanguageService.Translate("Número de Documento");
 
                 dgvPersons.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajusta las columnas al ancho del DataGridView
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los datos") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -67,9 +67,9 @@ namespace UI.Admin
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    saveFileDialog.Filter = "Archivos de Excel (*.xlsx)|*.xlsx";
-                    saveFileDialog.Title = "Guardar Reporte de Inquilinos";
-                    saveFileDialog.FileName = "ReporteInquilinos.xlsx";
+                    saveFileDialog.Filter = LanguageService.Translate("Archivos de Excel") + " (*.xlsx)|*.xlsx";
+                    saveFileDialog.Title = LanguageService.Translate("Guardar Reporte de Inquilinos");
+                    saveFileDialog.FileName = LanguageService.Translate("Reporte de Inquilinos") + ".xlsx";
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
@@ -93,13 +93,23 @@ namespace UI.Admin
                         // Llamar al servicio para exportar el archivo Excel
                         _personService.ExportPersonsToExcel(saveFileDialog.FileName, personsToExport);
 
-                        MessageBox.Show("El archivo se guardó exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(
+                            LanguageService.Translate("El archivo se guardó exitosamente."),
+                            LanguageService.Translate("Éxito"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al exportar el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al exportar el archivo") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

@@ -64,9 +64,9 @@
             this.label8.Location = new System.Drawing.Point(636, 326);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(131, 16);
+            this.label8.Size = new System.Drawing.Size(128, 16);
             this.label8.TabIndex = 44;
-            this.label8.Text = "Numero de telefono: ";
+            this.label8.Text = "Numero de telefono:";
             // 
             // label6
             // 
@@ -84,9 +84,9 @@
             this.label5.Location = new System.Drawing.Point(636, 251);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 16);
+            this.label5.Size = new System.Drawing.Size(60, 16);
             this.label5.TabIndex = 41;
-            this.label5.Text = "Apellido: ";
+            this.label5.Text = "Apellido:";
             // 
             // label3
             // 
@@ -94,9 +94,9 @@
             this.label3.Location = new System.Drawing.Point(8, 399);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(138, 16);
+            this.label3.Size = new System.Drawing.Size(135, 16);
             this.label3.TabIndex = 39;
-            this.label3.Text = "Domicilio electronico: ";
+            this.label3.Text = "Domicilio electronico:";
             // 
             // label2
             // 
@@ -114,14 +114,14 @@
             this.label1.Location = new System.Drawing.Point(8, 251);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 16);
+            this.label1.Size = new System.Drawing.Size(59, 16);
             this.label1.TabIndex = 37;
-            this.label1.Text = "Nombre: ";
+            this.label1.Text = "Nombre:";
             // 
             // txtPhoneNumber
             // 
             this.txtPhoneNumber.Location = new System.Drawing.Point(640, 346);
-            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtPhoneNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtPhoneNumber.Multiline = true;
             this.txtPhoneNumber.Name = "txtPhoneNumber";
             this.txtPhoneNumber.Size = new System.Drawing.Size(408, 30);
@@ -130,7 +130,7 @@
             // txtLastName
             // 
             this.txtLastName.Location = new System.Drawing.Point(640, 271);
-            this.txtLastName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtLastName.Margin = new System.Windows.Forms.Padding(4);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(408, 30);
@@ -139,7 +139,7 @@
             // txtDocumentNumber
             // 
             this.txtDocumentNumber.Location = new System.Drawing.Point(640, 418);
-            this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDocumentNumber.Margin = new System.Windows.Forms.Padding(4);
             this.txtDocumentNumber.Multiline = true;
             this.txtDocumentNumber.Name = "txtDocumentNumber";
             this.txtDocumentNumber.Size = new System.Drawing.Size(408, 30);
@@ -148,7 +148,7 @@
             // txtEmail
             // 
             this.txtEmail.Location = new System.Drawing.Point(8, 418);
-            this.txtEmail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtEmail.Margin = new System.Windows.Forms.Padding(4);
             this.txtEmail.Multiline = true;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(408, 30);
@@ -157,7 +157,7 @@
             // txtDomicile
             // 
             this.txtDomicile.Location = new System.Drawing.Point(8, 346);
-            this.txtDomicile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDomicile.Margin = new System.Windows.Forms.Padding(4);
             this.txtDomicile.Multiline = true;
             this.txtDomicile.Name = "txtDomicile";
             this.txtDomicile.Size = new System.Drawing.Size(408, 30);
@@ -166,7 +166,7 @@
             // txtName
             // 
             this.txtName.Location = new System.Drawing.Point(8, 271);
-            this.txtName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtName.Margin = new System.Windows.Forms.Padding(4);
             this.txtName.Multiline = true;
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(408, 30);
@@ -175,7 +175,7 @@
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(8, 473);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(1040, 47);
             this.btnSave.TabIndex = 30;
@@ -186,7 +186,7 @@
             // btnDelete
             // 
             this.btnDelete.Location = new System.Drawing.Point(8, 527);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(4);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(1040, 25);
             this.btnDelete.TabIndex = 48;

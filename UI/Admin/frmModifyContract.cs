@@ -37,7 +37,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los datos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los datos") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -52,7 +57,7 @@ namespace UI
                 var displayContracts = _originalContracts.Select(contract => new
                 {
                     IdContract = contract.IdContract,
-                    PropertyAddress = properties.ContainsKey(contract.FkIdProperty) ? properties[contract.FkIdProperty] : "Dirección no encontrada",
+                    PropertyAddress = properties.ContainsKey(contract.FkIdProperty) ? properties[contract.FkIdProperty] : LanguageService.Translate("Dirección no encontrada"),
                     StartDate = contract.DateStartContract,
                     EndDate = contract.DateFinalContract,
                     AnnualRentPrice = contract.AnnualRentPrice,
@@ -62,16 +67,21 @@ namespace UI
                 dgvContracts.DataSource = displayContracts;
 
                 dgvContracts.Columns["IdContract"].Visible = false;
-                dgvContracts.Columns["PropertyAddress"].HeaderText = "Propiedad";
-                dgvContracts.Columns["StartDate"].HeaderText = "Fecha de Inicio";
-                dgvContracts.Columns["EndDate"].HeaderText = "Fecha de Finalización";
-                dgvContracts.Columns["AnnualRentPrice"].HeaderText = "Precio Mensual";
-                dgvContracts.Columns["IsActive"].HeaderText = "Estado";
-                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
+                dgvContracts.Columns["PropertyAddress"].HeaderText = LanguageService.Translate("Propiedad");
+                dgvContracts.Columns["StartDate"].HeaderText = LanguageService.Translate("Fecha de Inicio");
+                dgvContracts.Columns["EndDate"].HeaderText = LanguageService.Translate("Fecha de Finalización");
+                dgvContracts.Columns["AnnualRentPrice"].HeaderText = LanguageService.Translate("Precio Mensual");
+                dgvContracts.Columns["IsActive"].HeaderText = LanguageService.Translate("Estado");
+                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los contratos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los contratos") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -83,11 +93,16 @@ namespace UI
                 cmbProperty.DataSource = properties;
                 cmbProperty.DisplayMember = "AddressProperty";
                 cmbProperty.ValueMember = "IdProperty";
-                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
+                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar las propiedades: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar las propiedades") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -99,11 +114,16 @@ namespace UI
                 cmbTenant.DataSource = tenants;
                 cmbTenant.DisplayMember = "NumberDocumentPerson";
                 cmbTenant.ValueMember = "IdPerson";
-                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
+                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los inquilinos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los inquilinos") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -135,7 +155,12 @@ namespace UI
             {
                 if (!int.TryParse(txtPrice.Text, out int price))
                 {
-                    MessageBox.Show("El precio debe ser numérico.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("El precio debe ser numérico."),
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                     return;
                 }
 
@@ -152,7 +177,11 @@ namespace UI
 
                     _contractService.UpdateContract(contract);
 
-                    var result = MessageBox.Show("¿Desea modificar las cláusulas del contrato?", "Modificar Cláusulas", MessageBoxButtons.YesNo);
+                    var result = MessageBox.Show(
+                        LanguageService.Translate("¿Desea modificar las cláusulas del contrato?"),
+                        LanguageService.Translate("Modificar Cláusulas"),
+                        MessageBoxButtons.YesNo
+                    );
                     if (result == DialogResult.Yes)
                     {
                         var modifyContractClause = new frmModifyContractClause(contract)
@@ -168,7 +197,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar el contrato: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar el contrato") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -178,23 +212,42 @@ namespace UI
             {
                 if (dgvContracts.CurrentRow == null)
                 {
-                    MessageBox.Show("Seleccione un contrato para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Seleccione un contrato para eliminar."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
                 var selectedContractId = (Guid)dgvContracts.CurrentRow.Cells["IdContract"].Value;
-                var result = MessageBox.Show("¿Desea eliminar el contrato y sus cláusulas asociadas?", "Confirmar", MessageBoxButtons.YesNo);
+                var result = MessageBox.Show(
+                    LanguageService.Translate("¿Desea eliminar el contrato y sus cláusulas asociadas?"),
+                    LanguageService.Translate("Confirmar"),
+                    MessageBoxButtons.YesNo
+                );
 
                 if (result == DialogResult.Yes)
                 {
                     _contractService.DeleteContract(selectedContractId);
-                    MessageBox.Show("Contrato eliminado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Contrato eliminado con éxito."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                     LoadContracts();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar el contrato: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar el contrato") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

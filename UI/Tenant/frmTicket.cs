@@ -13,8 +13,8 @@ namespace UI.Tenant
     {
         private readonly TicketService _ticketService;
         private readonly PropertyService _propertyService;
-        private readonly Guid _loggedInTenantId; // ID del arrendatario logueado
-        private byte[] _ticketImage; // Para almacenar la imagen seleccionada temporalmente
+        private readonly Guid _loggedInTenantId; // ID of the logged-in tenant
+        private byte[] _ticketImage; // To temporarily store the selected image
 
         public frmTicket(Guid loggedInTenantId)
         {
@@ -23,29 +23,34 @@ namespace UI.Tenant
             _propertyService = new PropertyService();
             _loggedInTenantId = loggedInTenantId;
 
-            LoadProperties(); // Cargar propiedades activas al abrir el formulario
+            LoadProperties(); // Load active properties when the form opens
         }
 
         private void btnImage_Click(object sender, EventArgs e)
         {
-            // Abre un diálogo para seleccionar una imagen
+            // Open a dialog to select an image
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
-                openFileDialog.Title = "Seleccione una imagen para el ticket";
+                openFileDialog.Title = LanguageService.Translate("Seleccione una imagen para el ticket");
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Leer la imagen y guardarla en la variable _ticketImage
+                    // Read the image and store it in the _ticketImage variable
                     _ticketImage = File.ReadAllBytes(openFileDialog.FileName);
-                    MessageBox.Show("Imagen cargada exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Imagen cargada exitosamente."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
             }
         }
 
         private void LoadProperties()
         {
-            // Obtener las propiedades con contrato activo del inquilino logueado
+            // Get properties with active contracts for the logged-in tenant
             List<Property> activeProperties = new List<Property>();
             try
             {
@@ -53,25 +58,35 @@ namespace UI.Tenant
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No tienes ninguna propiedad alquilada.");
+                MessageBox.Show(
+                    LanguageService.Translate("No tienes ninguna propiedad alquilada."),
+                    LanguageService.Translate("Advertencia"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
 
-            // Asignar las propiedades al ComboBox
+            // Assign the properties to the ComboBox
             cmbProperty.DataSource = activeProperties;
-            cmbProperty.DisplayMember = "AddressProperty"; // Asegúrate de que esta propiedad exista en la clase Property
-            cmbProperty.ValueMember = "IdProperty"; // Asegúrate de que esta propiedad exista en la clase Property
+            cmbProperty.DisplayMember = "AddressProperty"; // Ensure this property exists in the Property class
+            cmbProperty.ValueMember = "IdProperty"; // Ensure this property exists in the Property class
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Validación de campos
+            // Field validation
             if (string.IsNullOrWhiteSpace(txtTitle.Text) || string.IsNullOrWhiteSpace(txtDetail.Text))
             {
-                MessageBox.Show("Por favor, complete todos los campos antes de guardar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    LanguageService.Translate("Por favor, complete todos los campos antes de guardar."),
+                    LanguageService.Translate("Advertencia"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
                 return;
             }
 
-            // Crear un nuevo objeto Ticket con la imagen cargada en _ticketImage
+            // Create a new Ticket object with the loaded image in _ticketImage
             Ticket newTicket = new Ticket
             {
                 FkIdProperty = (Guid)cmbProperty.SelectedValue,
@@ -79,18 +94,23 @@ namespace UI.Tenant
                 TitleTicket = txtTitle.Text,
                 DescriptionTicket = txtDetail.Text,
                 ImageTicket = _ticketImage,
-                StatusTicket = "Pendiente" // Puedes ajustar el estado inicial del ticket si es necesario
+                StatusTicket = LanguageService.Translate("Pendiente") // Adjust initial ticket status as needed
             };
 
-            // Guardar el ticket en la base de datos
+            // Save the ticket to the database
             _ticketService.CreateTicket(newTicket);
 
-            MessageBox.Show("Ticket guardado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                LanguageService.Translate("Ticket guardado exitosamente."),
+                LanguageService.Translate("Éxito"),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
 
-            // Limpiar los campos
+            // Clear fields
             txtTitle.Clear();
             txtDetail.Clear();
-            _ticketImage = null; // Limpiar la imagen cargada
+            _ticketImage = null; // Clear the loaded image
         }
     }
 }

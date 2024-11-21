@@ -34,13 +34,13 @@ namespace UI.Tenant
         {
             try
             {
-                LoadTenantDniMapping(); // Cargar mapeo de IDs a DNIs
+                LoadTenantDniMapping();
                 LoadContracts();
                 LoadComboBoxOptions();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los datos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al cargar los datos") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -48,13 +48,12 @@ namespace UI.Tenant
         {
             try
             {
-                // Crear un diccionario que mapea el ID del arrendatario (Guid) al DNI
                 _tenantDniMapping = _personService.GetAllPersonsByType(PersonTypeEnum.Tenant)
                     .ToDictionary(person => person.IdPerson, person => person.NumberDocumentPerson.ToString());
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar el mapeo de arrendatarios: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al cargar el mapeo de arrendatarios") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -62,41 +61,38 @@ namespace UI.Tenant
         {
             try
             {
-                // Obtener contratos únicamente del arrendatario logueado
                 _originalContracts = _contractService.GetContractsByTenantId(_loggedInTenantId);
                 var properties = _propertyService.GetActivePropertiesByTenantId(_loggedInTenantId)
                     .ToDictionary(p => p.IdProperty, p => p.AddressProperty);
 
-                // Obtener el DNI del arrendatario logueado
                 var loggedInTenantDni = _personService.GetPersonById(_loggedInTenantId)?.NumberDocumentPerson;
 
                 var displayContracts = _originalContracts.Select(contract => new
                 {
                     IdContract = contract.IdContract,
-                    PropertyAddress = properties.ContainsKey(contract.FkIdProperty) ? properties[contract.FkIdProperty] : "Dirección no encontrada",
+                    PropertyAddress = properties.ContainsKey(contract.FkIdProperty) ? properties[contract.FkIdProperty] : LanguageService.Translate("Dirección no encontrada"),
                     StartDate = contract.DateStartContract,
                     EndDate = contract.DateFinalContract,
                     AnnualRentPrice = contract.AnnualRentPrice,
                     IsActive = contract.StatusContract,
-                    TenantDni = loggedInTenantDni // Agregar columna con el DNI del arrendatario logueado
+                    TenantDni = loggedInTenantDni
                 }).ToList();
 
                 dgvContracts.DataSource = displayContracts;
 
-                // Configurar columnas visibles
                 dgvContracts.Columns["IdContract"].Visible = false;
-                dgvContracts.Columns["PropertyAddress"].HeaderText = "Propiedad";
-                dgvContracts.Columns["StartDate"].HeaderText = "Fecha de Inicio";
-                dgvContracts.Columns["EndDate"].HeaderText = "Fecha de Finalización";
-                dgvContracts.Columns["AnnualRentPrice"].HeaderText = "Precio Mensual";
-                dgvContracts.Columns["IsActive"].HeaderText = "Estado";
-                dgvContracts.Columns["TenantDni"].HeaderText = "DNI del Arrendatario";
+                dgvContracts.Columns["PropertyAddress"].HeaderText = LanguageService.Translate("Propiedad");
+                dgvContracts.Columns["StartDate"].HeaderText = LanguageService.Translate("Fecha de Inicio");
+                dgvContracts.Columns["EndDate"].HeaderText = LanguageService.Translate("Fecha de Finalización");
+                dgvContracts.Columns["AnnualRentPrice"].HeaderText = LanguageService.Translate("Precio Mensual");
+                dgvContracts.Columns["IsActive"].HeaderText = LanguageService.Translate("Estado");
+                dgvContracts.Columns["TenantDni"].HeaderText = LanguageService.Translate("DNI del Arrendatario");
 
-                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
+                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los contratos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al cargar los contratos") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -104,27 +100,24 @@ namespace UI.Tenant
         {
             try
             {
-                // Obtener los valores seleccionados en los ComboBox
                 var selectedStatus = cmbStatus.SelectedItem?.ToString();
                 var selectedProperty = cmbProperty.SelectedItem?.ToString();
 
-                // Filtrar los contratos del arrendatario logueado
                 var filteredContracts = _originalContracts.Where(contract =>
                 {
-                    var matchesStatus = selectedStatus == "Todos" || contract.StatusContract.ToString() == selectedStatus;
-                    var matchesProperty = selectedProperty == "Todos" ||
+                    var matchesStatus = selectedStatus == LanguageService.Translate("Todos") || contract.StatusContract.ToString() == selectedStatus;
+                    var matchesProperty = selectedProperty == LanguageService.Translate("Todos") ||
                                           (_propertyService.GetAllProperties()
                                               .FirstOrDefault(p => p.IdProperty == contract.FkIdProperty)?.AddressProperty == selectedProperty);
 
                     return matchesStatus && matchesProperty;
                 }).ToList();
 
-                // Actualizar el DataGridView
                 dgvContracts.DataSource = filteredContracts.Select(contract => new
                 {
                     IdContract = contract.IdContract,
                     PropertyAddress = _propertyService.GetAllProperties()
-                        .FirstOrDefault(p => p.IdProperty == contract.FkIdProperty)?.AddressProperty ?? "Propiedad no encontrada",
+                        .FirstOrDefault(p => p.IdProperty == contract.FkIdProperty)?.AddressProperty ?? LanguageService.Translate("Propiedad no encontrada"),
                     StartDate = contract.DateStartContract,
                     EndDate = contract.DateFinalContract,
                     AnnualRentPrice = contract.AnnualRentPrice,
@@ -133,7 +126,7 @@ namespace UI.Tenant
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al filtrar los contratos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al filtrar los contratos") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -141,7 +134,6 @@ namespace UI.Tenant
         {
             try
             {
-                // Cargar valores únicos del DataGridView para el ComboBox de Estado
                 var statusValues = dgvContracts.Rows
                     .Cast<DataGridViewRow>()
                     .Where(row => row.Cells["IsActive"].Value != null)
@@ -150,11 +142,10 @@ namespace UI.Tenant
                     .ToList();
 
                 cmbStatus.Items.Clear();
-                cmbStatus.Items.Add("Todos");
+                cmbStatus.Items.Add(LanguageService.Translate("Todos"));
                 cmbStatus.Items.AddRange(statusValues.ToArray());
                 cmbStatus.SelectedIndex = 0;
 
-                // Cargar valores únicos del DataGridView para el ComboBox de Propiedad
                 var propertyValues = dgvContracts.Rows
                     .Cast<DataGridViewRow>()
                     .Where(row => row.Cells["PropertyAddress"].Value != null)
@@ -163,13 +154,13 @@ namespace UI.Tenant
                     .ToList();
 
                 cmbProperty.Items.Clear();
-                cmbProperty.Items.Add("Todos");
+                cmbProperty.Items.Add(LanguageService.Translate("Todos"));
                 cmbProperty.Items.AddRange(propertyValues.ToArray());
                 cmbProperty.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar opciones en los ComboBox: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al cargar opciones en los ComboBox") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -179,9 +170,9 @@ namespace UI.Tenant
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    saveFileDialog.Filter = "Archivos de Excel (*.xlsx)|*.xlsx";
-                    saveFileDialog.Title = "Guardar Reporte de Contratos";
-                    saveFileDialog.FileName = "ReporteContratos.xlsx";
+                    saveFileDialog.Filter = LanguageService.Translate("Archivos de Excel") + " (*.xlsx)|*.xlsx";
+                    saveFileDialog.Title = LanguageService.Translate("Guardar Reporte de Contratos");
+                    saveFileDialog.FileName = LanguageService.Translate("ReporteContratos") + ".xlsx";
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
@@ -193,11 +184,11 @@ namespace UI.Tenant
                             .Where(row => !row.IsNewRow) // Excluye la última fila vacía
                             .Select(row => new Contract
                             {
-                                PropertyAddres = row.Cells["PropertyAddress"].Value.ToString(),
-                                DateStartContract = DateTime.Parse(row.Cells["StartDate"].Value.ToString()),
-                                DateFinalContract = DateTime.Parse(row.Cells["EndDate"].Value.ToString()),
-                                AnnualRentPrice = double.Parse(row.Cells["AnnualRentPrice"].Value.ToString()),
-                                StatusContract = row.Cells["IsActive"].Value.ToString(),
+                                PropertyAddres = row.Cells[LanguageService.Translate("Propiedad")].Value.ToString(),
+                                DateStartContract = DateTime.Parse(row.Cells[LanguageService.Translate("Fecha de Inicio")].Value.ToString()),
+                                DateFinalContract = DateTime.Parse(row.Cells[LanguageService.Translate("Fecha de Finalización")].Value.ToString()),
+                                AnnualRentPrice = double.Parse(row.Cells[LanguageService.Translate("Precio Mensual")].Value.ToString()),
+                                StatusContract = row.Cells[LanguageService.Translate("Estado")].Value.ToString(),
                                 TenantName = loggedInTenantDni.ToString()
                             })
                             .ToList();
@@ -205,13 +196,13 @@ namespace UI.Tenant
                         // Llamar al servicio para exportar los datos visibles del dgv
                         _contractService.ExportContractsToExcel(saveFileDialog.FileName, contractsToExport);
 
-                        MessageBox.Show("El archivo se guardó exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageService.Translate("El archivo se guardó exitosamente."), LanguageService.Translate("Éxito"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al exportar el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al exportar el archivo") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -219,7 +210,7 @@ namespace UI.Tenant
         {
             if (dgvContracts.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un contrato para descargar su imagen.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageService.Translate("Seleccione un contrato para descargar su imagen."), LanguageService.Translate("Advertencia"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -228,34 +219,34 @@ namespace UI.Tenant
                 dynamic selectedRow = dgvContracts.CurrentRow.DataBoundItem;
                 if (selectedRow == null)
                 {
-                    MessageBox.Show("Error al obtener los datos del contrato.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageService.Translate("Error al obtener los datos del contrato."), LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 // Validar si la imagen está presente
                 if (selectedRow.ContractImage == null || selectedRow.ContractImage.Length == 0)
                 {
-                    MessageBox.Show("El contrato seleccionado no tiene una imagen asociada.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(LanguageService.Translate("El contrato seleccionado no tiene una imagen asociada."), LanguageService.Translate("Advertencia"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 // Descargar la imagen
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    saveFileDialog.Filter = "Archivos de Imagen (*.png)|*.png";
-                    saveFileDialog.Title = "Guardar Imagen del Contrato";
-                    saveFileDialog.FileName = "Contrato.png";
+                    saveFileDialog.Filter = LanguageService.Translate("Archivos de Imagen") + " (*.png)|*.png";
+                    saveFileDialog.Title = LanguageService.Translate("Guardar Imagen del Contrato");
+                    saveFileDialog.FileName = LanguageService.Translate("Contrato") + ".png";
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         System.IO.File.WriteAllBytes(saveFileDialog.FileName, selectedRow.ContractImage);
-                        MessageBox.Show("La imagen se guardó exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(LanguageService.Translate("La imagen se guardó exitosamente."), LanguageService.Translate("Éxito"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al descargar la imagen: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al descargar la imagen") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -263,7 +254,7 @@ namespace UI.Tenant
         {
             if (dgvContracts.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un contrato para ver su imagen.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LanguageService.Translate("Seleccione un contrato para ver su imagen."), LanguageService.Translate("Advertencia"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -272,14 +263,14 @@ namespace UI.Tenant
                 dynamic selectedRow = dgvContracts.CurrentRow.DataBoundItem;
                 if (selectedRow == null)
                 {
-                    MessageBox.Show("Error al obtener los datos del contrato.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageService.Translate("Error al obtener los datos del contrato."), LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 byte[] contractImage = selectedRow.ContractImage;
                 if (contractImage == null || contractImage.Length == 0)
                 {
-                    MessageBox.Show("El contrato seleccionado no tiene una imagen asociada.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(LanguageService.Translate("El contrato seleccionado no tiene una imagen asociada."), LanguageService.Translate("Advertencia"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -287,7 +278,7 @@ namespace UI.Tenant
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al mostrar la imagen: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageService.Translate("Error al mostrar la imagen") + ": " + ex.Message, LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -295,7 +286,7 @@ namespace UI.Tenant
         {
             using (Form imageForm = new Form())
             {
-                imageForm.Text = "Imagen del Contrato";
+                imageForm.Text = LanguageService.Translate("Imagen del Contrato");
                 imageForm.Size = new Size(600, 400);
                 imageForm.StartPosition = FormStartPosition.CenterScreen;
 

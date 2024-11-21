@@ -1,5 +1,6 @@
 ﻿using Domain;
 using System;
+using Services.Facade;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -28,7 +29,12 @@ namespace UI
             {
                 if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtDescription.Text))
                 {
-                    MessageBox.Show("Por favor, complete todos los campos del inventario.", "Campos incompletos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Por favor, complete todos los campos del inventario."),
+                        LanguageService.Translate("Campos incompletos"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
@@ -52,7 +58,12 @@ namespace UI
                 }
 
                 // Preguntar si desea agregar más
-                var result = MessageBox.Show("¿Desea agregar más elementos de inventario?", "Agregar más", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = MessageBox.Show(
+                    LanguageService.Translate("¿Desea agregar más elementos de inventario?"),
+                    LanguageService.Translate("Agregar más"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
                 if (result == DialogResult.Yes)
                 {
@@ -67,7 +78,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al agregar el inventario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al agregar el inventario") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

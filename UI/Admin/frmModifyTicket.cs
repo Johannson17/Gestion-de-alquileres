@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LOGIC.Facade;
 using Domain;
-using System.Drawing;
+using Services.Facade;
 
 namespace UI.Admin
 {
@@ -21,7 +22,7 @@ namespace UI.Admin
 
             LoadTickets();
 
-            // Suscripción a eventos
+            // Subscribe to events
             dgvTickets.SelectionChanged += dgvTickets_SelectionChanged;
             btnSave.Click += btnSave_Click;
             btnImage.Click += btnImage_Click;
@@ -46,29 +47,33 @@ namespace UI.Admin
                         ticket.DescriptionTicket,
                         ticket.StatusTicket,
                         ticket.ImageTicket,
-                        PropertyAddress = property?.AddressProperty ?? "Propiedad no encontrada"
+                        PropertyAddress = property?.AddressProperty ?? LanguageService.Translate("Property not found")
                     };
                 }).ToList();
 
                 dgvTickets.DataSource = enrichedTickets;
 
-                // Ajustar tamaño de columnas automáticamente para ocupar todo el ancho disponible
+                // Adjust columns to fill available width
                 dgvTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-                // Configuración de columnas
+                // Column configuration
                 dgvTickets.Columns["IdRequest"].Visible = false;
                 dgvTickets.Columns["FkIdProperty"].Visible = false;
                 dgvTickets.Columns["FkIdPerson"].Visible = false;
                 dgvTickets.Columns["ImageTicket"].Visible = false;
 
-                dgvTickets.Columns["TitleTicket"].HeaderText = "Título";
-                dgvTickets.Columns["DescriptionTicket"].HeaderText = "Descripción";
-                dgvTickets.Columns["StatusTicket"].HeaderText = "Estado";
-                dgvTickets.Columns["PropertyAddress"].HeaderText = "Dirección de la Propiedad";
+                dgvTickets.Columns["TitleTicket"].HeaderText = LanguageService.Translate("Title");
+                dgvTickets.Columns["DescriptionTicket"].HeaderText = LanguageService.Translate("Description");
+                dgvTickets.Columns["StatusTicket"].HeaderText = LanguageService.Translate("Status");
+                dgvTickets.Columns["PropertyAddress"].HeaderText = LanguageService.Translate("Property Address");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los tickets: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error loading tickets")}: {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -82,18 +87,28 @@ namespace UI.Admin
 
                 if (selectedRow == null) return;
 
-                // Asignar datos al formulario
+                // Assign data to form fields
                 txtTitle.Text = selectedRow.TitleTicket;
                 txtDetail.Text = selectedRow.DescriptionTicket;
                 txtProperty.Text = selectedRow.PropertyAddress;
 
-                var availableStatuses = new List<string> { "Pendiente", "En Progreso", "Completado" };
+                var availableStatuses = new List<string>
+                {
+                    LanguageService.Translate("Pending"),
+                    LanguageService.Translate("In Progress"),
+                    LanguageService.Translate("Completed")
+                };
+
                 cmbStatus.DataSource = availableStatuses;
                 cmbStatus.SelectedItem = selectedRow.StatusTicket;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al seleccionar el ticket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error selecting ticket")}: {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -101,7 +116,11 @@ namespace UI.Admin
         {
             if (dgvTickets.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un ticket para modificar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    LanguageService.Translate("Please select a ticket to modify."),
+                    LanguageService.Translate("Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -110,7 +129,11 @@ namespace UI.Admin
                 dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
                 if (selectedRow == null)
                 {
-                    MessageBox.Show("Error al seleccionar el ticket.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("Error selecting ticket."),
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return;
                 }
 
@@ -119,19 +142,31 @@ namespace UI.Admin
 
                 if (string.IsNullOrWhiteSpace(newStatus))
                 {
-                    MessageBox.Show("Seleccione un estado válido.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Please select a valid status."),
+                        LanguageService.Translate("Warning"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
                 }
 
                 _ticketService.UpdateTicketStatus(ticketId, newStatus);
 
-                MessageBox.Show("Estado del ticket actualizado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageService.Translate("Ticket status updated successfully."),
+                    LanguageService.Translate("Success"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 LoadTickets();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar los cambios: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error saving changes:")} {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -139,7 +174,11 @@ namespace UI.Admin
         {
             if (dgvTickets.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un ticket para ver su imagen.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    LanguageService.Translate("Please select a ticket to view its image."),
+                    LanguageService.Translate("Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -148,13 +187,21 @@ namespace UI.Admin
                 dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
                 if (selectedRow == null)
                 {
-                    MessageBox.Show("Error al obtener los datos del ticket.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("Error retrieving ticket data."),
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return;
                 }
 
                 if (selectedRow.ImageTicket == null || selectedRow.ImageTicket.Length == 0)
                 {
-                    MessageBox.Show("El ticket seleccionado no tiene una imagen asociada.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("The selected ticket does not have an associated image."),
+                        LanguageService.Translate("Warning"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -162,7 +209,11 @@ namespace UI.Admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al mostrar la imagen: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"{LanguageService.Translate("Error displaying image:")} {ex.Message}",
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -170,7 +221,7 @@ namespace UI.Admin
         {
             using (Form imageForm = new Form())
             {
-                imageForm.Text = "Imagen del Ticket";
+                imageForm.Text = LanguageService.Translate("Ticket Image");
                 imageForm.Size = new Size(600, 400);
                 imageForm.StartPosition = FormStartPosition.CenterScreen;
 

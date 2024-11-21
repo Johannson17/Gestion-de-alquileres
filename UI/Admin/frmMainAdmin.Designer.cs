@@ -46,7 +46,7 @@
             this.altaDeRolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modificacionDeRolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.idiomasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.soporteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmbLanguage = new System.Windows.Forms.ToolStripComboBox();
             this.reportesToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.arrendatariosToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.propiedadesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,14 +108,14 @@
             // altaToolStripMenuItem
             // 
             this.altaToolStripMenuItem.Name = "altaToolStripMenuItem";
-            this.altaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.altaToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.altaToolStripMenuItem.Text = "Alta";
             this.altaToolStripMenuItem.Click += new System.EventHandler(this.altaToolStripMenuItem_Click);
             // 
             // modificaciónBajaToolStripMenuItem
             // 
             this.modificaciónBajaToolStripMenuItem.Name = "modificaciónBajaToolStripMenuItem";
-            this.modificaciónBajaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modificaciónBajaToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.modificaciónBajaToolStripMenuItem.Text = "Modificación/Baja";
             this.modificaciónBajaToolStripMenuItem.Click += new System.EventHandler(this.modificaciónBajaToolStripMenuItem_Click);
             // 
@@ -154,7 +154,7 @@
             this.configuraciónToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.usuariosToolStripMenuItem,
             this.idiomasToolStripMenuItem,
-            this.soporteToolStripMenuItem});
+            this.cmbLanguage});
             this.configuraciónToolStripMenuItem.Name = "configuraciónToolStripMenuItem";
             this.configuraciónToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
             this.configuraciónToolStripMenuItem.Text = "Configuración";
@@ -167,7 +167,7 @@
             this.altaDeRolesToolStripMenuItem,
             this.modificacionDeRolesToolStripMenuItem});
             this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
-            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.usuariosToolStripMenuItem.Text = "Usuarios y permisos";
             // 
             // altaDeUsuariosToolStripMenuItem
@@ -201,15 +201,15 @@
             // idiomasToolStripMenuItem
             // 
             this.idiomasToolStripMenuItem.Name = "idiomasToolStripMenuItem";
-            this.idiomasToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.idiomasToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.idiomasToolStripMenuItem.Text = "Idiomas";
             this.idiomasToolStripMenuItem.Click += new System.EventHandler(this.idiomasToolStripMenuItem_Click);
             // 
-            // soporteToolStripMenuItem
+            // cmbLanguage
             // 
-            this.soporteToolStripMenuItem.Name = "soporteToolStripMenuItem";
-            this.soporteToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.soporteToolStripMenuItem.Text = "Soporte";
+            this.cmbLanguage.Name = "cmbLanguage";
+            this.cmbLanguage.Size = new System.Drawing.Size(121, 23);
+            this.cmbLanguage.SelectedIndexChanged += new System.EventHandler(this.btnTranslate_Click);
             // 
             // reportesToolStripMenuItem3
             // 
@@ -224,21 +224,21 @@
             // arrendatariosToolStripMenuItem1
             // 
             this.arrendatariosToolStripMenuItem1.Name = "arrendatariosToolStripMenuItem1";
-            this.arrendatariosToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.arrendatariosToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
             this.arrendatariosToolStripMenuItem1.Text = "Arrendatarios";
             this.arrendatariosToolStripMenuItem1.Click += new System.EventHandler(this.arrendatariosToolStripMenuItem1_Click);
             // 
             // propiedadesToolStripMenuItem1
             // 
             this.propiedadesToolStripMenuItem1.Name = "propiedadesToolStripMenuItem1";
-            this.propiedadesToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.propiedadesToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
             this.propiedadesToolStripMenuItem1.Text = "Propiedades";
             this.propiedadesToolStripMenuItem1.Click += new System.EventHandler(this.propiedadesToolStripMenuItem1_Click);
             // 
             // contratosToolStripMenuItem1
             // 
             this.contratosToolStripMenuItem1.Name = "contratosToolStripMenuItem1";
-            this.contratosToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.contratosToolStripMenuItem1.Size = new System.Drawing.Size(145, 22);
             this.contratosToolStripMenuItem1.Text = "Contratos";
             this.contratosToolStripMenuItem1.Click += new System.EventHandler(this.contratosToolStripMenuItem1_Click);
             // 
@@ -278,7 +278,6 @@
         private System.Windows.Forms.ToolStripMenuItem configuraciónToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem usuariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem idiomasToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem soporteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportesToolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem arrendatariosToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem propiedadesToolStripMenuItem1;
@@ -287,5 +286,6 @@
         private System.Windows.Forms.ToolStripMenuItem modificaciónDeUsuariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem altaDeRolesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modificacionDeRolesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox cmbLanguage;
     }
 }

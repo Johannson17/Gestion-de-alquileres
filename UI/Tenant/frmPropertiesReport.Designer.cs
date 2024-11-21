@@ -84,7 +84,7 @@
             this.Controls.Add(this.dgvProperties);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmPropertiesReport";
-            this.Text = "frmPropertiesReport";
+            this.Text = "Reporte de propiedades";
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).EndInit();
             this.ResumeLayout(false);
 

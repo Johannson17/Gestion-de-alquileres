@@ -1,9 +1,9 @@
 ﻿using Domain;
-using LOGIC.Facade; // Asegúrate de que la lógica esté accesible aquí.
+using LOGIC.Facade;
+using Services.Facade;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace UI
 {
@@ -14,7 +14,7 @@ namespace UI
         public frmModifyPerson()
         {
             InitializeComponent();
-            _personService = new PersonService(); // Asegúrate de que PersonService no necesite parámetros.
+            _personService = new PersonService();
             LoadPersonData();
 
             // Asigna el evento de clic de celda al DataGridView
@@ -32,48 +32,62 @@ namespace UI
                 dgvPerson.DataSource = persons.Select(p => new
                 {
                     p.IdPerson,
-                    Nombre = p.NamePerson,
-                    Apellido = p.LastNamePerson,
-                    Domicilio = p.DomicilePerson,
-                    DomicilioElectronico = p.ElectronicDomicilePerson, // Sin espacio en el nombre
-                    Telefono = p.PhoneNumberPerson, // Sin tilde en el identificador
-                    NumeroDocumento = p.NumberDocumentPerson // Sin espacio en el nombre
+                    Name = p.NamePerson,
+                    LastName = p.LastNamePerson,
+                    Address = p.DomicilePerson,
+                    ElectronicAddress = p.ElectronicDomicilePerson,
+                    PhoneNumber = p.PhoneNumberPerson,
+                    DocumentNumber = p.NumberDocumentPerson
                 }).ToList();
 
-                dgvPerson.Columns["IdPerson"].Visible = false; // Oculta la columna de ID
+                dgvPerson.Columns["IdPerson"].Visible = false;
 
                 // Ajusta los encabezados de las columnas
-                dgvPerson.Columns["Nombre"].HeaderText = "Nombre";
-                dgvPerson.Columns["Apellido"].HeaderText = "Apellido";
-                dgvPerson.Columns["Domicilio"].HeaderText = "Domicilio";
-                dgvPerson.Columns["DomicilioElectronico"].HeaderText = "Domicilio Electrónico";
-                dgvPerson.Columns["Telefono"].HeaderText = "Teléfono";
-                dgvPerson.Columns["NumeroDocumento"].HeaderText = "Número de Documento";
+                dgvPerson.Columns["Name"].HeaderText = LanguageService.Translate("Nombre");
+                dgvPerson.Columns["LastName"].HeaderText = LanguageService.Translate("Apellido");
+                dgvPerson.Columns["Address"].HeaderText = LanguageService.Translate("Domicilio");
+                dgvPerson.Columns["ElectronicAddress"].HeaderText = LanguageService.Translate("Domicilio Electrónico");
+                dgvPerson.Columns["PhoneNumber"].HeaderText = LanguageService.Translate("Teléfono");
+                dgvPerson.Columns["DocumentNumber"].HeaderText = LanguageService.Translate("Número de Documento");
 
-                dgvPerson.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajusta las columnas al ancho del DataGridView
+                dgvPerson.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los datos") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
-
 
         // Evento que se ejecuta al hacer clic en una celda del DataGridView
         private void dgvPerson_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0) // Asegurarse de que el índice de fila sea válido
+            if (e.RowIndex >= 0)
             {
-                // Obtiene la persona seleccionada de la fila
-                var selectedPerson = (Person)dgvPerson.Rows[e.RowIndex].DataBoundItem;
+                try
+                {
+                    var selectedPerson = (Person)dgvPerson.Rows[e.RowIndex].DataBoundItem;
 
-                // Rellenar los campos de texto con los datos de la persona seleccionada
-                txtName.Text = selectedPerson.NamePerson;
-                txtLastName.Text = selectedPerson.LastNamePerson;
-                txtDomicile.Text = selectedPerson.DomicilePerson;
-                txtEmail.Text = selectedPerson.ElectronicDomicilePerson;
-                txtPhoneNumber.Text = selectedPerson.PhoneNumberPerson.ToString();
-                txtDocumentNumber.Text = selectedPerson.NumberDocumentPerson.ToString();
+                    txtName.Text = selectedPerson.NamePerson;
+                    txtLastName.Text = selectedPerson.LastNamePerson;
+                    txtDomicile.Text = selectedPerson.DomicilePerson;
+                    txtEmail.Text = selectedPerson.ElectronicDomicilePerson;
+                    txtPhoneNumber.Text = selectedPerson.PhoneNumberPerson.ToString();
+                    txtDocumentNumber.Text = selectedPerson.NumberDocumentPerson.ToString();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        LanguageService.Translate("Error al seleccionar la persona") + ": " + ex.Message,
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
             }
         }
 
@@ -82,16 +96,19 @@ namespace UI
         {
             try
             {
-                // Obtiene la persona seleccionada
                 var selectedPerson = (Person)dgvPerson.CurrentRow?.DataBoundItem;
 
                 if (selectedPerson == null)
                 {
-                    MessageBox.Show("Seleccione una persona de la lista para modificar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Seleccione una persona de la lista para modificar."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
-                // Actualizar los datos de la persona con los valores del formulario
                 selectedPerson.NamePerson = txtName.Text;
                 selectedPerson.LastNamePerson = txtLastName.Text;
                 selectedPerson.DomicilePerson = txtDomicile.Text;
@@ -99,15 +116,25 @@ namespace UI
                 selectedPerson.PhoneNumberPerson = int.Parse(txtPhoneNumber.Text);
                 selectedPerson.NumberDocumentPerson = int.Parse(txtDocumentNumber.Text);
 
-                // Guardar los cambios en la base de datos
                 _personService.UpdatePerson(selectedPerson);
 
-                MessageBox.Show("Datos actualizados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadPersonData(); // Recargar los datos en el DataGridView para reflejar los cambios
+                MessageBox.Show(
+                    LanguageService.Translate("Datos actualizados correctamente."),
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                LoadPersonData();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar los cambios: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar los cambios") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -115,29 +142,48 @@ namespace UI
         {
             try
             {
-                // Obtiene la persona seleccionada
                 var selectedPerson = (Person)dgvPerson.CurrentRow?.DataBoundItem;
 
                 if (selectedPerson == null)
                 {
-                    MessageBox.Show("Seleccione una persona de la lista para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Seleccione una persona de la lista para eliminar."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
-                // Confirmación de eliminación
-                var confirmation = MessageBox.Show("¿Está seguro de que desea eliminar esta persona?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var confirmation = MessageBox.Show(
+                    LanguageService.Translate("¿Está seguro de que desea eliminar esta persona?"),
+                    LanguageService.Translate("Confirmación"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
                 if (confirmation == DialogResult.Yes)
                 {
-                    // Llama al servicio para eliminar la persona
                     _personService.DeletePerson(selectedPerson.IdPerson);
 
-                    MessageBox.Show("Persona eliminada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadPersonData(); // Recargar los datos en el DataGridView para reflejar la eliminación
+                    MessageBox.Show(
+                        LanguageService.Translate("Persona eliminada correctamente."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
+                    LoadPersonData();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al eliminar la persona: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar la persona") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

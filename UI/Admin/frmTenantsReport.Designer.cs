@@ -62,7 +62,7 @@
             this.Controls.Add(this.dgvPersons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmTenantsReport";
-            this.Text = "frmTenantsReport";
+            this.Text = "Reporte de arrendatarios";
             ((System.ComponentModel.ISupportInitialize)(this.dgvPersons)).EndInit();
             this.ResumeLayout(false);
 

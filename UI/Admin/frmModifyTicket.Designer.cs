@@ -107,9 +107,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 533);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 16);
+            this.label1.Size = new System.Drawing.Size(53, 16);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Estados:";
+            this.label1.Text = "Estado:";
             // 
             // frmModifyTicket
             // 

@@ -1,5 +1,6 @@
 ﻿using Domain;
 using LOGIC.Facade;
+using Services.Facade;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,14 +19,14 @@ namespace UI
             _propertyService = new PropertyService();
             LoadInventory();
 
-            // Vincular eventos
+            // Bind events
             dgvInventory.SelectionChanged += dgvInventory_SelectionChanged;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
         }
 
         /// <summary>
-        /// Método para cargar el inventario en el DataGridView.
+        /// Method to load inventory into the DataGridView.
         /// </summary>
         private void LoadInventory()
         {
@@ -33,7 +34,12 @@ namespace UI
             {
                 if (_selectedProperty.InventoryProperty == null || !_selectedProperty.InventoryProperty.Any())
                 {
-                    MessageBox.Show("No hay inventario para esta propiedad.", "Inventario vacío", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("No hay inventario para esta propiedad."),
+                        LanguageService.Translate("Inventario vacío"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                     return;
                 }
 
@@ -44,16 +50,21 @@ namespace UI
                         i.DescriptionInventory
                     }).ToList();
 
-                dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho del DataGridView
+                dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Adjust columns to DataGridView width
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar el inventario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar el inventario") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Evento que maneja el cambio de selección en el DataGridView.
+        /// Handles selection change event in the DataGridView.
         /// </summary>
         private void dgvInventory_SelectionChanged(object sender, EventArgs e)
         {
@@ -72,13 +83,18 @@ namespace UI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al seleccionar el inventario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("Error al seleccionar el inventario") + ": " + ex.Message,
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
             }
         }
 
         /// <summary>
-        /// Botón para guardar cambios o agregar nuevo inventario.
+        /// Button to save changes or add new inventory.
         /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -90,8 +106,12 @@ namespace UI
                 }
                 else
                 {
-                    var result = MessageBox.Show("¿Desea modificar el inventario seleccionado? Si elige 'No', se agregará un nuevo inventario.",
-                        "Modificar o agregar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var result = MessageBox.Show(
+                        LanguageService.Translate("¿Desea modificar el inventario seleccionado? Si elige 'No', se agregará un nuevo inventario."),
+                        LanguageService.Translate("Modificar o agregar"),
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
 
                     if (result == DialogResult.Yes)
                         ModifySelectedInventory();
@@ -101,12 +121,17 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar los cambios: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar los cambios") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Botón para eliminar un elemento del inventario.
+        /// Button to delete an inventory item.
         /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
@@ -114,11 +139,21 @@ namespace UI
             {
                 if (dgvInventory.SelectedRows.Count == 0)
                 {
-                    MessageBox.Show("Debe seleccionar un elemento de inventario para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Debe seleccionar un elemento de inventario para eliminar."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
-                var confirmResult = MessageBox.Show("¿Está seguro de que desea eliminar este elemento de inventario?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var confirmResult = MessageBox.Show(
+                    LanguageService.Translate("¿Está seguro de que desea eliminar este elemento de inventario?"),
+                    LanguageService.Translate("Confirmar eliminación"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
                 if (confirmResult == DialogResult.No) return;
 
                 var selectedInventoryName = dgvInventory.SelectedRows[0].Cells["NameInventory"].Value.ToString();
@@ -130,17 +165,27 @@ namespace UI
                     _selectedProperty.InventoryProperty.Remove(inventoryItem);
 
                     RefreshInventoryGrid();
-                    MessageBox.Show("Elemento eliminado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Elemento eliminado correctamente."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar el elemento: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar el elemento") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Modifica el inventario seleccionado.
+        /// Modify the selected inventory.
         /// </summary>
         private void ModifySelectedInventory()
         {
@@ -156,18 +201,28 @@ namespace UI
 
                     _propertyService.UpdateProperty(_selectedProperty);
 
-                    MessageBox.Show("Cambios guardados correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Cambios guardados correctamente."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                     RefreshInventoryGrid();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al modificar el inventario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al modificar el inventario") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Agrega un nuevo inventario a la propiedad.
+        /// Add new inventory to the property.
         /// </summary>
         private void AddNewInventory()
         {
@@ -183,16 +238,26 @@ namespace UI
                 _propertyService.UpdateProperty(_selectedProperty);
 
                 RefreshInventoryGrid();
-                MessageBox.Show("Nuevo inventario añadido correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageService.Translate("Nuevo inventario añadido correctamente."),
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al agregar el inventario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al agregar el inventario") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
         /// <summary>
-        /// Refresca el contenido del DataGridView con el inventario actualizado.
+        /// Refresh the DataGridView content with updated inventory.
         /// </summary>
         private void RefreshInventoryGrid()
         {

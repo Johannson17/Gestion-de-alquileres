@@ -176,7 +176,7 @@
             this.Controls.Add(this.cmbProperty);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmModifyContract";
-            this.Text = "Modificar contarto";
+            this.Text = "Modificar contrato";
             ((System.ComponentModel.ISupportInitialize)(this.dgvContracts)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

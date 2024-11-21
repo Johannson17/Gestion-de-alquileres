@@ -100,6 +100,7 @@
     <Compile Include="Admin\frmTenantsReport.Designer.cs">
       <DependentUpon>frmTenantsReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\LanguageHelper.cs" />
     <Compile Include="Service\frmUsers.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -301,7 +302,8 @@
     <EmbeddedResource Include="Tenant\frmTicket.resx">
       <DependentUpon>frmTicket.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="I18n\idioma.es-AR" />
+    <None Include="I18n\idioma.en-US.json" />
+    <None Include="I18n\idioma.es-AR.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

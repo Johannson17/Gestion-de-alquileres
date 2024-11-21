@@ -23,8 +23,8 @@ namespace UI
                 // Asegurarse de que el DataGridView tenga columnas
                 if (dgvLanguages.Columns.Count == 0)
                 {
-                    dgvLanguages.Columns.Add("Key", "Clave");
-                    dgvLanguages.Columns.Add("Value", "Valor");
+                    dgvLanguages.Columns.Add("Key", LanguageService.Translate("Clave"));
+                    dgvLanguages.Columns.Add("Value", LanguageService.Translate("Valor"));
                 }
 
                 // Obtener todas las traducciones desde la capa de servicio
@@ -39,7 +39,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar el archivo de idioma: {ex.Message}");
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar el archivo de idioma:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -64,7 +69,12 @@ namespace UI
                 }
 
                 // Preguntar al usuario si desea crear un archivo nuevo
-                DialogResult result = MessageBox.Show("¿Desea crear un archivo nuevo?", "Guardar archivo de idioma", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show(
+                    LanguageService.Translate("¿Desea crear un archivo nuevo?"),
+                    LanguageService.Translate("Guardar archivo de idioma"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
                 if (result == DialogResult.Yes)
                 {
@@ -73,24 +83,44 @@ namespace UI
                     if (!string.IsNullOrEmpty(newFileName))
                     {
                         // Guardar los datos en un nuevo archivo usando la capa de servicios
-                        LanguageService.SaveTranslationsToNewFile(updatedTranslations, newFileName);  // Usamos el nombre completo dado
-                        MessageBox.Show("Idioma guardado en un nuevo archivo con éxito.");
+                        LanguageService.SaveTranslationsToNewFile(updatedTranslations, newFileName); // Usamos el nombre completo dado
+                        MessageBox.Show(
+                            LanguageService.Translate("Idioma guardado en un nuevo archivo con éxito."),
+                            LanguageService.Translate("Éxito"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                     }
                     else
                     {
-                        MessageBox.Show("Debe proporcionar un nombre válido para el nuevo archivo.");
+                        MessageBox.Show(
+                            LanguageService.Translate("Debe proporcionar un nombre válido para el nuevo archivo."),
+                            LanguageService.Translate("Advertencia"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
                     }
                 }
                 else
                 {
                     // Guardar en el archivo existente
                     LanguageService.SaveTranslations(updatedTranslations, "es-AR");
-                    MessageBox.Show("Idioma guardado con éxito en el archivo existente.");
+                    MessageBox.Show(
+                        LanguageService.Translate("Idioma guardado con éxito en el archivo existente."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar el archivo: {ex.Message}");
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar el archivo:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -104,12 +134,12 @@ namespace UI
             {
                 prompt.Width = 300;
                 prompt.Height = 150;
-                prompt.Text = "Ingrese el nombre completo del archivo de idioma";
+                prompt.Text = LanguageService.Translate("Ingrese el nombre completo del archivo de idioma");
 
-                Label label = new Label() { Left = 20, Top = 20, Text = "Nombre completo del archivo:" };
+                Label label = new Label() { Left = 20, Top = 20, Text = LanguageService.Translate("Nombre completo del archivo:") };
                 TextBox textBox = new TextBox() { Left = 20, Top = 50, Width = 200 };
 
-                Button confirmation = new Button() { Text = "Guardar", Left = 100, Top = 80, Width = 100 };
+                Button confirmation = new Button() { Text = LanguageService.Translate("Guardar"), Left = 100, Top = 80, Width = 100 };
                 confirmation.Click += (sender, e) => { prompt.DialogResult = DialogResult.OK; prompt.Close(); };
 
                 prompt.Controls.Add(label);

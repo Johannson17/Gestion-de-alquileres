@@ -1,6 +1,6 @@
 ﻿using Domain;
 using LOGIC.Facade;
-using LOGIC;
+using Services.Facade;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -36,14 +36,24 @@ namespace UI
         {
             try
             {
-                var result = MessageBox.Show("¿Desea asignar un usuario a esta persona?", "Asignar Usuario", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = MessageBox.Show(
+                    LanguageService.Translate("¿Desea asignar un usuario a esta persona?"),
+                    LanguageService.Translate("Asignar Usuario"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
                 if (result == DialogResult.Yes)
                 {
                     OpenUserSelectionForm();
                     if (_selectedUserId == Guid.Empty)
                     {
-                        MessageBox.Show("No se seleccionó ningún usuario. No se guardará la persona.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(
+                            LanguageService.Translate("No se seleccionó ningún usuario. No se guardará la persona."),
+                            LanguageService.Translate("Error"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
                         return;
                     }
                 }
@@ -52,7 +62,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar la persona: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar la persona") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -69,9 +84,16 @@ namespace UI
 
         private void SavePerson()
         {
-            if (string.IsNullOrEmpty(txtName.Text) || string.IsNullOrEmpty(txtLastName.Text) || string.IsNullOrEmpty(txtPhoneNumber.Text))
+            if (string.IsNullOrEmpty(txtName.Text) ||
+                string.IsNullOrEmpty(txtLastName.Text) ||
+                string.IsNullOrEmpty(txtPhoneNumber.Text))
             {
-                MessageBox.Show("Todos los campos son obligatorios.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    LanguageService.Translate("Todos los campos son obligatorios."),
+                    LanguageService.Translate("Validación"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
                 return;
             }
 
@@ -90,7 +112,12 @@ namespace UI
 
             _personService.CreatePerson(newPerson, _selectedUserId);
 
-            MessageBox.Show("Persona guardada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                LanguageService.Translate("Persona guardada con éxito."),
+                LanguageService.Translate("Éxito"),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
             ClearForm();
         }
 

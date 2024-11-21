@@ -34,6 +34,8 @@
             this.reportesToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.propiedadesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.contratosToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.configuraciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmbLanguage = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +47,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contratosToolStripMenuItem,
             this.ticketsToolStripMenuItem,
+            this.configuraciónToolStripMenuItem,
             this.reportesToolStripMenuItem3});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -90,6 +93,20 @@
             this.contratosToolStripMenuItem1.Text = "Contratos";
             this.contratosToolStripMenuItem1.Click += new System.EventHandler(this.contratosToolStripMenuItem1_Click);
             // 
+            // configuraciónToolStripMenuItem
+            // 
+            this.configuraciónToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmbLanguage});
+            this.configuraciónToolStripMenuItem.Name = "configuraciónToolStripMenuItem";
+            this.configuraciónToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.configuraciónToolStripMenuItem.Text = "Configuración";
+            // 
+            // cmbLanguage
+            // 
+            this.cmbLanguage.Name = "cmbLanguage";
+            this.cmbLanguage.Size = new System.Drawing.Size(121, 23);
+            this.cmbLanguage.SelectedIndexChanged += new System.EventHandler(this.btnTranslate_Click);
+            // 
             // frmMainTenant
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -117,5 +134,7 @@
         private System.Windows.Forms.ToolStripMenuItem reportesToolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem propiedadesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem contratosToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem configuraciónToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox cmbLanguage;
     }
 }

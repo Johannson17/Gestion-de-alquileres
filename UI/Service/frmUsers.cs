@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Services.Facade; // Asegúrate de que esta ruta sea correcta
+using Services.Facade;
 using Domain;
 using Services.Domain;
 
@@ -9,35 +9,61 @@ namespace UI.Admin
 {
     public partial class frmUsers : Form
     {
-        public Guid SelectedUserId { get; private set; } // Propiedad para almacenar el ID seleccionado
+        public Guid SelectedUserId { get; private set; } // Property to store the selected User ID
 
         public frmUsers()
         {
             InitializeComponent();
-            LoadUsers(); // Cargar usuarios al inicializar el formulario
-            dgvUsers.CellDoubleClick += dgvUsers_CellDoubleClick; // Vincular el evento de doble clic
+            LoadUsers(); // Load users when the form is initialized
+            dgvUsers.CellDoubleClick += dgvUsers_CellDoubleClick; // Link the double-click event
         }
 
         private void LoadUsers()
         {
-            // Llama al método estático para obtener la lista de usuarios
-            List<Usuario> users = UserService.GetAllUsers();
-            dgvUsers.DataSource = users;
+            try
+            {
+                // Call the static method to get the list of users
+                List<Usuario> users = UserService.GetAllUsers();
+                dgvUsers.DataSource = users;
 
-            // Configura las columnas a mostrar
-            dgvUsers.Columns["IdUsuario"].HeaderText = "ID de Usuario";
-            dgvUsers.Columns["UserName"].HeaderText = "Nombre de Usuario";
-            dgvUsers.Columns["Password"].Visible = false; // Ocultar columna de contraseña si existe
+                // Configure the columns to display
+                dgvUsers.Columns["IdUsuario"].HeaderText = LanguageService.Translate("ID de Usuario");
+                dgvUsers.Columns["UserName"].HeaderText = LanguageService.Translate("Nombre de Usuario");
+                dgvUsers.Columns["Password"].Visible = false; // Hide password column if it exists
+
+                dgvUsers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Adjust column sizes
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los usuarios") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
 
         private void dgvUsers_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                // Obtener el ID del usuario seleccionado al hacer doble clic
-                SelectedUserId = (Guid)dgvUsers.Rows[e.RowIndex].Cells["IdUsuario"].Value;
-                this.DialogResult = DialogResult.OK; // Indica que se seleccionó un usuario
-                this.Close(); // Cierra el formulario
+                try
+                {
+                    // Get the selected user's ID on double-click
+                    SelectedUserId = (Guid)dgvUsers.Rows[e.RowIndex].Cells["IdUsuario"].Value;
+                    this.DialogResult = DialogResult.OK; // Indicate a user was selected
+                    this.Close(); // Close the form
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        LanguageService.Translate("Error al seleccionar el usuario") + ": " + ex.Message,
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
             }
         }
     }

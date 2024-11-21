@@ -27,45 +27,91 @@ namespace UI
 
         private void frmAddContract_Load(object sender, EventArgs e)
         {
-            LoadProperties();
-            LoadTenants();
+            try
+            {
+                LoadProperties();
+                LoadTenants();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los datos iniciales") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
 
         private void LoadProperties()
         {
-            var properties = _propertyService.GetPropertiesByStatus(PropertyStatusEnum.Disponible);
-            cmbProperty.DataSource = properties;
-            cmbProperty.DisplayMember = "AddressProperty";
-            cmbProperty.ValueMember = "IdProperty";
+            try
+            {
+                var properties = _propertyService.GetPropertiesByStatus(PropertyStatusEnum.Disponible);
+                cmbProperty.DataSource = properties;
+                cmbProperty.DisplayMember = "AddressProperty";
+                cmbProperty.ValueMember = "IdProperty";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar las propiedades") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
 
         private void LoadTenants()
         {
-            var tenants = _personService.GetAllPersonsByType(PersonTypeEnum.Tenant);
-            cmbTenant.DataSource = tenants;
-            cmbTenant.DisplayMember = "NumberDocumentPerson";
-            cmbTenant.ValueMember = "IdPerson";
+            try
+            {
+                var tenants = _personService.GetAllPersonsByType(PersonTypeEnum.Tenant);
+                cmbTenant.DataSource = tenants;
+                cmbTenant.DisplayMember = "NumberDocumentPerson";
+                cmbTenant.ValueMember = "IdPerson";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los inquilinos") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (cmbProperty.SelectedItem == null || cmbTenant.SelectedItem == null)
-            {
-                MessageBox.Show("Por favor, seleccione una propiedad y un arrendatario.");
-                return;
-            }
-
-            if (!int.TryParse(txtPrice.Text, out int annualRentPrice))
-            {
-                MessageBox.Show("Por favor, ingrese un precio válido (solo números).");
-                return;
-            }
-
-            var property = (Property)cmbProperty.SelectedItem;
-            var tenant = (Person)cmbTenant.SelectedItem;
-
             try
             {
+                if (cmbProperty.SelectedItem == null || cmbTenant.SelectedItem == null)
+                {
+                    MessageBox.Show(
+                        LanguageService.Translate("Por favor, seleccione una propiedad y un arrendatario."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    return;
+                }
+
+                if (!int.TryParse(txtPrice.Text, out int annualRentPrice))
+                {
+                    MessageBox.Show(
+                        LanguageService.Translate("Por favor, ingrese un precio válido (solo números)."),
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
+
+                var property = (Property)cmbProperty.SelectedItem;
+                var tenant = (Person)cmbTenant.SelectedItem;
+
                 var owner = _personService.GetPersonByPropertyAndType(property.IdProperty, PersonTypeEnum.Owner);
                 var contract = new Contract
                 {
@@ -73,19 +119,31 @@ namespace UI
                     FkIdTenant = tenant.IdPerson,
                     AnnualRentPrice = annualRentPrice,
                     DateStartContract = cldStartDate.Value,
-                    DateFinalContract = cldFinalDate.Value
+                    DateFinalContract = cldFinalDate.Value,
+                    Clauses = new List<ContractClause>()
                 };
 
                 // Abre el formulario para añadir las cláusulas
                 OpenAddClauseForm(contract, owner, tenant, property);
 
                 var contractId = _contractFacade.CreateContract(contract, owner, tenant, property);
-                MessageBox.Show($"Contrato creado con éxito. ID: {contractId}");
+                MessageBox.Show(
+                    LanguageService.Translate("Contrato creado con éxito") + $". {LanguageService.Translate("ID")}: {contractId}",
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al crear el contrato: {ex.Message}");
+                MessageBox.Show(
+                    LanguageService.Translate("Error al crear el contrato") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -94,7 +152,6 @@ namespace UI
             var clauseIndex = 1;
             var addMore = true;
 
-            // Abre el formulario recursivamente
             while (addMore)
             {
                 using (var frmClause = new frmAddContractClause(contract, owner, tenant, property, clauseIndex))
@@ -106,7 +163,11 @@ namespace UI
                         contract.Clauses.Add(frmClause.NewClause);
 
                         clauseIndex++;
-                        addMore = clauseIndex > 3 ? MessageBox.Show("¿Desea añadir más cláusulas?", "Agregar Cláusula", MessageBoxButtons.YesNo) == DialogResult.Yes : true;
+                        addMore = clauseIndex > 3 ? MessageBox.Show(
+                            LanguageService.Translate("¿Desea añadir más cláusulas?"),
+                            LanguageService.Translate("Agregar Cláusula"),
+                            MessageBoxButtons.YesNo
+                        ) == DialogResult.Yes : true;
                     }
                     else
                     {

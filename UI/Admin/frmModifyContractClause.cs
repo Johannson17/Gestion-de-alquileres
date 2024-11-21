@@ -54,14 +54,19 @@ namespace UI
                 dgvContractClauses.DataSource = displayClauses;
 
                 dgvContractClauses.Columns["IdContractClause"].Visible = false;
-                dgvContractClauses.Columns["TitleClause"].HeaderText = "Título de la Cláusula";
-                dgvContractClauses.Columns["DetailClause"].HeaderText = "Descripción de la Cláusula";
+                dgvContractClauses.Columns["TitleClause"].HeaderText = LanguageService.Translate("Título de la Cláusula");
+                dgvContractClauses.Columns["DetailClause"].HeaderText = LanguageService.Translate("Descripción de la Cláusula");
 
                 dgvContractClauses.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar las cláusulas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar las cláusulas") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -85,7 +90,12 @@ namespace UI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al seleccionar la cláusula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("Error al seleccionar la cláusula") + ": " + ex.Message,
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
             }
         }
@@ -99,14 +109,23 @@ namespace UI
             {
                 if (string.IsNullOrWhiteSpace(txtTittle.Text) || string.IsNullOrWhiteSpace(txtDescription.Text))
                 {
-                    MessageBox.Show("Por favor, complete ambos campos antes de guardar la cláusula.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Por favor, complete ambos campos antes de guardar la cláusula."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
                 if (_selectedClauseId != Guid.Empty)
                 {
-                    var result = MessageBox.Show("¿Desea modificar la cláusula seleccionada o crear una nueva?", "Guardar cláusula",
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    var result = MessageBox.Show(
+                        LanguageService.Translate("¿Desea modificar la cláusula seleccionada o crear una nueva?"),
+                        LanguageService.Translate("Guardar cláusula"),
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question
+                    );
 
                     if (result == DialogResult.Yes)
                     {
@@ -119,7 +138,12 @@ namespace UI
                         };
 
                         _contractService.UpdateContractClause(clause);
-                        MessageBox.Show("Cláusula modificada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(
+                            LanguageService.Translate("Cláusula modificada con éxito."),
+                            LanguageService.Translate("Éxito"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                     }
                     else if (result == DialogResult.No)
                     {
@@ -136,7 +160,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al guardar la cláusula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al guardar la cláusula") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -154,7 +183,12 @@ namespace UI
             };
 
             _contractService.AddContractClause(newClause);
-            MessageBox.Show("Cláusula agregada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                LanguageService.Translate("Cláusula agregada con éxito."),
+                LanguageService.Translate("Éxito"),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         /// <summary>
@@ -166,17 +200,31 @@ namespace UI
             {
                 if (_selectedClauseId == Guid.Empty)
                 {
-                    MessageBox.Show("Por favor, seleccione una cláusula para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        LanguageService.Translate("Por favor, seleccione una cláusula para eliminar."),
+                        LanguageService.Translate("Advertencia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
                     return;
                 }
 
-                var result = MessageBox.Show("¿Está seguro de que desea eliminar la cláusula seleccionada?", "Confirmar eliminación",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = MessageBox.Show(
+                    LanguageService.Translate("¿Está seguro de que desea eliminar la cláusula seleccionada?"),
+                    LanguageService.Translate("Confirmar eliminación"),
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
                 if (result == DialogResult.Yes)
                 {
                     _contractService.DeleteContractClause(_selectedClauseId);
-                    MessageBox.Show("Cláusula eliminada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Cláusula eliminada con éxito."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
 
                     ClearForm();
                     LoadClauses();
@@ -184,7 +232,12 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar la cláusula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar la cláusula") + ": " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

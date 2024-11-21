@@ -125,9 +125,9 @@
             this.label7.Location = new System.Drawing.Point(401, 294);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 16);
+            this.label7.Size = new System.Drawing.Size(53, 16);
             this.label7.TabIndex = 86;
-            this.label7.Text = "Estado";
+            this.label7.Text = "Estado:";
             // 
             // label5
             // 
@@ -135,9 +135,9 @@
             this.label5.Location = new System.Drawing.Point(401, 234);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 16);
+            this.label5.Size = new System.Drawing.Size(37, 16);
             this.label5.TabIndex = 85;
-            this.label5.Text = "Pais: ";
+            this.label5.Text = "País:";
             // 
             // label2
             // 
@@ -157,7 +157,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(67, 16);
             this.label1.TabIndex = 82;
-            this.label1.Text = "Direccion:";
+            this.label1.Text = "Dirección:";
             // 
             // txtMunicipality
             // 

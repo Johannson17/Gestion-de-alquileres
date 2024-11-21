@@ -103,6 +103,16 @@ namespace Services.Logic
         }
 
         /// <summary>
+        /// Obtiene la lista de idiomas disponibles desde los archivos de idiomas.
+        /// </summary>
+        /// <returns>Lista de idiomas disponibles.</returns>
+        public static List<string> GetAvailableLanguages()
+        {
+            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
+            return languageRepository.GetAvailableLanguages();
+        }
+
+        /// <summary>
         /// Carga todas las traducciones para un idioma específico.
         /// </summary>
         /// <param name="language">Idioma para cargar las traducciones.</param>

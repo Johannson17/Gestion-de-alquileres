@@ -52,9 +52,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(641, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(132, 16);
+            this.label1.Size = new System.Drawing.Size(129, 16);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Titulo de la clausula: ";
+            this.label1.Text = "Titulo de la clausula:";
             // 
             // btnSave
             // 

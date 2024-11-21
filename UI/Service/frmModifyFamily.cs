@@ -41,13 +41,18 @@ namespace UI.Service
 
                 // Ajustar columnas del DataGridView
                 dgvFamilies.Columns["Id"].Visible = false; // Ocultar la columna de Id
-                dgvFamilies.Columns["Nombre"].HeaderText = "Nombre de Familia";
-                dgvFamilies.Columns["Patentes"].HeaderText = "Permisos (Patentes)";
+                dgvFamilies.Columns["Nombre"].HeaderText = LanguageService.Translate("Nombre de Familia");
+                dgvFamilies.Columns["Patentes"].HeaderText = LanguageService.Translate("Permisos (Patentes)");
                 dgvFamilies.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar las familias: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar las familias:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -71,7 +76,12 @@ namespace UI.Service
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al seleccionar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        LanguageService.Translate("Error al seleccionar la familia:") + " " + ex.Message,
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
             }
         }
@@ -102,7 +112,12 @@ namespace UI.Service
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar los accesos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al cargar los accesos:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -128,13 +143,23 @@ namespace UI.Service
 
                     UserService.UpdateFamilia(_selectedFamily);
 
-                    MessageBox.Show("Familia modificada con éxito.", "Modificación de Familia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        LanguageService.Translate("Familia modificada con éxito."),
+                        LanguageService.Translate("Modificación de Familia"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                     LoadFamilies();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al modificar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al modificar la familia:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 
@@ -147,20 +172,35 @@ namespace UI.Service
             {
                 if (_selectedFamily != null)
                 {
-                    var confirmResult = MessageBox.Show("¿Está seguro de que desea eliminar esta familia?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    var confirmResult = MessageBox.Show(
+                        LanguageService.Translate("¿Está seguro de que desea eliminar esta familia?"),
+                        LanguageService.Translate("Confirmar eliminación"),
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
 
                     if (confirmResult == DialogResult.Yes)
                     {
                         UserService.DeleteFamilia(_selectedFamily.Id);
 
-                        MessageBox.Show("Familia eliminada con éxito.", "Eliminación de Familia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(
+                            LanguageService.Translate("Familia eliminada con éxito."),
+                            LanguageService.Translate("Eliminación de Familia"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
                         LoadFamilies();
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al eliminar la familia: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    LanguageService.Translate("Error al eliminar la familia:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }
