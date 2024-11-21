@@ -651,7 +651,6 @@
   "<Ninguna>": "<Ninguna>",
   "User ID": "ID de Usuario",
   "ID de Usuario": "ID de Usuario",
-  "Username": "Nombre de Usuario",
   "Nombre de Usuario": "Nombre de Usuario",
   "Error loading users": "Error al cargar los usuarios",
   "Error al cargar los usuarios": "Error al cargar los usuarios",
@@ -684,11 +683,5 @@
   "Error applying language.": "Error al aplicar el idioma.",
   "Error al aplicar el idioma.": "Error al aplicar el idioma.",
   "Tickets": "Tickets",
-  "Tickets": "Tickets",
-  "Country": "País",
-  "País": "País",
-  "Address": "Dirección",
-  "Dirección": "Dirección",
-  "The file was saved successfully.": "El archivo se guardó exitosamente.",
-  "El archivo se guardó exitosamente.": "El archivo se guardó exitosamente."
+  "The file was saved successfully.": "El archivo se guardó exitosamente."
 }

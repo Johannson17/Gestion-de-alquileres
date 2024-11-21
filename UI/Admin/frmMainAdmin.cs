@@ -12,12 +12,14 @@ namespace UI
     public partial class frmMainAdmin : Form
     {
         private static LanguageHelper language;
+        private readonly BackupService _backupService;
 
         public frmMainAdmin()
         {
             InitializeComponent();
             LoadAvailableLanguages();
             language = new LanguageHelper();
+            _backupService = new BackupService();
         }
 
         /// <summary>
@@ -163,6 +165,41 @@ namespace UI
         private void arrendatariosToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ShowChildForm(new frmTenantsReport());
+        }
+
+        private void restaurarCopiaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(new frmBackup_Restore());
+        }
+
+        /// <summary>
+        /// Generar respaldos de todas las bases de datos y notificar al usuario.
+        /// </summary>
+        private void generarCopiaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Llamar a la facade para generar los respaldos
+                _backupService.GenerateBackup();
+
+                // Mostrar mensaje de éxito
+                MessageBox.Show(
+                    LanguageService.Translate("Respaldo generado con éxito."),
+                    LanguageService.Translate("Éxito"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                // Mostrar mensaje de error
+                MessageBox.Show(
+                    LanguageService.Translate("Error al generar el respaldo:") + " " + ex.Message,
+                    LanguageService.Translate("Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
 
         /// <summary>

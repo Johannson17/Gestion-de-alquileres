@@ -45,11 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dao\Contracts\IBackupRepository.cs" />
     <Compile Include="Dao\Contracts\IGenericDao.cs" />
     <Compile Include="Dao\Contracts\IJoinRepository.cs" />
     <Compile Include="Dao\Contracts\ILanguageRepository.cs" />
     <Compile Include="Dao\Contracts\IObjectMapper.cs" />
     <Compile Include="Dao\Factory\FactoryDao.cs" />
+    <Compile Include="Dao\Implementations\SqlServer\BackupRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\FamiliaPatenteRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\FamiliaRepository.cs" />
     <Compile Include="Dao\Implementations\SqlServer\LanguageRepository.cs" />
@@ -68,12 +70,14 @@
     <Compile Include="Domain\Composite\Usuario.cs" />
     <Compile Include="Domain\Exceptions\WordNotFoundException.cs" />
     <Compile Include="Domain\Log.cs" />
+    <Compile Include="Facade\BackupService.cs" />
     <Compile Include="Facade\Extentions\StringExtention.cs" />
     <Compile Include="Facade\LanguageService.cs" />
     <Compile Include="Facade\LoggerService.cs" />
     <Compile Include="Facade\UserService.cs" />
     <Compile Include="Dao\Helpers\SqlHelper.cs" />
     <Compile Include="Helpers\EncryptionHelper.cs" />
+    <Compile Include="Logic\BackupLogic.cs" />
     <Compile Include="Logic\LanguageLogic.cs" />
     <Compile Include="Logic\LoggerLogic.cs" />
     <Compile Include="Logic\UserLogic.cs" />

@@ -101,6 +101,12 @@
       <DependentUpon>frmTenantsReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\LanguageHelper.cs" />
+    <Compile Include="Service\frmBackup&amp;Restore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Service\frmBackup&amp;Restore.Designer.cs">
+      <DependentUpon>frmBackup&amp;Restore.cs</DependentUpon>
+    </Compile>
     <Compile Include="Service\frmUsers.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -236,6 +242,9 @@
     <EmbeddedResource Include="Admin\frmTenantsReport.resx">
       <DependentUpon>frmTenantsReport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Service\frmBackup&amp;Restore.resx">
+      <DependentUpon>frmBackup&amp;Restore.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Service\frmUsers.resx">
       <DependentUpon>frmUsers.cs</DependentUpon>
     </EmbeddedResource>
@@ -330,6 +339,9 @@
       <Project>{9f3ce983-df0f-4f2f-a0ec-52522565a14a}</Project>
       <Name>Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Backups\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
