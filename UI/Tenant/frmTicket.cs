@@ -13,8 +13,11 @@ namespace UI.Tenant
     {
         private readonly TicketService _ticketService;
         private readonly PropertyService _propertyService;
-        private readonly Guid _loggedInTenantId; // ID of the logged-in tenant
-        private byte[] _ticketImage; // To temporarily store the selected image
+        private readonly Guid _loggedInTenantId; // ID del inquilino logueado
+        private byte[] _ticketImage; // Para almacenar temporalmente la imagen seleccionada
+        private Timer toolTipTimer;
+        private Control currentControl;
+        private Dictionary<Control, string> helpMessages; // Mensajes de ayuda traducidos dinámicamente
 
         public frmTicket(Guid loggedInTenantId)
         {
@@ -23,20 +26,79 @@ namespace UI.Tenant
             _propertyService = new PropertyService();
             _loggedInTenantId = loggedInTenantId;
 
-            LoadProperties(); // Load active properties when the form opens
+            InitializeHelpMessages(); // Inicializar las ayudas traducidas
+            SubscribeHelpMessagesEvents(); // Suscribir eventos de ToolTips
+
+            toolTipTimer = new Timer { Interval = 2000 }; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            LoadProperties(); // Cargar propiedades activas al abrir el formulario
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtTitle, LanguageService.Translate("Ingrese un título para describir el problema.") },
+                { txtDetail, LanguageService.Translate("Proporcione detalles sobre el problema o solicitud.") },
+                { cmbProperty, LanguageService.Translate("Seleccione la propiedad relacionada con el ticket.") },
+                { btnSave, LanguageService.Translate("Guarda el ticket con los detalles proporcionados.") },
+                { btnImage, LanguageService.Translate("Sube una imagen para adjuntar al ticket.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
+            }
+            toolTipTimer.Stop();
         }
 
         private void btnImage_Click(object sender, EventArgs e)
         {
-            // Open a dialog to select an image
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+                openFileDialog.Filter = LanguageService.Translate("Archivos de Imagen") + "|*.jpg;*.jpeg;*.png;*.bmp";
                 openFileDialog.Title = LanguageService.Translate("Seleccione una imagen para el ticket");
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Read the image and store it in the _ticketImage variable
                     _ticketImage = File.ReadAllBytes(openFileDialog.FileName);
                     MessageBox.Show(
                         LanguageService.Translate("Imagen cargada exitosamente."),
@@ -48,9 +110,11 @@ namespace UI.Tenant
             }
         }
 
+        /// <summary>
+        /// Carga las propiedades activas del inquilino logueado en el ComboBox.
+        /// </summary>
         private void LoadProperties()
         {
-            // Get properties with active contracts for the logged-in tenant
             List<Property> activeProperties = new List<Property>();
             try
             {
@@ -66,15 +130,16 @@ namespace UI.Tenant
                 );
             }
 
-            // Assign the properties to the ComboBox
             cmbProperty.DataSource = activeProperties;
-            cmbProperty.DisplayMember = "AddressProperty"; // Ensure this property exists in the Property class
-            cmbProperty.ValueMember = "IdProperty"; // Ensure this property exists in the Property class
+            cmbProperty.DisplayMember = "AddressProperty";
+            cmbProperty.ValueMember = "IdProperty";
         }
 
+        /// <summary>
+        /// Guarda un nuevo ticket en la base de datos.
+        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Field validation
             if (string.IsNullOrWhiteSpace(txtTitle.Text) || string.IsNullOrWhiteSpace(txtDetail.Text))
             {
                 MessageBox.Show(
@@ -86,7 +151,6 @@ namespace UI.Tenant
                 return;
             }
 
-            // Create a new Ticket object with the loaded image in _ticketImage
             Ticket newTicket = new Ticket
             {
                 FkIdProperty = (Guid)cmbProperty.SelectedValue,
@@ -94,10 +158,9 @@ namespace UI.Tenant
                 TitleTicket = txtTitle.Text,
                 DescriptionTicket = txtDetail.Text,
                 ImageTicket = _ticketImage,
-                StatusTicket = LanguageService.Translate("Pendiente") // Adjust initial ticket status as needed
+                StatusTicket = LanguageService.Translate("Pendiente")
             };
 
-            // Save the ticket to the database
             _ticketService.CreateTicket(newTicket);
 
             MessageBox.Show(
@@ -107,10 +170,38 @@ namespace UI.Tenant
                 MessageBoxIcon.Information
             );
 
-            // Clear fields
             txtTitle.Clear();
             txtDetail.Clear();
-            _ticketImage = null; // Clear the loaded image
+            _ticketImage = null;
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmTicket_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de tickets."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Ingrese un título y descripción del problema.")}",
+                $"- {LanguageService.Translate("Seleccione la propiedad asociada al ticket.")}",
+                $"- {LanguageService.Translate("Presione el botón 'Subir Imagen' para adjuntar evidencia.")}",
+                $"- {LanguageService.Translate("Presione el botón 'Guardar' para enviar el ticket.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

@@ -12,14 +12,75 @@ namespace UI.Admin
     {
         private readonly PropertyService _propertyService;
         private List<Property> _properties;
+        private readonly Timer toolTipTimer;
+        private Control currentControl;
 
         public frmPropertiesReport()
         {
             InitializeComponent();
             _propertyService = new PropertyService();
 
+            toolTipTimer = new Timer
+            {
+                Interval = 1000 // 2 segundos
+            };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            InitializeHelpMessages();
+            SubscribeToMouseEvents();
+
             LoadProperties();
             LoadComboBoxOptions();
+        }
+
+        /// <summary>
+        /// Inicializar mensajes de ayuda para los controles.
+        /// </summary>
+        private readonly Dictionary<Control, string> helpMessages = new Dictionary<Control, string>();
+
+        private void InitializeHelpMessages()
+        {
+            helpMessages.Add(dgvProperties, "Muestra las propiedades registradas.");
+            helpMessages.Add(cmbStatus, "Seleccione el estado de las propiedades que desea filtrar.");
+            helpMessages.Add(btnFilter, "Filtra las propiedades según el estado seleccionado.");
+            helpMessages.Add(btnDownload, "Descarga un reporte en Excel con las propiedades mostradas.");
+        }
+
+        /// <summary>
+        /// Suscribir eventos MouseEnter y MouseLeave a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeToMouseEvents()
+        {
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+            toolTipTimer.Stop();
         }
 
         /// <summary>

@@ -10,14 +10,70 @@ namespace UI
     public partial class frmAddPropertyInventory : Form
     {
         private Property _property;  // Referencia al objeto Property existente
+        private readonly Timer toolTipTimer;
+        private Control currentControl;
+
+        // Diccionario para almacenar los mensajes de ayuda
+        private readonly Dictionary<Control, string> helpMessages;
 
         public frmAddPropertyInventory(Property property)
         {
             InitializeComponent();
             _property = property;
 
-            // Opción 1: Limpiar lista de inventario si es necesario
-            // _property.InventoryProperty = new List<InventoryProperty>(); 
+            // Inicializar el temporizador para ToolTips
+            toolTipTimer = new Timer
+            {
+                Interval = 1000 // 2 segundos
+            };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtName, "Ingrese el nombre del elemento del inventario. Este campo es obligatorio." },
+                { txtDescription, "Ingrese una descripción detallada del elemento del inventario. Este campo es obligatorio." },
+                { btnSave, "Presione este botón para guardar el elemento del inventario en la propiedad actual." }
+            };
+
+            SubscribeToMouseEvents();
+        }
+
+        /// <summary>
+        /// Suscribe los eventos MouseEnter y MouseLeave a los controles.
+        /// </summary>
+        private void SubscribeToMouseEvents()
+        {
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+            toolTipTimer.Stop();
         }
 
         /// <summary>
@@ -46,7 +102,7 @@ namespace UI
                     DescriptionInventory = txtDescription.Text // Descripción del inventario
                 };
 
-                // Opción 2: Verificar si ya existe el inventario antes de agregarlo
+                // Verificar si ya existe el inventario antes de agregarlo
                 if (_property.InventoryProperty == null)
                 {
                     _property.InventoryProperty = new List<InventoryProperty>();

@@ -1,6 +1,7 @@
 ﻿using Services.Domain;
 using Services.Facade;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -9,16 +10,66 @@ namespace UI.Service
     public partial class frmModifyFamily : Form
     {
         private Familia _selectedFamily;
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl;
 
         public frmModifyFamily()
         {
             InitializeComponent();
             LoadFamilies(); // Cargar todas las familias en el DataGridView
 
+            // Inicializar el diccionario con mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtName, "Ingrese el nombre de la familia que desea modificar." },
+                { chlbAccesos, "Seleccione las patentes y familias que desea asociar a esta familia." },
+                { btnSave, "Haga clic para guardar los cambios realizados en la familia seleccionada." },
+                { btnDelete, "Haga clic para eliminar la familia seleccionada." },
+                { dgvFamilies, "Seleccione una familia de la lista para modificar sus detalles." }
+            };
+
+            // Configurar el Timer para el ToolTip
+            toolTipTimer = new Timer { Interval = 1000 }; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Vincular eventos de MouseEnter y MouseLeave para mostrar las ayudas
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+
             // Vincular el evento de selección en el DataGridView
             dgvFamilies.SelectionChanged += dgvFamilies_SelectionChanged;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, currentControl.Width / 2, currentControl.Height / 2, 3000); // Mostrar por 3 segundos
+            }
+
+            toolTipTimer.Stop();
         }
 
         /// <summary>

@@ -597,9 +597,11 @@ namespace DAO {
             
             private global::System.Data.DataColumn columnDateFinalContract;
             
-            private global::System.Data.DataColumn columnAnnualRentPrice;
+            private global::System.Data.DataColumn columnMensualRentPrice;
             
             private global::System.Data.DataColumn columnStatusContract;
+            
+            private global::System.Data.DataColumn columnHash;
             
             private global::System.Data.DataColumn columnSignedContract;
             
@@ -678,9 +680,9 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public global::System.Data.DataColumn AnnualRentPriceColumn {
+            public global::System.Data.DataColumn MensualRentPriceColumn {
                 get {
-                    return this.columnAnnualRentPrice;
+                    return this.columnMensualRentPrice;
                 }
             }
             
@@ -689,6 +691,14 @@ namespace DAO {
             public global::System.Data.DataColumn StatusContractColumn {
                 get {
                     return this.columnStatusContract;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn HashColumn {
+                get {
+                    return this.columnHash;
                 }
             }
             
@@ -737,7 +747,7 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public ContractRow AddContractRow(System.Guid IdContract, PropertyRow parentPropertyRowByFK__Contract__FkIdPr__65370702, PersonRow parentPersonRowByFK__Contract__FkIdTe__662B2B3B, System.DateTime DateStartContract, System.DateTime DateFinalContract, double AnnualRentPrice, string StatusContract, byte[] SignedContract) {
+            public ContractRow AddContractRow(System.Guid IdContract, PropertyRow parentPropertyRowByFK__Contract__FkIdPr__65370702, PersonRow parentPersonRowByFK__Contract__FkIdTe__662B2B3B, System.DateTime DateStartContract, System.DateTime DateFinalContract, double MensualRentPrice, string StatusContract, string Hash, byte[] SignedContract) {
                 ContractRow rowContractRow = ((ContractRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         IdContract,
@@ -745,8 +755,9 @@ namespace DAO {
                         null,
                         DateStartContract,
                         DateFinalContract,
-                        AnnualRentPrice,
+                        MensualRentPrice,
                         StatusContract,
+                        Hash,
                         SignedContract};
                 if ((parentPropertyRowByFK__Contract__FkIdPr__65370702 != null)) {
                     columnValuesArray[1] = parentPropertyRowByFK__Contract__FkIdPr__65370702[0];
@@ -788,8 +799,9 @@ namespace DAO {
                 this.columnFkIdTenant = base.Columns["FkIdTenant"];
                 this.columnDateStartContract = base.Columns["DateStartContract"];
                 this.columnDateFinalContract = base.Columns["DateFinalContract"];
-                this.columnAnnualRentPrice = base.Columns["AnnualRentPrice"];
+                this.columnMensualRentPrice = base.Columns["MensualRentPrice"];
                 this.columnStatusContract = base.Columns["StatusContract"];
+                this.columnHash = base.Columns["Hash"];
                 this.columnSignedContract = base.Columns["SignedContract"];
             }
             
@@ -806,10 +818,12 @@ namespace DAO {
                 base.Columns.Add(this.columnDateStartContract);
                 this.columnDateFinalContract = new global::System.Data.DataColumn("DateFinalContract", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDateFinalContract);
-                this.columnAnnualRentPrice = new global::System.Data.DataColumn("AnnualRentPrice", typeof(double), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnAnnualRentPrice);
+                this.columnMensualRentPrice = new global::System.Data.DataColumn("MensualRentPrice", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMensualRentPrice);
                 this.columnStatusContract = new global::System.Data.DataColumn("StatusContract", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnStatusContract);
+                this.columnHash = new global::System.Data.DataColumn("Hash", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnHash);
                 this.columnSignedContract = new global::System.Data.DataColumn("SignedContract", typeof(byte[]), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSignedContract);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
@@ -817,6 +831,7 @@ namespace DAO {
                 this.columnIdContract.AllowDBNull = false;
                 this.columnIdContract.Unique = true;
                 this.columnStatusContract.MaxLength = 50;
+                this.columnHash.MaxLength = 200;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3379,17 +3394,17 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public double AnnualRentPrice {
+            public double MensualRentPrice {
                 get {
                     try {
-                        return ((double)(this[this.tableContract.AnnualRentPriceColumn]));
+                        return ((double)(this[this.tableContract.MensualRentPriceColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'AnnualRentPrice\' de la tabla \'Contract\' es DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'MensualRentPrice\' de la tabla \'Contract\' es DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableContract.AnnualRentPriceColumn] = value;
+                    this[this.tableContract.MensualRentPriceColumn] = value;
                 }
             }
             
@@ -3406,6 +3421,22 @@ namespace DAO {
                 }
                 set {
                     this[this.tableContract.StatusContractColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string Hash {
+                get {
+                    try {
+                        return ((string)(this[this.tableContract.HashColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Hash\' de la tabla \'Contract\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableContract.HashColumn] = value;
                 }
             }
             
@@ -3497,14 +3528,14 @@ namespace DAO {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public bool IsAnnualRentPriceNull() {
-                return this.IsNull(this.tableContract.AnnualRentPriceColumn);
+            public bool IsMensualRentPriceNull() {
+                return this.IsNull(this.tableContract.MensualRentPriceColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public void SetAnnualRentPriceNull() {
-                this[this.tableContract.AnnualRentPriceColumn] = global::System.Convert.DBNull;
+            public void SetMensualRentPriceNull() {
+                this[this.tableContract.MensualRentPriceColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3517,6 +3548,18 @@ namespace DAO {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetStatusContractNull() {
                 this[this.tableContract.StatusContractColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsHashNull() {
+                return this.IsNull(this.tableContract.HashColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetHashNull() {
+                this[this.tableContract.HashColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5264,13 +5307,15 @@ namespace DAO.RentsDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("FkIdTenant", "FkIdTenant");
             tableMapping.ColumnMappings.Add("DateStartContract", "DateStartContract");
             tableMapping.ColumnMappings.Add("DateFinalContract", "DateFinalContract");
-            tableMapping.ColumnMappings.Add("AnnualRentPrice", "AnnualRentPrice");
+            tableMapping.ColumnMappings.Add("AnnualRentPrice", "MensualRentPrice");
             tableMapping.ColumnMappings.Add("StatusContract", "StatusContract");
+            tableMapping.ColumnMappings.Add("MensualRentPrice", "MensualRentPrice");
+            tableMapping.ColumnMappings.Add("Hash", "Hash");
             tableMapping.ColumnMappings.Add("SignedContract", "SignedContract");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Contract] WHERE (([IdContract] = @Original_IdContract) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdTenant = 1 AND [FkIdTenant] IS NULL) OR ([FkIdTenant] = @Original_FkIdTenant)) AND ((@IsNull_DateStartContract = 1 AND [DateStartContract] IS NULL) OR ([DateStartContract] = @Original_DateStartContract)) AND ((@IsNull_DateFinalContract = 1 AND [DateFinalContract] IS NULL) OR ([DateFinalContract] = @Original_DateFinalContract)) AND ((@IsNull_AnnualRentPrice = 1 AND [AnnualRentPrice] IS NULL) OR ([AnnualRentPrice] = @Original_AnnualRentPrice)) AND ((@IsNull_StatusContract = 1 AND [StatusContract] IS NULL) OR ([StatusContract] = @Original_StatusContract)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Contract] WHERE (([IdContract] = @Original_IdContract) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdTenant = 1 AND [FkIdTenant] IS NULL) OR ([FkIdTenant] = @Original_FkIdTenant)) AND ((@IsNull_DateStartContract = 1 AND [DateStartContract] IS NULL) OR ([DateStartContract] = @Original_DateStartContract)) AND ((@IsNull_DateFinalContract = 1 AND [DateFinalContract] IS NULL) OR ([DateFinalContract] = @Original_DateFinalContract)) AND ((@IsNull_MensualRentPrice = 1 AND [MensualRentPrice] IS NULL) OR ([MensualRentPrice] = @Original_MensualRentPrice)) AND ((@IsNull_StatusContract = 1 AND [StatusContract] IS NULL) OR ([StatusContract] = @Original_StatusContract)) AND ((@IsNull_Hash = 1 AND [Hash] IS NULL) OR ([Hash] = @Original_Hash)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IdContract", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_FkIdProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -5281,35 +5326,39 @@ namespace DAO.RentsDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DateStartContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateStartContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DateFinalContract", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinalContract", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DateFinalContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinalContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AnnualRentPrice", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AnnualRentPrice", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AnnualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AnnualRentPrice", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_MensualRentPrice", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MensualRentPrice", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MensualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MensualRentPrice", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusContract", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusContract", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusContract", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Hash", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Hash", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Contract] ([IdContract], [FkIdProperty], [FkIdTenant], [DateStartContract], [DateFinalContract], [AnnualRentPrice], [StatusContract], [SignedContract]) VALUES (@IdContract, @FkIdProperty, @FkIdTenant, @DateStartContract, @DateFinalContract, @AnnualRentPrice, @StatusContract, @SignedContract);
-SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContract, AnnualRentPrice, StatusContract, SignedContract FROM Contract WHERE (IdContract = @IdContract)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Contract] ([IdContract], [FkIdProperty], [FkIdTenant], [DateStartContract], [DateFinalContract], [MensualRentPrice], [StatusContract], [Hash], [SignedContract]) VALUES (@IdContract, @FkIdProperty, @FkIdTenant, @DateStartContract, @DateFinalContract, @MensualRentPrice, @StatusContract, @Hash, @SignedContract);
+SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContract, MensualRentPrice, StatusContract, Hash, SignedContract FROM Contract WHERE (IdContract = @IdContract)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdContract", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdTenant", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdTenant", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateStartContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateStartContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateFinalContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinalContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AnnualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AnnualRentPrice", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MensualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MensualRentPrice", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusContract", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Hash", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SignedContract", global::System.Data.SqlDbType.Image, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SignedContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [Contract] SET [IdContract] = @IdContract, [FkIdProperty] = @FkIdProperty, [FkIdTenant] = @FkIdTenant, [DateStartContract] = @DateStartContract, [DateFinalContract] = @DateFinalContract, [AnnualRentPrice] = @AnnualRentPrice, [StatusContract] = @StatusContract, [SignedContract] = @SignedContract WHERE (([IdContract] = @Original_IdContract) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdTenant = 1 AND [FkIdTenant] IS NULL) OR ([FkIdTenant] = @Original_FkIdTenant)) AND ((@IsNull_DateStartContract = 1 AND [DateStartContract] IS NULL) OR ([DateStartContract] = @Original_DateStartContract)) AND ((@IsNull_DateFinalContract = 1 AND [DateFinalContract] IS NULL) OR ([DateFinalContract] = @Original_DateFinalContract)) AND ((@IsNull_AnnualRentPrice = 1 AND [AnnualRentPrice] IS NULL) OR ([AnnualRentPrice] = @Original_AnnualRentPrice)) AND ((@IsNull_StatusContract = 1 AND [StatusContract] IS NULL) OR ([StatusContract] = @Original_StatusContract)));
-SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContract, AnnualRentPrice, StatusContract, SignedContract FROM Contract WHERE (IdContract = @IdContract)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Contract] SET [IdContract] = @IdContract, [FkIdProperty] = @FkIdProperty, [FkIdTenant] = @FkIdTenant, [DateStartContract] = @DateStartContract, [DateFinalContract] = @DateFinalContract, [MensualRentPrice] = @MensualRentPrice, [StatusContract] = @StatusContract, [Hash] = @Hash, [SignedContract] = @SignedContract WHERE (([IdContract] = @Original_IdContract) AND ((@IsNull_FkIdProperty = 1 AND [FkIdProperty] IS NULL) OR ([FkIdProperty] = @Original_FkIdProperty)) AND ((@IsNull_FkIdTenant = 1 AND [FkIdTenant] IS NULL) OR ([FkIdTenant] = @Original_FkIdTenant)) AND ((@IsNull_DateStartContract = 1 AND [DateStartContract] IS NULL) OR ([DateStartContract] = @Original_DateStartContract)) AND ((@IsNull_DateFinalContract = 1 AND [DateFinalContract] IS NULL) OR ([DateFinalContract] = @Original_DateFinalContract)) AND ((@IsNull_MensualRentPrice = 1 AND [MensualRentPrice] IS NULL) OR ([MensualRentPrice] = @Original_MensualRentPrice)) AND ((@IsNull_StatusContract = 1 AND [StatusContract] IS NULL) OR ([StatusContract] = @Original_StatusContract)) AND ((@IsNull_Hash = 1 AND [Hash] IS NULL) OR ([Hash] = @Original_Hash)));
+SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContract, MensualRentPrice, StatusContract, Hash, SignedContract FROM Contract WHERE (IdContract = @IdContract)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdContract", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FkIdTenant", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdTenant", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateStartContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateStartContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateFinalContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinalContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AnnualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AnnualRentPrice", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MensualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MensualRentPrice", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@StatusContract", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Hash", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SignedContract", global::System.Data.SqlDbType.Image, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SignedContract", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IdContract", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IdContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_FkIdProperty", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "FkIdProperty", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -5320,10 +5369,12 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DateStartContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateStartContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_DateFinalContract", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinalContract", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DateFinalContract", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinalContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AnnualRentPrice", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AnnualRentPrice", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AnnualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AnnualRentPrice", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_MensualRentPrice", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MensualRentPrice", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_MensualRentPrice", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MensualRentPrice", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_StatusContract", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusContract", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_StatusContract", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "StatusContract", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Hash", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Hash", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Hash", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5339,8 +5390,9 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT   IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContra" +
-                "ct, AnnualRentPrice, StatusContract, SignedContract\r\nFROM         Contract";
+            this._commandCollection[0].CommandText = "SELECT        IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalC" +
+                "ontract, MensualRentPrice, StatusContract, Hash, SignedContract\r\nFROM           " +
+                " Contract";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -5401,7 +5453,7 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(System.Guid Original_IdContract, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdTenant, global::System.Nullable<global::System.DateTime> Original_DateStartContract, global::System.Nullable<global::System.DateTime> Original_DateFinalContract, global::System.Nullable<double> Original_AnnualRentPrice, string Original_StatusContract) {
+        public virtual int Delete(System.Guid Original_IdContract, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdTenant, global::System.Nullable<global::System.DateTime> Original_DateStartContract, global::System.Nullable<global::System.DateTime> Original_DateFinalContract, global::System.Nullable<double> Original_MensualRentPrice, string Original_StatusContract, string Original_Hash) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_IdContract));
             if ((Original_FkIdProperty.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -5435,9 +5487,9 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
                 this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
-            if ((Original_AnnualRentPrice.HasValue == true)) {
+            if ((Original_MensualRentPrice.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[10].Value = ((double)(Original_AnnualRentPrice.Value));
+                this.Adapter.DeleteCommand.Parameters[10].Value = ((double)(Original_MensualRentPrice.Value));
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(1));
@@ -5450,6 +5502,14 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             else {
                 this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(0));
                 this.Adapter.DeleteCommand.Parameters[12].Value = ((string)(Original_StatusContract));
+            }
+            if ((Original_Hash == null)) {
+                this.Adapter.DeleteCommand.Parameters[13].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[14].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[13].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[14].Value = ((string)(Original_Hash));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -5471,7 +5531,7 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid IdContract, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdTenant, global::System.Nullable<global::System.DateTime> DateStartContract, global::System.Nullable<global::System.DateTime> DateFinalContract, global::System.Nullable<double> AnnualRentPrice, string StatusContract, byte[] SignedContract) {
+        public virtual int Insert(System.Guid IdContract, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdTenant, global::System.Nullable<global::System.DateTime> DateStartContract, global::System.Nullable<global::System.DateTime> DateFinalContract, global::System.Nullable<double> MensualRentPrice, string StatusContract, string Hash, byte[] SignedContract) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(IdContract));
             if ((FkIdProperty.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((System.Guid)(FkIdProperty.Value));
@@ -5497,8 +5557,8 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             else {
                 this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((AnnualRentPrice.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[5].Value = ((double)(AnnualRentPrice.Value));
+            if ((MensualRentPrice.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[5].Value = ((double)(MensualRentPrice.Value));
             }
             else {
                 this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
@@ -5509,11 +5569,17 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             else {
                 this.Adapter.InsertCommand.Parameters[6].Value = ((string)(StatusContract));
             }
-            if ((SignedContract == null)) {
+            if ((Hash == null)) {
                 this.Adapter.InsertCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[7].Value = ((byte[])(SignedContract));
+                this.Adapter.InsertCommand.Parameters[7].Value = ((string)(Hash));
+            }
+            if ((SignedContract == null)) {
+                this.Adapter.InsertCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[8].Value = ((byte[])(SignedContract));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -5535,7 +5601,24 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid IdContract, global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdTenant, global::System.Nullable<global::System.DateTime> DateStartContract, global::System.Nullable<global::System.DateTime> DateFinalContract, global::System.Nullable<double> AnnualRentPrice, string StatusContract, byte[] SignedContract, System.Guid Original_IdContract, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdTenant, global::System.Nullable<global::System.DateTime> Original_DateStartContract, global::System.Nullable<global::System.DateTime> Original_DateFinalContract, global::System.Nullable<double> Original_AnnualRentPrice, string Original_StatusContract) {
+        public virtual int Update(
+                    System.Guid IdContract, 
+                    global::System.Nullable<global::System.Guid> FkIdProperty, 
+                    global::System.Nullable<global::System.Guid> FkIdTenant, 
+                    global::System.Nullable<global::System.DateTime> DateStartContract, 
+                    global::System.Nullable<global::System.DateTime> DateFinalContract, 
+                    global::System.Nullable<double> MensualRentPrice, 
+                    string StatusContract, 
+                    string Hash, 
+                    byte[] SignedContract, 
+                    System.Guid Original_IdContract, 
+                    global::System.Nullable<global::System.Guid> Original_FkIdProperty, 
+                    global::System.Nullable<global::System.Guid> Original_FkIdTenant, 
+                    global::System.Nullable<global::System.DateTime> Original_DateStartContract, 
+                    global::System.Nullable<global::System.DateTime> Original_DateFinalContract, 
+                    global::System.Nullable<double> Original_MensualRentPrice, 
+                    string Original_StatusContract, 
+                    string Original_Hash) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(IdContract));
             if ((FkIdProperty.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = ((System.Guid)(FkIdProperty.Value));
@@ -5561,8 +5644,8 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             else {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((AnnualRentPrice.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((double)(AnnualRentPrice.Value));
+            if ((MensualRentPrice.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((double)(MensualRentPrice.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
@@ -5573,60 +5656,74 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
             else {
                 this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(StatusContract));
             }
-            if ((SignedContract == null)) {
+            if ((Hash == null)) {
                 this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((byte[])(SignedContract));
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Hash));
             }
-            this.Adapter.UpdateCommand.Parameters[8].Value = ((System.Guid)(Original_IdContract));
-            if ((Original_FkIdProperty.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((System.Guid)(Original_FkIdProperty.Value));
+            if ((SignedContract == null)) {
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((byte[])(SignedContract));
+            }
+            this.Adapter.UpdateCommand.Parameters[9].Value = ((System.Guid)(Original_IdContract));
+            if ((Original_FkIdProperty.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((System.Guid)(Original_FkIdProperty.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
             }
             if ((Original_FkIdTenant.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((System.Guid)(Original_FkIdTenant.Value));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((System.Guid)(Original_FkIdTenant.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
             }
             if ((Original_DateStartContract.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((System.DateTime)(Original_DateStartContract.Value));
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((System.DateTime)(Original_DateStartContract.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
             }
             if ((Original_DateFinalContract.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[16].Value = ((System.DateTime)(Original_DateFinalContract.Value));
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((System.DateTime)(Original_DateFinalContract.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[17].Value = global::System.DBNull.Value;
             }
-            if ((Original_AnnualRentPrice.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[18].Value = ((double)(Original_AnnualRentPrice.Value));
+            if ((Original_MensualRentPrice.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[19].Value = ((double)(Original_MensualRentPrice.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[18].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[19].Value = global::System.DBNull.Value;
             }
             if ((Original_StatusContract == null)) {
-                this.Adapter.UpdateCommand.Parameters[19].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[20].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[20].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[21].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[19].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[20].Value = ((string)(Original_StatusContract));
+                this.Adapter.UpdateCommand.Parameters[20].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[21].Value = ((string)(Original_StatusContract));
+            }
+            if ((Original_Hash == null)) {
+                this.Adapter.UpdateCommand.Parameters[22].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[23].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[22].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[23].Value = ((string)(Original_Hash));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -5648,8 +5745,24 @@ SELECT IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContrac
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<global::System.Guid> FkIdProperty, global::System.Nullable<global::System.Guid> FkIdTenant, global::System.Nullable<global::System.DateTime> DateStartContract, global::System.Nullable<global::System.DateTime> DateFinalContract, global::System.Nullable<double> AnnualRentPrice, string StatusContract, byte[] SignedContract, System.Guid Original_IdContract, global::System.Nullable<global::System.Guid> Original_FkIdProperty, global::System.Nullable<global::System.Guid> Original_FkIdTenant, global::System.Nullable<global::System.DateTime> Original_DateStartContract, global::System.Nullable<global::System.DateTime> Original_DateFinalContract, global::System.Nullable<double> Original_AnnualRentPrice, string Original_StatusContract) {
-            return this.Update(Original_IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContract, AnnualRentPrice, StatusContract, SignedContract, Original_IdContract, Original_FkIdProperty, Original_FkIdTenant, Original_DateStartContract, Original_DateFinalContract, Original_AnnualRentPrice, Original_StatusContract);
+        public virtual int Update(
+                    global::System.Nullable<global::System.Guid> FkIdProperty, 
+                    global::System.Nullable<global::System.Guid> FkIdTenant, 
+                    global::System.Nullable<global::System.DateTime> DateStartContract, 
+                    global::System.Nullable<global::System.DateTime> DateFinalContract, 
+                    global::System.Nullable<double> MensualRentPrice, 
+                    string StatusContract, 
+                    string Hash, 
+                    byte[] SignedContract, 
+                    System.Guid Original_IdContract, 
+                    global::System.Nullable<global::System.Guid> Original_FkIdProperty, 
+                    global::System.Nullable<global::System.Guid> Original_FkIdTenant, 
+                    global::System.Nullable<global::System.DateTime> Original_DateStartContract, 
+                    global::System.Nullable<global::System.DateTime> Original_DateFinalContract, 
+                    global::System.Nullable<double> Original_MensualRentPrice, 
+                    string Original_StatusContract, 
+                    string Original_Hash) {
+            return this.Update(Original_IdContract, FkIdProperty, FkIdTenant, DateStartContract, DateFinalContract, MensualRentPrice, StatusContract, Hash, SignedContract, Original_IdContract, Original_FkIdProperty, Original_FkIdTenant, Original_DateStartContract, Original_DateFinalContract, Original_MensualRentPrice, Original_StatusContract, Original_Hash);
         }
     }
     

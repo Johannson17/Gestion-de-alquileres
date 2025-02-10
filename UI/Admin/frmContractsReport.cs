@@ -18,6 +18,9 @@ namespace UI.Admin
         private readonly PersonService _personService;
         private List<Contract> _originalContracts;
         private Dictionary<Guid, string> _tenantDniMapping;
+        private Timer toolTipTimer;
+        private Control currentControl;
+        private readonly Dictionary<Control, string> helpMessages;
 
         public frmContractsReport()
         {
@@ -25,7 +28,32 @@ namespace UI.Admin
             _contractService = new ContractService();
             _propertyService = new PropertyService();
             _personService = new PersonService();
+
             this.Load += frmContractsReports_Load;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { cmbStatus, "Selecciona el estado del contrato para filtrar." },
+                { cmbProperty, "Selecciona una propiedad para filtrar los contratos relacionados." },
+                { cmbTenant, "Selecciona un arrendatario por su DNI para filtrar." },
+                { btnFilter, "Aplica los filtros seleccionados." },
+                { btnDownload, "Descarga un reporte en formato Excel de los contratos listados." },
+                { btnDownloadImage, "Descarga la imagen asociada al contrato seleccionado." },
+                { btnImage, "Visualiza la imagen del contrato seleccionado." },
+                { dgvContracts, "Lista de contratos disponibles. Haz clic en un contrato para seleccionarlo." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer { Interval = 1000 }; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Asignar eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
         }
 
         private void frmContractsReports_Load(object sender, EventArgs e)
@@ -45,6 +73,32 @@ namespace UI.Admin
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar por 3 segundos
+            }
+
+            toolTipTimer.Stop();
         }
 
         private void LoadTenantDniMapping()

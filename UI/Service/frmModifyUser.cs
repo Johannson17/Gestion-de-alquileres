@@ -1,6 +1,7 @@
 ﻿using Services.Domain;
 using Services.Facade;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,12 +11,39 @@ namespace UI.Service
     public partial class frmModifyUser : Form
     {
         private Usuario _selectedUser;
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl;
 
         public frmModifyUser()
         {
             InitializeComponent();
             btnSave.Enabled = false; // El botón de guardar empieza deshabilitado
             btnDelete.Enabled = false; // El botón de eliminar también empieza deshabilitado
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtUsername, "Ingrese el nombre de usuario." },
+                { txtPassword, "Ingrese la contraseña del usuario." },
+                { txtConfirmPassword, "Confirme la contraseña ingresada." },
+                { cmbFamily, "Seleccione un rol para el usuario." },
+                { cmbPermissions, "Seleccione los permisos del usuario." },
+                { btnSave, "Guarde los cambios realizados en el usuario." },
+                { btnDelete, "Elimine el usuario seleccionado." },
+                { btnAddFamilia, "Agregue un nuevo rol al sistema." }
+            };
+
+            // Configurar el Timer para el tooltip
+            toolTipTimer = new Timer { Interval = 1000 }; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Asignar eventos MouseEnter y MouseLeave a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
 
             // Inicializar los ComboBox
             cmbFamily.Items.Clear();
@@ -38,6 +66,32 @@ namespace UI.Service
 
             // Vincular el evento de selección del DataGridView
             dgvUsers.SelectionChanged += dgvUsers_SelectionChanged;
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop();
         }
 
         /// <summary>

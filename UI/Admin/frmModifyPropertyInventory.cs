@@ -4,6 +4,7 @@ using Services.Facade;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace UI
 {
@@ -12,6 +13,10 @@ namespace UI
         private Property _selectedProperty;
         private readonly PropertyService _propertyService;
 
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual donde está el mouse
+
         public frmModifyPropertyInventory(Property property)
         {
             InitializeComponent();
@@ -19,15 +24,61 @@ namespace UI
             _propertyService = new PropertyService();
             LoadInventory();
 
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtName, "Ingrese el nombre del inventario." },
+                { txtDescription, "Ingrese la descripción del inventario." },
+                { btnSave, "Guarda los cambios realizados o agrega un nuevo inventario." },
+                { btnDelete, "Elimina el inventario seleccionado." },
+                { dgvInventory, "Lista de inventarios disponibles. Seleccione uno para editar." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Suscribir eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+
             // Bind events
             dgvInventory.SelectionChanged += dgvInventory_SelectionChanged;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
         }
 
-        /// <summary>
-        /// Method to load inventory into the DataGridView.
-        /// </summary>
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
+        }
+
         private void LoadInventory()
         {
             try
@@ -63,9 +114,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Handles selection change event in the DataGridView.
-        /// </summary>
         private void dgvInventory_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvInventory.SelectedRows.Count > 0)
@@ -93,9 +141,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Button to save changes or add new inventory.
-        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -130,9 +175,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Button to delete an inventory item.
-        /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             try
@@ -184,9 +226,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Modify the selected inventory.
-        /// </summary>
         private void ModifySelectedInventory()
         {
             try
@@ -221,9 +260,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Add new inventory to the property.
-        /// </summary>
         private void AddNewInventory()
         {
             try
@@ -256,9 +292,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Refresh the DataGridView content with updated inventory.
-        /// </summary>
         private void RefreshInventoryGrid()
         {
             dgvInventory.DataSource = null;

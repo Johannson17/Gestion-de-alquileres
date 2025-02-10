@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UI.Helpers;
 using UI.Admin;
 using UI.Tenant;
+using System.IO;
 
 namespace UI
 {
@@ -14,19 +15,90 @@ namespace UI
     /// </summary>
     public partial class frmLogin : Form
     {
+
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl;
+
         /// <summary>
         /// Inicializa una nueva instancia del formulario de inicio de sesión.
         /// </summary>
+
         public frmLogin()
         {
             InitializeComponent();
+
+            // Vincular el evento HelpRequested al formulario
+            this.HelpRequested += FrmLogin_HelpRequested;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtUsername, "Ingrese su nombre de usuario en este campo." },
+                { txtPassword, "Ingrese su contraseña en este campo." },
+                { btnLogin, "Presione este botón para iniciar sesión con las credenciales proporcionadas." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Asociar eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+
             // Sincronizar las patentes con los formularios al iniciar el login
             PatenteHelper.SyncPatentesWithForms();
-            
+
             // Establecer el foco en el TextBox del usuario
             txtUsername.Focus();
         }
 
+        private void FrmLogin_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            // Mostrar una ventana emergente con explicaciones
+            MessageBox.Show(
+                "Instrucciones para iniciar sesión:\n\n" +
+                "1. En el campo 'Usuario', escribe tu nombre de usuario.\n" +
+                "2. En el campo 'Contraseña', introduce tu contraseña.\n" +
+                "3. Haz clic en el botón 'Iniciar Sesión' para acceder al sistema.\n\n" +
+                "Si tienes problemas, contacta al administrador del sistema.",
+                "Ayuda - Inicio de Sesión",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
+        }
         /// <summary>
         /// Maneja el evento de clic del botón de inicio de sesión.
         /// </summary>

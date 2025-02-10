@@ -20,6 +20,10 @@ namespace UI.Tenant
         private Dictionary<Guid, string> _tenantDniMapping;
         private readonly Guid _loggedInTenantId; // ID del arrendatario logueado
 
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual sobre el que se deja el mouse
+        private Dictionary<Control, string> helpMessages; // Diccionario de mensajes de ayuda
+
         public frmContractsReport(Guid loggedInTenantId)
         {
             InitializeComponent();
@@ -28,6 +32,58 @@ namespace UI.Tenant
             _personService = new PersonService();
             _loggedInTenantId = loggedInTenantId;
             this.Load += frmContractsReports_Load;
+
+            // Inicializar el Timer
+            toolTipTimer = new Timer { Interval = 1000 };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Inicializar y suscribir eventos de ayuda
+            InitializeHelpMessages();
+            SubscribeHelpMessagesEvents();
+        }
+
+        private void RegisterHelpEvents(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (helpMessages.ContainsKey(control))
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+
+                if (control.HasChildren)
+                {
+                    RegisterHelpEvents(control);
+                }
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador después de mostrar el mensaje
         }
 
         private void frmContractsReports_Load(object sender, EventArgs e)
@@ -299,6 +355,54 @@ namespace UI.Tenant
 
                 imageForm.Controls.Add(pictureBox);
                 imageForm.ShowDialog();
+            }
+        }
+
+        private void FrmContractsReport_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de reportes de contratos."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Filtrar contratos por estado y propiedad.")}",
+                $"- {LanguageService.Translate("Descargar un reporte de los contratos en Excel.")}",
+                $"- {LanguageService.Translate("Ver o descargar la imagen asociada al contrato.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { cmbStatus, LanguageService.Translate("Seleccione el estado del contrato para filtrar los resultados.") },
+                { cmbProperty, LanguageService.Translate("Seleccione una propiedad para filtrar los contratos asociados.") },
+                { btnFilter, LanguageService.Translate("Haga clic para aplicar los filtros seleccionados.") },
+                { btnDownload, LanguageService.Translate("Descargue un reporte de los contratos en formato Excel.") },
+                { btnDownloadImage, LanguageService.Translate("Descargue la imagen asociada al contrato seleccionado.") },
+                { btnImage, LanguageService.Translate("Visualice la imagen asociada al contrato seleccionado.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
             }
         }
     }

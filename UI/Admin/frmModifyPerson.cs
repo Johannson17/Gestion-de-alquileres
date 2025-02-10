@@ -4,12 +4,17 @@ using Services.Facade;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace UI
 {
     public partial class frmModifyPerson : Form
     {
         private readonly PersonService _personService;
+
+        private Timer toolTipTimer;
+        private Control currentControl;
+        private readonly Dictionary<Control, string> helpMessages;
 
         public frmModifyPerson()
         {
@@ -19,16 +24,77 @@ namespace UI
 
             // Asigna el evento de clic de celda al DataGridView
             dgvPerson.CellClick += dgvPerson_CellClick;
+
+            // Inicializar el Timer
+            toolTipTimer = new Timer { Interval = 1000 }; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Inicializar los mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtName, "Ingrese el nombre de la persona." },
+                { txtLastName, "Ingrese el apellido de la persona." },
+                { txtDomicile, "Ingrese el domicilio legal de la persona." },
+                { txtEmail, "Ingrese el correo electrónico de la persona." },
+                { txtPhoneNumber, "Ingrese el número de teléfono de la persona." },
+                { txtDocumentNumber, "Ingrese el número de documento de la persona." },
+                { dgvPerson, "Seleccione una persona para modificar o eliminar sus datos." },
+                { btnSave, "Guarde los cambios realizados en la persona seleccionada." },
+                { btnDelete, "Elimine a la persona seleccionada de la lista." }
+            };
+
+            RegisterHelpEvents(this);
         }
 
-        // Cargar los datos de las personas en el DataGridView al iniciar el formulario
+        private void RegisterHelpEvents(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (helpMessages.ContainsKey(control))
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+
+                if (control.HasChildren)
+                {
+                    RegisterHelpEvents(control);
+                }
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
+            }
+
+            toolTipTimer.Stop();
+        }
+
         private void LoadPersonData()
         {
             try
             {
                 var persons = _personService.GetAllPersonsByType(Person.PersonTypeEnum.Tenant);
 
-                // Asignar los datos al DataGridView
                 dgvPerson.DataSource = persons.Select(p => new
                 {
                     p.IdPerson,
@@ -42,7 +108,6 @@ namespace UI
 
                 dgvPerson.Columns["IdPerson"].Visible = false;
 
-                // Ajusta los encabezados de las columnas
                 dgvPerson.Columns["Name"].HeaderText = LanguageService.Translate("Nombre");
                 dgvPerson.Columns["LastName"].HeaderText = LanguageService.Translate("Apellido");
                 dgvPerson.Columns["Address"].HeaderText = LanguageService.Translate("Domicilio");
@@ -63,7 +128,6 @@ namespace UI
             }
         }
 
-        // Evento que se ejecuta al hacer clic en una celda del DataGridView
         private void dgvPerson_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -91,7 +155,6 @@ namespace UI
             }
         }
 
-        // Guardar los cambios realizados en la persona seleccionada
         private void btnSave_Click(object sender, EventArgs e)
         {
             try

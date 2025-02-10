@@ -13,13 +13,34 @@ namespace UI
         private readonly PropertyService _propertyService;
         private List<Property> _properties;
         private Property _currentProperty;
+        private Timer toolTipTimer;
+        private Control currentControl;
+
+        private readonly Dictionary<Control, string> helpMessages;
 
         public frmModifyProperty()
         {
             InitializeComponent();
             _propertyService = new PropertyService();
-
             LoadProperties();
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvProperty, "Lista de propiedades registradas. Seleccione una fila para editar o eliminar una propiedad." },
+                { txtAddress, "Ingrese la dirección de la propiedad." },
+                { txtCountry, "Ingrese el país donde se encuentra la propiedad." },
+                { txtMunicipality, "Ingrese el municipio de la propiedad." },
+                { txtProvince, "Ingrese la provincia de la propiedad." },
+                { txtDescription, "Ingrese una descripción detallada de la propiedad." },
+                { cmbStatus, "Seleccione el estado actual de la propiedad." },
+                { btnSave, "Guarde los cambios realizados en la propiedad seleccionada." },
+                { btnDelete, "Elimine la propiedad seleccionada." },
+                { btnEditInventory, "Edite el inventario asociado a la propiedad seleccionada." }
+            };
+
+            // Configurar eventos para mostrar ayuda
+            ConfigureHelpEvents();
 
             dgvProperty.SelectionChanged += dgvProperties_SelectionChanged;
             btnSave.Click += btnSave_Click;
@@ -27,9 +48,44 @@ namespace UI
             btnEditInventory.Click += btnEditInventory_Click;
         }
 
-        /// <summary>
-        /// Load all properties into the DataGridView.
-        /// </summary>
+        private void ConfigureHelpEvents()
+        {
+            toolTipTimer = new Timer { Interval = 1000 };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, currentControl.Width / 2, currentControl.Height, 3000);
+            }
+
+            toolTipTimer.Stop();
+        }
+
         private void LoadProperties()
         {
             try
@@ -51,7 +107,7 @@ namespace UI
 
                 dgvProperty.Columns["IdProperty"].Visible = false;
                 dgvProperty.AutoResizeColumns();
-                dgvProperty.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Adjust columns to full width
+                dgvProperty.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
@@ -64,9 +120,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Handle selection change event in the DataGridView.
-        /// </summary>
         private void dgvProperties_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvProperty.SelectedRows.Count > 0)
@@ -109,18 +162,12 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Load statuses into the ComboBox.
-        /// </summary>
         private void LoadStatusComboBox(PropertyStatusEnum currentStatus)
         {
             cmbStatus.DataSource = Enum.GetValues(typeof(PropertyStatusEnum)).Cast<PropertyStatusEnum>().ToList();
             cmbStatus.SelectedItem = currentStatus;
         }
 
-        /// <summary>
-        /// Save changes to the selected property.
-        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -155,9 +202,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Reselect the modified property.
-        /// </summary>
         private void ReselectCurrentProperty()
         {
             foreach (DataGridViewRow row in dgvProperty.Rows)
@@ -170,9 +214,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Delete the selected property.
-        /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             try
@@ -209,9 +250,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Edit inventory of the selected property.
-        /// </summary>
         private void btnEditInventory_Click(object sender, EventArgs e)
         {
             try

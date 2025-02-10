@@ -39,25 +39,28 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 379);
+            this.label1.Location = new System.Drawing.Point(9, 308);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 16);
+            this.label1.Size = new System.Drawing.Size(43, 13);
             this.label1.TabIndex = 19;
             this.label1.Text = "Estado:";
             // 
             // cmbStatus
             // 
             this.cmbStatus.FormattingEnabled = true;
-            this.cmbStatus.Location = new System.Drawing.Point(12, 398);
+            this.cmbStatus.Location = new System.Drawing.Point(9, 323);
+            this.cmbStatus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cmbStatus.Name = "cmbStatus";
-            this.cmbStatus.Size = new System.Drawing.Size(193, 24);
+            this.cmbStatus.Size = new System.Drawing.Size(146, 21);
             this.cmbStatus.TabIndex = 14;
             // 
             // btnDownload
             // 
-            this.btnDownload.Location = new System.Drawing.Point(12, 444);
+            this.btnDownload.Location = new System.Drawing.Point(9, 361);
+            this.btnDownload.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(792, 26);
+            this.btnDownload.Size = new System.Drawing.Size(594, 21);
             this.btnDownload.TabIndex = 12;
             this.btnDownload.Text = "Descargar Reporte";
             this.btnDownload.UseVisualStyleBackColor = true;
@@ -68,16 +71,18 @@
             this.dgvProperties.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProperties.Dock = System.Windows.Forms.DockStyle.Top;
             this.dgvProperties.Location = new System.Drawing.Point(0, 0);
+            this.dgvProperties.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgvProperties.Name = "dgvProperties";
             this.dgvProperties.RowTemplate.Height = 24;
-            this.dgvProperties.Size = new System.Drawing.Size(804, 374);
+            this.dgvProperties.Size = new System.Drawing.Size(610, 304);
             this.dgvProperties.TabIndex = 11;
             // 
             // btnFilter
             // 
-            this.btnFilter.Location = new System.Drawing.Point(211, 397);
+            this.btnFilter.Location = new System.Drawing.Point(158, 323);
+            this.btnFilter.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnFilter.Name = "btnFilter";
-            this.btnFilter.Size = new System.Drawing.Size(60, 25);
+            this.btnFilter.Size = new System.Drawing.Size(45, 20);
             this.btnFilter.TabIndex = 20;
             this.btnFilter.Text = "Filtrar";
             this.btnFilter.UseVisualStyleBackColor = true;
@@ -85,15 +90,16 @@
             // 
             // frmPropertiesReport
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(804, 482);
+            this.ClientSize = new System.Drawing.Size(610, 392);
             this.Controls.Add(this.btnFilter);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmbStatus);
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.dgvProperties);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "frmPropertiesReport";
             this.Text = "Reporte de propiedades";
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).EndInit();

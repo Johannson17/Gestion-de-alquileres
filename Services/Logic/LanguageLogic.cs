@@ -1,136 +1,137 @@
-﻿using Services.Dao.Contracts;
-using Services.Factory;
+﻿using Services.Facade;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Http;
 
 namespace Services.Logic
 {
     public static class LanguageLogic
     {
-        private static Dictionary<string, string> translationsCache = new Dictionary<string, string>();
+        private static readonly string DefaultLanguage = "es"; // Idioma predeterminado (Español)
+        private static string currentLanguage = DefaultLanguage; // Idioma actualmente seleccionado
+        private static readonly string googleTranslateApiUrl = "https://translate.googleapis.com/translate_a/single";
 
-        /// <summary>
-        /// Traduce una clave especificada.
-        /// </summary>
-        /// <param name="key">Clave a traducir.</param>
-        /// <returns>Texto traducido.</returns>
+        private static readonly Dictionary<string, string> languageMap = new Dictionary<string, string>
+        {
+            { "Español", "es" },
+            { "English", "en" },
+            { "Français", "fr" },
+            { "Deutsch", "de" },
+            { "Italiano", "it" },
+            { "Português", "pt" },
+            { "Русский", "ru" },
+            { "中文", "zh" },
+            { "日本語", "ja" },
+            { "한국어", "ko" },
+            { "العربية", "ar" },
+            { "हिन्दी", "hi" },
+            { "עברית", "he" },
+            { "Türkçe", "tr" },
+            { "Svenska", "sv" },
+            { "Nederlands", "nl" },
+            { "Polski", "pl" },
+            { "Українська", "uk" },
+            { "ไทย", "th" },
+            { "Tiếng Việt", "vi" }
+        };
+
+        public static Dictionary<string, string> GetLanguageMap() => new Dictionary<string, string>(languageMap);
+
+        public static List<string> GetAvailableLanguages() => new List<string>(languageMap.Keys);
+
         public static string Translate(string key)
         {
-            if (translationsCache.ContainsKey(key))
+            if (string.IsNullOrEmpty(key))
             {
-                return translationsCache[key];
+                throw new ArgumentException("La clave no puede ser nula o vacía.", nameof(key));
             }
 
-            throw new KeyNotFoundException($"La clave '{key}' no existe en las traducciones cargadas.");
+            // Traducir el texto
+            return TranslateWithGoogle(key, currentLanguage);
         }
 
-        /// <summary>
-        /// Guarda una traducción para una clave específica y genera un nuevo archivo de idioma.
-        /// </summary>
-        /// <param name="key">Clave de traducción.</param>
-        /// <param name="translation">Traducción.</param>
-        /// <param name="newLanguageFile">El nombre del nuevo archivo de idioma a crear.</param>
-        public static void SaveTranslation(string key, string translation, string newLanguageFile)
+        public static void SetCurrentLanguage(string language)
         {
-            translationsCache[key] = translation;
+            ValidateParameter(language, nameof(language));
 
-            // Llama al DAO para persistir los cambios en un nuevo archivo de idioma
-            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-            languageRepository.SaveTranslation(key, translation, newLanguageFile);
-        }
-
-        /// <summary>
-        /// Agrega una nueva traducción a un archivo de idioma.
-        /// </summary>
-        /// <param name="language">El idioma al que pertenece la clave.</param>
-        /// <param name="key">Clave a agregar.</param>
-        /// <param name="value">Valor de la clave a agregar.</param>
-        public static void AddTranslation(string language, string key, string value)
-        {
-            if (!translationsCache.ContainsKey(key))
+            if (!languageMap.ContainsValue(language) && !languageMap.ContainsKey(language))
             {
-                translationsCache[key] = value;
-
-                // Llama al DAO para agregar la traducción en el archivo
-                var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-                languageRepository.AddTranslation(language, key, value);
+                throw new InvalidOperationException($"El idioma '{language}' no es válido.");
             }
-            else
+
+            currentLanguage = languageMap.ContainsKey(language) ? languageMap[language] : language;
+
+            try
             {
-                throw new InvalidOperationException($"La clave '{key}' ya existe en el idioma '{language}'.");
+                CultureInfo newCulture = new CultureInfo(currentLanguage);
+                CultureInfo.DefaultThreadCurrentCulture = newCulture;
+                CultureInfo.DefaultThreadCurrentUICulture = newCulture;
+            }
+            catch (CultureNotFoundException ex)
+            {
+                throw new InvalidOperationException($"El idioma '{currentLanguage}' no es válido en el sistema.", ex);
             }
         }
 
-        /// <summary>
-        /// Guarda las traducciones modificadas en un archivo de idioma existente.
-        /// </summary>
-        public static void SaveTranslations(Dictionary<string, string> translations, string languageFile)
+        public static string GetCurrentLanguage()
         {
-            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-            foreach (var translation in translations)
+            foreach (var pair in languageMap)
             {
-                languageRepository.SaveTranslation(translation.Key, translation.Value, languageFile);
+                if (pair.Value == currentLanguage)
+                {
+                    return pair.Key;
+                }
+            }
+
+            return DefaultLanguage;
+        }
+
+        private static string TranslateWithGoogle(string text, string targetLanguage)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return text; // No traducir textos vacíos o nulos
+            }
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string url = $"{googleTranslateApiUrl}?client=gtx&sl=auto&tl={targetLanguage}&dt=t&q={Uri.EscapeDataString(text)}";
+                    HttpResponseMessage response = client.GetAsync(url).Result;
+                    response.EnsureSuccessStatusCode();
+
+                    string result = response.Content.ReadAsStringAsync().Result;
+                    return ParseGoogleTranslateResponse(result);
+                }
+                catch
+                {
+                    return text; // Retorna el texto original si hay un error
+                }
             }
         }
 
-        /// <summary>
-        /// Guarda las traducciones en un nuevo archivo de idioma.
-        /// </summary>
-        public static void SaveTranslationsToNewFile(Dictionary<string, string> translations, string newLanguageFile)
+        private static string ParseGoogleTranslateResponse(string response)
         {
-            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-            foreach (var translation in translations)
+            try
             {
-                languageRepository.SaveTranslation(translation.Key, translation.Value, newLanguageFile);
+                int startIndex = response.IndexOf("\"") + 1;
+                int endIndex = response.IndexOf("\"", startIndex);
+                return response.Substring(startIndex, endIndex - startIndex);
+            }
+            catch
+            {
+                return "Error en la traducción"; // Mensaje de error claro
             }
         }
 
-        /// <summary>
-        /// Recarga las traducciones de un archivo de idioma en la caché.
-        /// </summary>
-        public static void ReloadLanguages(string language)
+        private static void ValidateParameter(string parameter, string parameterName)
         {
-            translationsCache.Clear();
-
-            // Llama al DAO para cargar las traducciones del archivo especificado
-            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-            var translations = languageRepository.LoadAllTranslations(language);
-
-            foreach (var translation in translations)
+            if (string.IsNullOrEmpty(parameter))
             {
-                translationsCache[translation.Key] = translation.Value;
+                throw new ArgumentException($"El parámetro '{parameterName}' no puede ser nulo o estar vacío.", parameterName);
             }
-        }
-
-        /// <summary>
-        /// Obtiene la lista de idiomas disponibles desde los archivos de idiomas.
-        /// </summary>
-        /// <returns>Lista de idiomas disponibles.</returns>
-        public static List<string> GetAvailableLanguages()
-        {
-            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-            return languageRepository.GetAvailableLanguages();
-        }
-
-        /// <summary>
-        /// Carga todas las traducciones para un idioma específico.
-        /// </summary>
-        /// <param name="language">Idioma para cargar las traducciones.</param>
-        /// <returns>Diccionario con las traducciones cargadas.</returns>
-        public static Dictionary<string, string> LoadAllTranslations(string language)
-        {
-            // Llama al DAO para cargar todas las traducciones de un archivo de idioma
-            var languageRepository = FactoryDao.CreateRepository<ILanguageRepository>();
-            return languageRepository.LoadAllTranslations(language);
-        }
-
-        /// <summary>
-        /// Obtiene una lista de todas las claves de idioma disponibles en la caché.
-        /// </summary>
-        /// <returns>Lista de claves de traducciones en la caché.</returns>
-        public static List<string> GetLanguages()
-        {
-            return new List<string>(translationsCache.Keys);
         }
     }
 }

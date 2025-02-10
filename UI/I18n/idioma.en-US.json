@@ -170,8 +170,7 @@
   "En Progreso": "In Progress",
   "Completado": "Completed",
   "Error al cargar los tickets": "Error loading tickets",
-  "Título:": "Title:",
-  "Descripción:": "Description:",
+  "Titulo": "Title:",
   "Dirección de la Propiedad": "Property Address",
   "Propiedad no encontrada": "Property not found",
   "No hay inventario para esta propiedad.": "No inventory for this property.",
@@ -217,7 +216,6 @@
   "Error al seleccionar la cláusula": "Error selecting clause",
   "Por favor, complete ambos campos antes de guardar la cláusula.": "Please complete both fields before saving the clause.",
   "¿Desea modificar la cláusula seleccionada o crear una nueva?": "Do you want to modify the selected clause or create a new one?",
-  "Guardar cláusula": "Save clause",
   "Cláusula modificada con éxito.": "Clause successfully modified.",
   "Cláusula agregada con éxito.": "Clause successfully added.",
   "Error al guardar la cláusula": "Error saving clause",
@@ -281,8 +279,6 @@
   "Error al cargar el inventario": "Error loading inventory",
   "Error al seleccionar el inventario": "Error selecting inventory",
   "Error al eliminar el elemento": "Error deleting the item",
-  "Título": "Title",
-  "Descripción": "Description",
   "Error al obtener los datos del ticket.": "Error retrieving ticket data.",
   "Error al mostrar la imagen:": "Error displaying image:",
   "Error al cargar idiomas:": "Error loading languages:",
@@ -316,7 +312,6 @@
   "Permisos (Patentes)": "Permissions (Patents)",
   "Modificación de Familia": "Family Modification",
   "Eliminación de Familia": "Family Deletion",
-  "Contraseña": "Password",
   "Error al cargar usuarios:": "Error loading users:",
   "Usuario actualizado con éxito.": "User successfully updated.",
   "Modificación": "Modification",
@@ -356,5 +351,6 @@
   "Copias de seguridad disponibles:": "Available backups:",
   "Respaldo generado con éxito.": "Backup generated successfully",
   "Error al generar el respaldo:": "Error generating the backup:",
-  "Copias de seguridad y restauración": "Backup and Restore"
+  "Copias de seguridad y restauración": "Backup and Restore",
+  "Contratos pendientes":  "Pending Contracts"
 }

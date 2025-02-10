@@ -40,38 +40,34 @@
             // 
             // txtTitle
             // 
-            this.txtTitle.Location = new System.Drawing.Point(16, 43);
-            this.txtTitle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTitle.Location = new System.Drawing.Point(12, 35);
             this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(545, 22);
+            this.txtTitle.Size = new System.Drawing.Size(410, 20);
             this.txtTitle.TabIndex = 0;
             // 
             // txtDetail
             // 
-            this.txtDetail.Location = new System.Drawing.Point(16, 127);
-            this.txtDetail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDetail.Location = new System.Drawing.Point(12, 103);
             this.txtDetail.Multiline = true;
             this.txtDetail.Name = "txtDetail";
-            this.txtDetail.Size = new System.Drawing.Size(721, 287);
+            this.txtDetail.Size = new System.Drawing.Size(542, 234);
             this.txtDetail.TabIndex = 1;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(16, 422);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSave.Location = new System.Drawing.Point(12, 343);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(547, 28);
+            this.btnSave.Size = new System.Drawing.Size(410, 23);
             this.btnSave.TabIndex = 2;
-            this.btnSave.Text = "Guardar ticket";
+            this.btnSave.Text = "Guardar incidencia";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnImage
             // 
-            this.btnImage.Location = new System.Drawing.Point(571, 422);
-            this.btnImage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnImage.Location = new System.Drawing.Point(428, 343);
             this.btnImage.Name = "btnImage";
-            this.btnImage.Size = new System.Drawing.Size(168, 28);
+            this.btnImage.Size = new System.Drawing.Size(126, 23);
             this.btnImage.TabIndex = 3;
             this.btnImage.Text = "Subir imagen";
             this.btnImage.UseVisualStyleBackColor = true;
@@ -80,47 +76,43 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 107);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(12, 87);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 16);
+            this.label1.Size = new System.Drawing.Size(43, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "Detalle:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 23);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(12, 19);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 16);
+            this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Titulo";
+            this.label2.Text = "Título:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(567, 22);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(425, 18);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 16);
+            this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 9;
             this.label3.Text = "Propiedad:";
             // 
             // cmbProperty
             // 
             this.cmbProperty.FormattingEnabled = true;
-            this.cmbProperty.Location = new System.Drawing.Point(571, 42);
-            this.cmbProperty.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmbProperty.Location = new System.Drawing.Point(428, 34);
             this.cmbProperty.Name = "cmbProperty";
-            this.cmbProperty.Size = new System.Drawing.Size(167, 24);
+            this.cmbProperty.Size = new System.Drawing.Size(126, 21);
             this.cmbProperty.TabIndex = 8;
             // 
             // frmTicket
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(755, 480);
+            this.ClientSize = new System.Drawing.Size(566, 390);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cmbProperty);
             this.Controls.Add(this.label2);
@@ -130,9 +122,8 @@
             this.Controls.Add(this.txtDetail);
             this.Controls.Add(this.txtTitle);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "frmTicket";
-            this.Text = "Nuevo ticket";
+            this.Text = "Nueva incidencia";
             this.ResumeLayout(false);
             this.PerformLayout();
 

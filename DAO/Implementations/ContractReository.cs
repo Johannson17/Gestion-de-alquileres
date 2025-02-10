@@ -109,7 +109,8 @@ namespace DAO.Implementations
                 contract.DateFinalContract,  // Corresponde a la columna DateFinalContract
                 contract.AnnualRentPrice,    // Corresponde a la columna AnnualRentPrice
                 contract.StatusContract,  // Corresponde a la columna StatusContract
-                null      
+                contract.IdContract.ToString() + contract.FkIdProperty.ToString() + contract.FkIdTenant.ToString() + contract.DateStartContract.ToString() + contract.DateFinalContract.ToString() + contract.AnnualRentPrice.ToString() + contract.StatusContract.ToString(),
+                null
             );
         }
 
@@ -135,8 +136,9 @@ namespace DAO.Implementations
             contractRow.FkIdTenant = contract.FkIdTenant;
             contractRow.DateStartContract = contract.DateStartContract;
             contractRow.DateFinalContract = contract.DateFinalContract;
-            contractRow.AnnualRentPrice = contract.AnnualRentPrice;
+            contractRow.MensualRentPrice = contract.AnnualRentPrice;
             contractRow.StatusContract = contract.StatusContract;
+            contractRow.Hash = contract.IdContract.ToString() + contract.FkIdProperty.ToString() + contract.FkIdTenant.ToString() + contract.DateStartContract.ToString() + contract.DateFinalContract.ToString() + contract.AnnualRentPrice.ToString() + contract.StatusContract.ToString();
 
             _contractTableAdapter.Update(contractRow);
         }
@@ -160,8 +162,9 @@ namespace DAO.Implementations
                 contractRow.FkIdTenant,
                 contractRow.DateStartContract,
                 contractRow.DateFinalContract,
-                contractRow.AnnualRentPrice,
-                contractRow.StatusContract
+                contractRow.MensualRentPrice,
+                contractRow.StatusContract,
+                contractRow.IdContract.ToString() + contractRow.FkIdProperty.ToString() + contractRow.FkIdTenant.ToString() + contractRow.DateStartContract.ToString() + contractRow.DateFinalContract.ToString() + contractRow.MensualRentPrice.ToString() + contractRow.StatusContract.ToString()
             );
         }
 
@@ -180,7 +183,7 @@ namespace DAO.Implementations
                 FkIdTenant = row.FkIdTenant,
                 DateStartContract = row.DateStartContract,
                 DateFinalContract = row.DateFinalContract,
-                AnnualRentPrice = row.AnnualRentPrice,
+                AnnualRentPrice = row.MensualRentPrice,
                 StatusContract = row.StatusContract,
                 ContractImage = row.IsSignedContractNull() ? Array.Empty<byte>() : row.SignedContract
             }).ToList();
@@ -207,7 +210,7 @@ namespace DAO.Implementations
                 FkIdTenant = contractRow.FkIdTenant,
                 DateStartContract = contractRow.DateStartContract,
                 DateFinalContract = contractRow.DateFinalContract,
-                AnnualRentPrice = contractRow.AnnualRentPrice,
+                AnnualRentPrice = contractRow.MensualRentPrice,
                 StatusContract = contractRow.StatusContract,
                 ContractImage = contractRow.IsSignedContractNull() ? Array.Empty<byte>() : contractRow.SignedContract
             };
@@ -249,7 +252,7 @@ namespace DAO.Implementations
                     FkIdTenant = row.FkIdTenant,
                     DateStartContract = row.DateStartContract,
                     DateFinalContract = row.DateFinalContract,
-                    AnnualRentPrice = row.AnnualRentPrice,
+                    AnnualRentPrice = row.MensualRentPrice,
                     StatusContract = row.StatusContract,
                     ContractImage = row.IsSignedContractNull() ? Array.Empty<byte>() : row.SignedContract
                 }).ToList();

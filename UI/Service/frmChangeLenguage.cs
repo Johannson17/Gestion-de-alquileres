@@ -7,10 +7,60 @@ namespace UI
 {
     public partial class frmChangeLanguage : Form
     {
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual sobre el que está el mouse
+
         public frmChangeLanguage()
         {
             InitializeComponent();
             LoadLanguageFile(); // Cargar los datos del archivo de idioma al iniciar el formulario
+
+            // Inicializar los mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvLanguages, "Aquí se muestran las claves y valores de idioma que puede editar." },
+                { btnSave, "Guarda los cambios realizados en el archivo de idioma." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Suscribir eventos de MouseEnter y MouseLeave para los controles con ayuda
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
         }
 
         /// <summary>
@@ -31,14 +81,14 @@ namespace UI
                 }
 
                 // Obtener todas las traducciones desde la capa de servicio
-                var translations = LanguageService.LoadAllTranslations("en-US");
+                //var translations = LanguageService.LoadAllTranslations("en-US");
 
                 // Cargar las traducciones en el DataGridView
                 dgvLanguages.Rows.Clear(); // Limpiar cualquier dato anterior
-                foreach (var translation in translations)
-                {
-                    dgvLanguages.Rows.Add(translation.Key, translation.Value);
-                }
+                //foreach (var translation in translations)
+                //{
+                    //dgvLanguages.Rows.Add(translation.Key, translation.Value);
+                //}
             }
             catch (Exception ex)
             {
@@ -86,7 +136,7 @@ namespace UI
                     if (!string.IsNullOrEmpty(newFileName))
                     {
                         // Guardar los datos en un nuevo archivo usando la capa de servicios
-                        LanguageService.SaveTranslationsToNewFile(updatedTranslations, newFileName); // Usamos el nombre completo dado
+                        //LanguageService.SaveTranslationsToNewFile(updatedTranslations, newFileName); // Usamos el nombre completo dado
                         MessageBox.Show(
                             LanguageService.Translate("Idioma guardado en un nuevo archivo con éxito."),
                             LanguageService.Translate("Éxito"),
@@ -107,7 +157,7 @@ namespace UI
                 else
                 {
                     // Guardar en el archivo existente
-                    LanguageService.SaveTranslations(updatedTranslations, "es-AR");
+                    //LanguageService.SaveTranslations(updatedTranslations, "es-AR");
                     MessageBox.Show(
                         LanguageService.Translate("Idioma guardado con éxito en el archivo existente."),
                         LanguageService.Translate("Éxito"),

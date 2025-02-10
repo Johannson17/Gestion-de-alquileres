@@ -15,6 +15,8 @@ namespace UI
         private readonly ContractService _contractFacade;
         private readonly PropertyService _propertyService;
         private readonly PersonService _personService;
+        private readonly Timer toolTipTimer;
+        private Control currentControl;
 
         public frmAddContract()
         {
@@ -22,7 +24,69 @@ namespace UI
             _contractFacade = new ContractService();
             _propertyService = new PropertyService();
             _personService = new PersonService();
+
+            toolTipTimer = new Timer
+            {
+                Interval = 1000 // 2 segundos
+            };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            InitializeHelpMessages();
+            SubscribeToMouseEvents();
+
             this.Load += frmAddContract_Load;
+        }
+
+        /// <summary>
+        /// Inicializar mensajes de ayuda para los controles.
+        /// </summary>
+        private readonly Dictionary<Control, string> helpMessages = new Dictionary<Control, string>();
+
+        private void InitializeHelpMessages()
+        {
+            helpMessages.Add(cmbProperty, "Seleccione la propiedad disponible para asociarla al contrato.");
+            helpMessages.Add(cmbTenant, "Seleccione el arrendatario para este contrato.");
+            helpMessages.Add(txtPrice, "Ingrese el precio mensual del contrato (solo números).");
+            helpMessages.Add(cldStartDate, "Seleccione la fecha de inicio del contrato.");
+            helpMessages.Add(cldFinalDate, "Seleccione la fecha de finalización del contrato.");
+            helpMessages.Add(btnSave, "Presione para guardar el contrato con los datos ingresados.");
+        }
+
+        /// <summary>
+        /// Suscribir eventos MouseEnter y MouseLeave a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeToMouseEvents()
+        {
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+            toolTipTimer.Stop();
         }
 
         private void frmAddContract_Load(object sender, EventArgs e)

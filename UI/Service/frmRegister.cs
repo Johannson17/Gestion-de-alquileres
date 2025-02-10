@@ -1,6 +1,7 @@
 ﻿using Services.Domain;
 using Services.Facade;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using UI.Helpers;
@@ -12,29 +13,92 @@ namespace UI
     /// </summary>
     public partial class frmRegister : Form
     {
+        private readonly Dictionary<Control, string> helpMessages; // Diccionario de ayuda
+        private Timer toolTipTimer; // Temporizador para mostrar ToolTip
+        private Control currentControl; // Control actual donde está el mouse
+
         /// <summary>
-        /// Constructor that initializes the user registration form.
+        /// Constructor que inicializa el formulario de registro de usuario.
         /// </summary>
         public frmRegister()
         {
             InitializeComponent();
-            btnRegister.Enabled = false; // The register button starts disabled
+            btnRegister.Enabled = false; // El botón de registro inicia deshabilitado
 
-            // Initialize ComboBoxes as empty
+            // Inicializar ComboBoxes vacíos
             cmbFamilias.Items.Clear();
             cmbPatentes.Items.Clear();
 
-            // Assign events for real-time validation
+            // Asignar eventos para validación en tiempo real
             txtPassword.TextChanged += ValidatePasswords;
             txtConfirmPassword.TextChanged += ValidatePasswords;
 
-            // Assign events to load data when ComboBoxes are dropped down
+            // Asignar eventos para cargar datos cuando los ComboBoxes se despliegan
             cmbFamilias.DropDown += cmbFamilias_DropDown;
             cmbPatentes.DropDown += cmbPatentes_DropDown;
 
-            // Set ComboBoxes with no initial selection
+            // Configuración inicial de ComboBoxes
             cmbFamilias.SelectedIndex = -1;
             cmbPatentes.SelectedIndex = -1;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtUsername, "Ingrese el nombre de usuario." },
+                { txtPassword, "Ingrese la contraseña del usuario." },
+                { txtConfirmPassword, "Confirme la contraseña ingresada." },
+                { cmbFamilias, "Seleccione un rol para el usuario." },
+                { cmbPatentes, "Seleccione un permiso para el usuario." },
+                { btnAddFamilia, "Permite agregar un nuevo rol al sistema." },
+                { btnRegister, "Registra al usuario con los datos proporcionados." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Asignar eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        /// <summary>
+        /// Maneja el evento de MouseEnter en los controles para iniciar el temporizador.
+        /// </summary>
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        /// <summary>
+        /// Maneja el evento de MouseLeave para detener el temporizador.
+        /// </summary>
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        /// <summary>
+        /// Muestra el ToolTip cuando se cumple el tiempo del temporizador.
+        /// </summary>
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador después de mostrar el ToolTip
         }
 
         /// <summary>

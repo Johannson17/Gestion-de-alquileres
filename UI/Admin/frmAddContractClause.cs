@@ -2,6 +2,7 @@
 using Services.Facade;
 using Services.Domain;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace UI
@@ -18,6 +19,12 @@ namespace UI
         // Propiedad para devolver la cláusula creada al formulario principal
         public ContractClause NewClause { get; private set; }
 
+        private readonly Timer toolTipTimer;
+        private Control currentControl;
+
+        // Diccionario para almacenar los mensajes de ayuda
+        private readonly Dictionary<Control, string> helpMessages;
+
         public frmAddContractClause(Contract contract, Person owner, Person tenant, Property property, int clauseIndex)
         {
             InitializeComponent();
@@ -26,9 +33,58 @@ namespace UI
             _owner = owner;
             _tenant = tenant;
             _property = property;
-            _contractService = new ContractService(); // Usar ContractService en lugar de ContractLogic
+            _contractService = new ContractService();
 
+            toolTipTimer = new Timer
+            {
+                Interval = 1000 // 2 segundos
+            };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtTittle, "Ingrese el título de la cláusula. Si es una cláusula predefinida, este campo estará bloqueado." },
+                { txtDescription, "Ingrese la descripción detallada de la cláusula. Si es una cláusula predefinida, este campo estará bloqueado." },
+                { btnSave, "Presione para guardar la cláusula actual en el contrato." }
+            };
+
+            SubscribeToMouseEvents();
             LoadClauseData();
+        }
+
+        private void SubscribeToMouseEvents()
+        {
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+            toolTipTimer.Stop();
         }
 
         private void LoadClauseData()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Domain;
 using Services.Facade;
+using System.Collections.Generic;
 
 namespace UI.Admin
 {
@@ -11,11 +12,62 @@ namespace UI.Admin
     {
         private readonly PersonService _personService;
 
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl;
+
         public frmTenantsReport()
         {
             InitializeComponent();
             _personService = new PersonService(); // Asegúrate de que PersonService no necesite parámetros.
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvPersons, "Lista de inquilinos con su información detallada." },
+                { btnDownload, "Descargar el reporte en formato Excel." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Asociar eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+
             LoadPersonData();
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
         }
 
         private void LoadPersonData()
@@ -31,10 +83,10 @@ namespace UI.Admin
                     Nombre = p.NamePerson,
                     Apellido = p.LastNamePerson,
                     Domicilio = p.DomicilePerson,
-                    DomicilioElectronico = p.ElectronicDomicilePerson, // Sin espacio en el nombre
-                    Telefono = p.PhoneNumberPerson, // Sin tilde en el identificador
-                    TipoDocumento = p.TypeDocumentPerson, // Nuevo campo añadido
-                    NumeroDocumento = p.NumberDocumentPerson // Sin espacio en el nombre
+                    DomicilioElectronico = p.ElectronicDomicilePerson,
+                    Telefono = p.PhoneNumberPerson,
+                    TipoDocumento = p.TypeDocumentPerson,
+                    NumeroDocumento = p.NumberDocumentPerson
                 }).ToList();
 
                 dgvPersons.Columns["IdPerson"].Visible = false; // Oculta la columna de ID
@@ -45,7 +97,7 @@ namespace UI.Admin
                 dgvPersons.Columns["Domicilio"].HeaderText = LanguageService.Translate("Domicilio");
                 dgvPersons.Columns["DomicilioElectronico"].HeaderText = LanguageService.Translate("Domicilio Electrónico");
                 dgvPersons.Columns["Telefono"].HeaderText = LanguageService.Translate("Teléfono");
-                dgvPersons.Columns["TipoDocumento"].HeaderText = LanguageService.Translate("Tipo de Documento"); // Encabezado para el nuevo campo
+                dgvPersons.Columns["TipoDocumento"].HeaderText = LanguageService.Translate("Tipo de Documento");
                 dgvPersons.Columns["NumeroDocumento"].HeaderText = LanguageService.Translate("Número de Documento");
 
                 dgvPersons.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajusta las columnas al ancho del DataGridView
@@ -85,7 +137,7 @@ namespace UI.Admin
                                 DomicilePerson = row.Cells["Domicilio"].Value?.ToString(),
                                 ElectronicDomicilePerson = row.Cells["DomicilioElectronico"].Value?.ToString(),
                                 PhoneNumberPerson = int.Parse(row.Cells["Telefono"].Value?.ToString()),
-                                TypeDocumentPerson = row.Cells["TipoDocumento"].Value?.ToString(), // Nuevo campo añadido
+                                TypeDocumentPerson = row.Cells["TipoDocumento"].Value?.ToString(),
                                 NumberDocumentPerson = int.Parse(row.Cells["NumeroDocumento"].Value?.ToString())
                             })
                             .ToList();

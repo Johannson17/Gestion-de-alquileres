@@ -3,8 +3,8 @@ using Services.Facade;
 using Services.Domain;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace UI
 {
@@ -13,6 +13,10 @@ namespace UI
         private readonly ContractService _contractService;
         private readonly Contract _contract;
         private Guid _selectedClauseId;
+
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual donde está el mouse
 
         public frmModifyContractClause(Contract contract)
         {
@@ -25,19 +29,62 @@ namespace UI
             dgvContractClauses.CellClick += dgvContractClauses_CellClick;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtTittle, "Ingrese el título de la cláusula." },
+                { txtDescription, "Ingrese la descripción de la cláusula." },
+                { btnSave, "Guarda los cambios realizados en la cláusula o agrega una nueva." },
+                { btnDelete, "Elimina la cláusula seleccionada del contrato." },
+                { dgvContractClauses, "Lista de cláusulas del contrato. Seleccione una para editarla." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Suscribir eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
         }
 
-        /// <summary>
-        /// Carga inicial de las cláusulas del contrato.
-        /// </summary>
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
+        }
+
         private void frmModifyContractClause_Load(object sender, EventArgs e)
         {
             LoadClauses();
         }
 
-        /// <summary>
-        /// Cargar las cláusulas del contrato actual en el DataGridView.
-        /// </summary>
         private void LoadClauses()
         {
             try
@@ -70,9 +117,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Maneja el clic en una celda del DataGridView para mostrar los datos de la cláusula seleccionada.
-        /// </summary>
         private void dgvContractClauses_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -100,9 +144,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Guarda los cambios realizados en la cláusula o agrega una nueva.
-        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -120,39 +161,39 @@ namespace UI
 
                 if (_selectedClauseId != Guid.Empty)
                 {
-                    var result = MessageBox.Show(
-                        LanguageService.Translate("¿Desea modificar la cláusula seleccionada o crear una nueva?"),
-                        LanguageService.Translate("Guardar cláusula"),
-                        MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Question
+                    var clause = new ContractClause
+                    {
+                        IdContractClause = _selectedClauseId,
+                        FkIdContract = _contract.IdContract,
+                        TitleClause = txtTittle.Text,
+                        DetailClause = txtDescription.Text
+                    };
+
+                    _contractService.UpdateContractClause(clause);
+                    MessageBox.Show(
+                        LanguageService.Translate("Cláusula modificada con éxito."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
                     );
-
-                    if (result == DialogResult.Yes)
-                    {
-                        var clause = new ContractClause
-                        {
-                            IdContractClause = _selectedClauseId,
-                            FkIdContract = _contract.IdContract,
-                            TitleClause = txtTittle.Text,
-                            DetailClause = txtDescription.Text
-                        };
-
-                        _contractService.UpdateContractClause(clause);
-                        MessageBox.Show(
-                            LanguageService.Translate("Cláusula modificada con éxito."),
-                            LanguageService.Translate("Éxito"),
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
-                    }
-                    else if (result == DialogResult.No)
-                    {
-                        AddNewClause();
-                    }
                 }
                 else
                 {
-                    AddNewClause();
+                    var newClause = new ContractClause
+                    {
+                        IdContractClause = Guid.NewGuid(),
+                        FkIdContract = _contract.IdContract,
+                        TitleClause = txtTittle.Text,
+                        DetailClause = txtDescription.Text
+                    };
+
+                    _contractService.AddContractClause(newClause);
+                    MessageBox.Show(
+                        LanguageService.Translate("Cláusula agregada con éxito."),
+                        LanguageService.Translate("Éxito"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
 
                 ClearForm();
@@ -169,31 +210,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Agrega una nueva cláusula al contrato.
-        /// </summary>
-        private void AddNewClause()
-        {
-            var newClause = new ContractClause
-            {
-                IdContractClause = Guid.NewGuid(),
-                FkIdContract = _contract.IdContract,
-                TitleClause = txtTittle.Text,
-                DetailClause = txtDescription.Text
-            };
-
-            _contractService.AddContractClause(newClause);
-            MessageBox.Show(
-                LanguageService.Translate("Cláusula agregada con éxito."),
-                LanguageService.Translate("Éxito"),
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-        }
-
-        /// <summary>
-        /// Elimina la cláusula seleccionada.
-        /// </summary>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             try
@@ -241,9 +257,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Limpia los campos del formulario.
-        /// </summary>
         private void ClearForm()
         {
             _selectedClauseId = Guid.Empty;

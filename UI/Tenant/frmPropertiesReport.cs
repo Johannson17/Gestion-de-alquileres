@@ -12,7 +12,11 @@ namespace UI.Tenant
     {
         private readonly PropertyService _propertyService;
         private List<Property> _properties;
-        private readonly Guid _loggedInTenantId; // ID of the logged-in tenant
+        private readonly Guid _loggedInTenantId; // ID del inquilino logueado
+
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual sobre el que está el mouse
+        private Dictionary<Control, string> helpMessages; // Diccionario de mensajes de ayuda
 
         public frmPropertiesReport(Guid loggedInTenantId)
         {
@@ -20,12 +24,78 @@ namespace UI.Tenant
             _propertyService = new PropertyService();
             _loggedInTenantId = loggedInTenantId;
 
+            InitializeHelpMessages(); // Inicializar mensajes de ayuda traducidos
+            RegisterHelpEvents(this); // Suscribir eventos de ayuda
+
+            // Configurar el Timer
+            toolTipTimer = new Timer { Interval = 1000 };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
             LoadProperties();
             LoadComboBoxOptions();
         }
 
         /// <summary>
-        /// Load all properties into the DataGridView.
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvProperties, LanguageService.Translate("Muestra la lista de propiedades disponibles y sus detalles.") },
+                { cmbStatus, LanguageService.Translate("Seleccione el estado de las propiedades para filtrar la lista.") },
+                { btnFilter, LanguageService.Translate("Filtra las propiedades según el estado seleccionado.") },
+                { btnDownload, LanguageService.Translate("Descarga el reporte de propiedades en formato Excel.") }
+            };
+        }
+
+        /// <summary>
+        /// Registra eventos para mostrar mensajes de ayuda en los controles.
+        /// </summary>
+        private void RegisterHelpEvents(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (helpMessages.ContainsKey(control))
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+
+                if (control.HasChildren)
+                {
+                    RegisterHelpEvents(control);
+                }
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control;
+                toolTipTimer.Start();
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop();
+            currentControl = null;
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
+            }
+            toolTipTimer.Stop();
+        }
+
+        /// <summary>
+        /// Carga las propiedades y las muestra en el DataGridView.
         /// </summary>
         private void LoadProperties()
         {
@@ -34,7 +104,6 @@ namespace UI.Tenant
                 _properties = _propertyService.GetAllProperties();
 
                 dgvProperties.Columns.Clear();
-
                 dgvProperties.DataSource = _properties.Select(p => new
                 {
                     p.IdProperty,
@@ -48,7 +117,6 @@ namespace UI.Tenant
 
                 dgvProperties.Columns["IdProperty"].Visible = false;
 
-                // Assign English column headers
                 dgvProperties.Columns["DescriptionProperty"].HeaderText = LanguageService.Translate("Descripción");
                 dgvProperties.Columns["StatusProperty"].HeaderText = LanguageService.Translate("Estado");
                 dgvProperties.Columns["CountryProperty"].HeaderText = LanguageService.Translate("País");
@@ -57,7 +125,7 @@ namespace UI.Tenant
                 dgvProperties.Columns["AddressProperty"].HeaderText = LanguageService.Translate("Dirección");
 
                 dgvProperties.AutoResizeColumns();
-                dgvProperties.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Adjust columns to fill width
+                dgvProperties.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
@@ -70,9 +138,6 @@ namespace UI.Tenant
             }
         }
 
-        /// <summary>
-        /// Load unique options into the Status ComboBox from properties.
-        /// </summary>
         private void LoadComboBoxOptions()
         {
             try
@@ -83,9 +148,9 @@ namespace UI.Tenant
                     .ToList();
 
                 cmbStatus.Items.Clear();
-                cmbStatus.Items.Add(LanguageService.Translate("Todos")); // Add "Todos" option
+                cmbStatus.Items.Add(LanguageService.Translate("Todos"));
                 cmbStatus.Items.AddRange(statusValues.ToArray());
-                cmbStatus.SelectedIndex = 0; // Default to first option
+                cmbStatus.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -98,9 +163,6 @@ namespace UI.Tenant
             }
         }
 
-        /// <summary>
-        /// Filter properties in the DataGridView based on the selected status.
-        /// </summary>
         private void btnFilter_Click(object sender, EventArgs e)
         {
             try
@@ -137,9 +199,6 @@ namespace UI.Tenant
             }
         }
 
-        /// <summary>
-        /// Download visible data in the DataGridView to an Excel file.
-        /// </summary>
         private void btnDownload_Click(object sender, EventArgs e)
         {
             try
@@ -186,6 +245,14 @@ namespace UI.Tenant
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
         }
     }
 }

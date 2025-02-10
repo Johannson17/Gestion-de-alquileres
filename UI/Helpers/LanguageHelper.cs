@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,27 +10,31 @@ namespace UI.Helpers
     public class LanguageHelper
     {
         /// <summary>
-        /// Aplica las traducciones a todos los elementos del formulario principal y sus hijos.
+        /// Aplica las traducciones o restaura los textos predeterminados para el formulario principal y sus hijos.
         /// </summary>
         /// <param name="language">Idioma a aplicar.</param>
+        /// <param name="frm">Formulario principal.</param>
         public void ApplyLanguage(string language, Form frm)
         {
             try
             {
-                // Recarga las traducciones desde el archivo
-                LanguageService.ReloadLanguages(language);
+                // Recolectar textos en el hilo principal
+                var itemsToTranslate = CollectControlsAndMenuItems(frm);
 
-                // Aplicar traducción al formulario principal
-                ApplyTranslationsRecursively(frm);
-
-                // Traducir los formularios hijos abiertos
-                foreach (Form child in frm.MdiChildren)
+                // Asegurarse de incluir el formulario principal y su texto
+                if (!string.IsNullOrWhiteSpace(frm.Text))
                 {
-                    if (child is ITranslatable translatableForm)
-                    {
-                        translatableForm.ApplyTranslation();
-                    }
+                    itemsToTranslate.Add((frm, frm.Text));
                 }
+
+                // Traducir los textos en paralelo
+                var translations = TranslateTextsParallel(itemsToTranslate);
+
+                // Aplicar las traducciones en el hilo principal
+                frm.Invoke(new Action(() =>
+                {
+                    ApplyTranslations(translations);
+                }));
             }
             catch (Exception ex)
             {
@@ -40,84 +43,102 @@ namespace UI.Helpers
         }
 
         /// <summary>
-        /// Busca y aplica traducciones recursivamente a todos los controles dentro de un formulario o contenedor.
+        /// Recolecta controles y elementos de menú que necesitan traducción.
         /// </summary>
-        /// <param name="control">El control raíz desde el cual comenzar la búsqueda.</param>
-        public void ApplyTranslationsRecursively(Control control)
+        /// <param name="control">Control raíz desde el cual comenzar la recolección.</param>
+        /// <returns>Lista de controles y elementos de menú con sus textos originales.</returns>
+        private List<(object item, string originalText)> CollectControlsAndMenuItems(Control control)
         {
-            if (control == null) return;
+            var itemsToTranslate = new List<(object item, string originalText)>();
 
-            // Ignorar ciertos controles como TextBox y ComboBox
-            if (!(control is TextBox))
+            void CollectRecursively(Control parentControl)
             {
-                // Intentar traducir el texto del control si existe
-                if (!string.IsNullOrWhiteSpace(control.Text))
+                if (parentControl == null) return;
+
+                // Asegurar que el control actual sea incluido
+                if (!(parentControl is TextBox || parentControl is ComboBox) && !string.IsNullOrWhiteSpace(parentControl.Text))
                 {
-                    control.Text = LanguageService.Translate(control.Text, control.Text);
+                    itemsToTranslate.Add((parentControl, parentControl.Text));
+                }
+
+                // Procesar controles hijos
+                foreach (Control child in parentControl.Controls)
+                {
+                    CollectRecursively(child);
+                }
+
+                // Recolectar elementos del menú
+                if (parentControl is MenuStrip menuStrip)
+                {
+                    foreach (ToolStripMenuItem menuItem in menuStrip.Items)
+                    {
+                        CollectMenuItemsRecursively(menuItem, itemsToTranslate);
+                    }
                 }
             }
 
-            // Procesar controles hijos recursivamente
-            foreach (Control childControl in control.Controls)
-            {
-                ApplyTranslationsRecursively(childControl);
-            }
-
-            // Si el control es un menú (MenuStrip), traducir sus items
-            if (control is MenuStrip menuStrip)
-            {
-                foreach (ToolStripMenuItem menuItem in menuStrip.Items)
-                {
-                    TranslateMenuItem(menuItem);
-                }
-            }
+            CollectRecursively(control);
+            return itemsToTranslate;
         }
 
         /// <summary>
-        /// Traduce recursivamente los textos de los elementos de un menú.
+        /// Recolecta elementos de menú que necesitan traducción.
         /// </summary>
-        /// <param name="menuItem">El elemento de menú a traducir.</param>
-        public void TranslateMenuItem(ToolStripMenuItem menuItem)
+        /// <param name="menuItem">Elemento de menú raíz.</param>
+        /// <param name="itemsToTranslate">Lista de elementos y textos originales.</param>
+        private void CollectMenuItemsRecursively(ToolStripMenuItem menuItem, List<(object item, string originalText)> itemsToTranslate)
         {
             if (!string.IsNullOrWhiteSpace(menuItem.Text))
             {
-                menuItem.Text = LanguageService.Translate(menuItem.Text, menuItem.Text);
+                itemsToTranslate.Add((menuItem, menuItem.Text));
             }
 
-            // Traducir los sub-items del menú
             foreach (ToolStripItem subItem in menuItem.DropDownItems)
             {
                 if (subItem is ToolStripMenuItem subMenuItem)
                 {
-                    TranslateMenuItem(subMenuItem);
+                    CollectMenuItemsRecursively(subMenuItem, itemsToTranslate);
                 }
             }
         }
 
         /// <summary>
-        /// Traduce un string al idioma que está siendo usado actualmente en el sistema.
+        /// Traduce los textos recolectados utilizando hilos paralelos.
         /// </summary>
-        /// <param name="text">El texto que se desea traducir.</param>
-        /// <returns>El texto traducido si existe, de lo contrario el texto original.</returns>
-        public string TranslateString(string text)
+        /// <param name="itemsToTranslate">Lista de elementos y textos a traducir.</param>
+        /// <returns>Diccionario con los elementos y sus textos traducidos.</returns>
+        private Dictionary<object, string> TranslateTextsParallel(List<(object item, string originalText)> itemsToTranslate)
         {
-            if (string.IsNullOrWhiteSpace(text)) return text;
+            var translations = new Dictionary<object, string>();
 
-            try
+            Parallel.ForEach(itemsToTranslate, item =>
             {
-                // Obtener el idioma actual del sistema
-                var currentLanguage = LanguageService.GetCurrentLanguage();
+                var translatedText = LanguageService.Translate(item.originalText, item.originalText);
+                lock (translations) // Bloqueo necesario para acceso seguro al diccionario
+                {
+                    translations[item.item] = translatedText;
+                }
+            });
 
-                // Intentar traducir la cadena
-                var translatedText = LanguageService.Translate(text, currentLanguage);
+            return translations;
+        }
 
-                // Retornar el texto traducido si es diferente al original
-                return !string.IsNullOrWhiteSpace(translatedText) ? translatedText : text;
-            }
-            catch
+        /// <summary>
+        /// Aplica las traducciones a los controles y elementos de menú en el hilo principal.
+        /// </summary>
+        /// <param name="translations">Diccionario con los elementos y sus textos traducidos.</param>
+        private void ApplyTranslations(Dictionary<object, string> translations)
+        {
+            foreach (var translation in translations)
             {
-                // En caso de error, retornar el texto original
-                return text;
+                if (translation.Key is Control control)
+                {
+                    control.Text = translation.Value;
+                }
+                else if (translation.Key is ToolStripMenuItem menuItem)
+                {
+                    menuItem.Text = translation.Value;
+                }
             }
         }
     }

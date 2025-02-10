@@ -4,5 +4,8 @@
 
     public partial class RentsDataSet
     {
+        partial class ContractDataTable
+        {
+        }
     }
 }

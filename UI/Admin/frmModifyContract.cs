@@ -17,6 +17,10 @@ namespace UI
         private readonly PersonService _personService;
         private List<Contract> _originalContracts;
 
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual donde está el mouse
+
         public frmModifyContract()
         {
             InitializeComponent();
@@ -25,6 +29,58 @@ namespace UI
             _personService = new PersonService();
             this.Load += frmModifyContract_Load;
             dgvContracts.CellClick += dgvContracts_CellClick;
+
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { cmbProperty, "Seleccione la propiedad asociada al contrato." },
+                { cmbTenant, "Seleccione el inquilino asociado al contrato." },
+                { txtPrice, "Ingrese el precio mensual del contrato en números." },
+                { cldStartDate, "Seleccione la fecha de inicio del contrato." },
+                { cldFinalDate, "Seleccione la fecha de finalización del contrato." },
+                { btnSave, "Guarda los cambios realizados en el contrato seleccionado." },
+                { btnDelete, "Elimina el contrato seleccionado." },
+                { dgvContracts, "Lista de contratos disponibles. Haga clic en un contrato para editarlo." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Suscribir eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
         }
 
         private void frmModifyContract_Load(object sender, EventArgs e)
@@ -93,7 +149,6 @@ namespace UI
                 cmbProperty.DataSource = properties;
                 cmbProperty.DisplayMember = "AddressProperty";
                 cmbProperty.ValueMember = "IdProperty";
-                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
@@ -114,7 +169,6 @@ namespace UI
                 cmbTenant.DataSource = tenants;
                 cmbTenant.DisplayMember = "NumberDocumentPerson";
                 cmbTenant.ValueMember = "IdPerson";
-                dgvContracts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {

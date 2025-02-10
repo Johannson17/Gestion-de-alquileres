@@ -14,18 +14,73 @@ namespace UI.Admin
         private readonly TicketService _ticketService;
         private readonly PropertyService _propertyService;
 
+        private readonly Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
+        private Control currentControl; // Control actual donde está el mouse
+
         public frmModifyTicket()
         {
             InitializeComponent();
             _ticketService = new TicketService();
             _propertyService = new PropertyService();
 
+            // Inicializar mensajes de ayuda
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvTickets, "Seleccione un ticket para modificar o ver su imagen." },
+                { txtTitle, "Muestra el título del ticket seleccionado." },
+                { txtDetail, "Muestra la descripción del ticket seleccionado." },
+                { txtProperty, "Muestra la dirección de la propiedad asociada al ticket." },
+                { cmbStatus, "Seleccione el estado que desea asignar al ticket." },
+                { btnSave, "Guarda los cambios realizados al estado del ticket." },
+                { btnImage, "Muestra la imagen asociada al ticket seleccionado." }
+            };
+
+            // Configurar el Timer
+            toolTipTimer = new Timer();
+            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer.Tick += ToolTipTimer_Tick;
+
+            // Suscribir eventos a los controles
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
+            }
+
             LoadTickets();
 
-            // Subscribe to events
+            // Suscribir eventos adicionales
             dgvTickets.SelectionChanged += dgvTickets_SelectionChanged;
             btnSave.Click += btnSave_Click;
             btnImage.Click += btnImage_Click;
+        }
+
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && helpMessages.ContainsKey(control))
+            {
+                currentControl = control; // Guardar el control actual
+                toolTipTimer.Start(); // Iniciar el temporizador
+            }
+        }
+
+        private void Control_MouseLeave(object sender, EventArgs e)
+        {
+            toolTipTimer.Stop(); // Detener el temporizador
+            currentControl = null; // Limpiar el control actual
+        }
+
+        private void ToolTipTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentControl != null && helpMessages.ContainsKey(currentControl))
+            {
+                // Mostrar el ToolTip para el control actual
+                ToolTip toolTip = new ToolTip();
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+            }
+
+            toolTipTimer.Stop(); // Detener el temporizador
         }
 
         private void LoadTickets()
@@ -53,24 +108,22 @@ namespace UI.Admin
 
                 dgvTickets.DataSource = enrichedTickets;
 
-                // Adjust columns to fill available width
+                // Configurar columnas
                 dgvTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-                // Column configuration
                 dgvTickets.Columns["IdRequest"].Visible = false;
                 dgvTickets.Columns["FkIdProperty"].Visible = false;
                 dgvTickets.Columns["FkIdPerson"].Visible = false;
                 dgvTickets.Columns["ImageTicket"].Visible = false;
 
-                dgvTickets.Columns["TitleTicket"].HeaderText = LanguageService.Translate("Title");
-                dgvTickets.Columns["DescriptionTicket"].HeaderText = LanguageService.Translate("Description");
-                dgvTickets.Columns["StatusTicket"].HeaderText = LanguageService.Translate("Status");
-                dgvTickets.Columns["PropertyAddress"].HeaderText = LanguageService.Translate("Property Address");
+                dgvTickets.Columns["TitleTicket"].HeaderText = LanguageService.Translate("Título");
+                dgvTickets.Columns["DescriptionTicket"].HeaderText = LanguageService.Translate("Descripción");
+                dgvTickets.Columns["StatusTicket"].HeaderText = LanguageService.Translate("Estado");
+                dgvTickets.Columns["PropertyAddress"].HeaderText = LanguageService.Translate("Dirección de la Propiedad");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"{LanguageService.Translate("Error loading tickets")}: {ex.Message}",
+                    $"{LanguageService.Translate("Error al cargar los tickets")}: {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -87,16 +140,15 @@ namespace UI.Admin
 
                 if (selectedRow == null) return;
 
-                // Assign data to form fields
                 txtTitle.Text = selectedRow.TitleTicket;
                 txtDetail.Text = selectedRow.DescriptionTicket;
                 txtProperty.Text = selectedRow.PropertyAddress;
 
                 var availableStatuses = new List<string>
                 {
-                    LanguageService.Translate("Pending"),
-                    LanguageService.Translate("In Progress"),
-                    LanguageService.Translate("Completed")
+                    LanguageService.Translate("Pendiente"),
+                    LanguageService.Translate("En Progreso"),
+                    LanguageService.Translate("Completado")
                 };
 
                 cmbStatus.DataSource = availableStatuses;
@@ -105,7 +157,7 @@ namespace UI.Admin
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"{LanguageService.Translate("Error selecting ticket")}: {ex.Message}",
+                    $"{LanguageService.Translate("Error al seleccionar el ticket")}: {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -117,8 +169,8 @@ namespace UI.Admin
             if (dgvTickets.CurrentRow == null)
             {
                 MessageBox.Show(
-                    LanguageService.Translate("Please select a ticket to modify."),
-                    LanguageService.Translate("Warning"),
+                    LanguageService.Translate("Seleccione un ticket para modificar."),
+                    LanguageService.Translate("Advertencia"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -127,15 +179,7 @@ namespace UI.Admin
             try
             {
                 dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
-                if (selectedRow == null)
-                {
-                    MessageBox.Show(
-                        LanguageService.Translate("Error selecting ticket."),
-                        LanguageService.Translate("Error"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    return;
-                }
+                if (selectedRow == null) return;
 
                 Guid ticketId = selectedRow.IdRequest;
                 string newStatus = cmbStatus.SelectedItem?.ToString();
@@ -143,8 +187,8 @@ namespace UI.Admin
                 if (string.IsNullOrWhiteSpace(newStatus))
                 {
                     MessageBox.Show(
-                        LanguageService.Translate("Please select a valid status."),
-                        LanguageService.Translate("Warning"),
+                        LanguageService.Translate("Seleccione un estado válido."),
+                        LanguageService.Translate("Advertencia"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -153,8 +197,8 @@ namespace UI.Admin
                 _ticketService.UpdateTicketStatus(ticketId, newStatus);
 
                 MessageBox.Show(
-                    LanguageService.Translate("Ticket status updated successfully."),
-                    LanguageService.Translate("Success"),
+                    LanguageService.Translate("Estado del ticket actualizado con éxito."),
+                    LanguageService.Translate("Éxito"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
@@ -163,7 +207,7 @@ namespace UI.Admin
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"{LanguageService.Translate("Error saving changes:")} {ex.Message}",
+                    $"{LanguageService.Translate("Error al guardar los cambios:")} {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -175,8 +219,8 @@ namespace UI.Admin
             if (dgvTickets.CurrentRow == null)
             {
                 MessageBox.Show(
-                    LanguageService.Translate("Please select a ticket to view its image."),
-                    LanguageService.Translate("Warning"),
+                    LanguageService.Translate("Seleccione un ticket para ver su imagen."),
+                    LanguageService.Translate("Advertencia"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -185,21 +229,11 @@ namespace UI.Admin
             try
             {
                 dynamic selectedRow = dgvTickets.CurrentRow.DataBoundItem;
-                if (selectedRow == null)
+                if (selectedRow == null || selectedRow.ImageTicket == null)
                 {
                     MessageBox.Show(
-                        LanguageService.Translate("Error retrieving ticket data."),
-                        LanguageService.Translate("Error"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (selectedRow.ImageTicket == null || selectedRow.ImageTicket.Length == 0)
-                {
-                    MessageBox.Show(
-                        LanguageService.Translate("The selected ticket does not have an associated image."),
-                        LanguageService.Translate("Warning"),
+                        LanguageService.Translate("El ticket seleccionado no tiene una imagen asociada."),
+                        LanguageService.Translate("Advertencia"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     return;
@@ -210,7 +244,7 @@ namespace UI.Admin
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"{LanguageService.Translate("Error displaying image:")} {ex.Message}",
+                    $"{LanguageService.Translate("Error al mostrar la imagen:")} {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -221,7 +255,7 @@ namespace UI.Admin
         {
             using (Form imageForm = new Form())
             {
-                imageForm.Text = LanguageService.Translate("Ticket Image");
+                imageForm.Text = LanguageService.Translate("Imagen del Ticket");
                 imageForm.Size = new Size(600, 400);
                 imageForm.StartPosition = FormStartPosition.CenterScreen;
 
