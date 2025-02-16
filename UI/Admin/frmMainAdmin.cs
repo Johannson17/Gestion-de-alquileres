@@ -196,15 +196,24 @@ namespace UI
 
         private async Task ShowChildFormAsync(Form childForm)
         {
-            childForm.MdiParent = this;
-
-            // Aplicar traducción al formulario hijo y sus controles antes de mostrarlo
-            await Task.Run(() =>
+            try
             {
-                language.ApplyLanguage(LanguageService.GetCurrentLanguage(), childForm);
-            });
+                childForm.MdiParent = this;
+                childForm.Show();
 
-            childForm.Show();
+                // Asegurar que la UI no se bloquee mientras se traduce
+                await Task.Delay(100);
+
+                // Aplicar la traducción después de que el formulario se haya mostrado
+                this.BeginInvoke(new Action(() =>
+                {
+                    language.ApplyLanguage(LanguageService.GetCurrentLanguage(), childForm);
+                }));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir el formulario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Métodos para abrir formularios hijos de forma asíncrona

@@ -9,7 +9,7 @@ namespace UI.Service
     public partial class frmBackup_Restore : Form
     {
         private readonly BackupService _backupService;
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl;
 
@@ -18,63 +18,68 @@ namespace UI.Service
             InitializeComponent();
             _backupService = new BackupService();
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { cmbBackup, "Seleccione una copia de seguridad disponible para restaurar." },
-                { btnBackup, "Haga clic para restaurar la copia de seguridad seleccionada." }
-            };
+            InitializeHelpMessages(); // Inicializa los mensajes de ayuda traducidos
+            SubscribeHelpMessagesEvents(); // Suscribe los eventos de ToolTips
 
             // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
-
-            // Asociar eventos a los controles
-            foreach (var control in helpMessages.Keys)
-            {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
-            }
 
             // Vincular el evento Load del formulario
             this.Load += frmBackup_Restore_Load;
+            this.HelpRequested += FrmBackup_Restore_HelpRequested;
         }
 
         /// <summary>
-        /// Maneja la entrada del ratón en un control para iniciar el temporizador del mensaje de ayuda.
+        /// Inicializa los mensajes de ayuda con la traducción actual.
         /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { cmbBackup, LanguageService.Translate("Seleccione una copia de seguridad disponible para restaurar.") },
+                { btnBackup, LanguageService.Translate("Haga clic para restaurar la copia de seguridad seleccionada.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
+        }
+
         private void Control_MouseEnter(object sender, EventArgs e)
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
-        /// <summary>
-        /// Maneja la salida del ratón de un control para detener el temporizador.
-        /// </summary>
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
-        /// <summary>
-        /// Muestra un mensaje de ayuda cuando el temporizador alcanza el tiempo establecido.
-        /// </summary>
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el ToolTip para el control actual
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador
+            toolTipTimer.Stop();
         }
 
         /// <summary>
@@ -84,7 +89,6 @@ namespace UI.Service
         {
             try
             {
-                // Obtener la lista de archivos de respaldo desde el servicio
                 List<string> backupFiles = _backupService.GetBackupFiles();
 
                 if (backupFiles.Any())
@@ -95,8 +99,8 @@ namespace UI.Service
                 else
                 {
                     MessageBox.Show(
-                        "No hay respaldos disponibles.",
-                        "Información",
+                        LanguageService.Translate("No hay respaldos disponibles."),
+                        LanguageService.Translate("Información"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
@@ -105,8 +109,8 @@ namespace UI.Service
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Error al cargar respaldos: {ex.Message}",
-                    "Error",
+                    $"{LanguageService.Translate("Error al cargar respaldos")}: {ex.Message}",
+                    LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
@@ -127,11 +131,10 @@ namespace UI.Service
 
                 try
                 {
-                    // Llamar al servicio para restaurar el respaldo
                     _backupService.RestoreBackup(backupDate);
                     MessageBox.Show(
-                        "Respaldo restaurado con éxito.",
-                        "Éxito",
+                        LanguageService.Translate("Respaldo restaurado con éxito."),
+                        LanguageService.Translate("Éxito"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
@@ -139,8 +142,8 @@ namespace UI.Service
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        $"Error al restaurar el respaldo: {ex.Message}",
-                        "Error",
+                        $"{LanguageService.Translate("Error al restaurar el respaldo")}: {ex.Message}",
+                        LanguageService.Translate("Error"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
                     );
@@ -149,12 +152,39 @@ namespace UI.Service
             else
             {
                 MessageBox.Show(
-                    "Seleccione un respaldo antes de continuar.",
-                    "Advertencia",
+                    LanguageService.Translate("Seleccione un respaldo antes de continuar."),
+                    LanguageService.Translate("Advertencia"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmBackup_Restore_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de gestión de copias de seguridad."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Seleccionar una copia de seguridad de la lista disponible.")}",
+                $"- {LanguageService.Translate("Presionar el botón 'Restaurar' para recuperar los datos desde la copia de seguridad seleccionada.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace UI
         private Control currentControl;
 
         // Diccionario para almacenar los mensajes de ayuda
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
 
         public frmAddContractClause(Contract contract, Person owner, Person tenant, Property property, int clauseIndex)
         {
@@ -35,24 +35,46 @@ namespace UI
             _property = property;
             _contractService = new ContractService();
 
-            toolTipTimer = new Timer
-            {
-                Interval = 1000 // 2 segundos
-            };
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { txtTittle, "Ingrese el título de la cláusula. Si es una cláusula predefinida, este campo estará bloqueado." },
-                { txtDescription, "Ingrese la descripción detallada de la cláusula. Si es una cláusula predefinida, este campo estará bloqueado." },
-                { btnSave, "Presione para guardar la cláusula actual en el contrato." }
-            };
+            TranslateControls(); // Traducir todos los controles
+            InitializeHelpMessages(); // Inicializa los mensajes de ayuda traducidos
+            SubscribeToMouseEvents(); // Suscribe los eventos de ToolTips
 
-            SubscribeToMouseEvents();
-            LoadClauseData();
+            LoadClauseData(); // Cargar datos de la cláusula predefinida si aplica
         }
 
+        /// <summary>
+        /// Traduce todos los textos de los controles del formulario.
+        /// </summary>
+        private void TranslateControls()
+        {
+            this.Text = LanguageService.Translate("Gestión de Cláusulas");
+
+            label1.Text = LanguageService.Translate("Título de la Cláusula:");
+            label1.Text = LanguageService.Translate("Descripción de la Cláusula:");
+            btnSave.Text = LanguageService.Translate("Guardar Cláusula");
+
+            this.Text = LanguageService.Translate("Añadir clausulas del contrato");
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtTittle, LanguageService.Translate("Ingrese el título de la cláusula. Si es una cláusula predefinida, este campo estará bloqueado.") },
+                { txtDescription, LanguageService.Translate("Ingrese la descripción detallada de la cláusula. Si es una cláusula predefinida, este campo estará bloqueado.") },
+                { btnSave, LanguageService.Translate("Presione para guardar la cláusula actual en el contrato.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
         private void SubscribeToMouseEvents()
         {
             foreach (var control in helpMessages.Keys)
@@ -82,39 +104,32 @@ namespace UI
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
             toolTipTimer.Stop();
         }
 
+        /// <summary>
+        /// Carga los datos de la cláusula según el índice.
+        /// </summary>
         private void LoadClauseData()
         {
             try
             {
-                // Obtiene el título y descripción desde ContractService
+                // Obtiene las cláusulas predefinidas desde el servicio
                 var (Clause1, Clause2) = _contractService.GetPredefinedClause(_clauseIndex, _owner, _tenant, _property);
 
-                // Configura los campos según si es una cláusula predefinida o no
-                if (_clauseIndex <= 1)
+                if (_clauseIndex == 1)
                 {
-                    txtTittle.Text = Clause1.TitleClause.ToString();
-                    txtDescription.Text = Clause1.DetailClause.ToString();
-                    txtTittle.ReadOnly = true;
-                    txtDescription.ReadOnly = true;
+                    ApplyPredefinedClause(Clause1);
                 }
                 else if (_clauseIndex == 2)
                 {
-                    txtTittle.Text = Clause2.TitleClause.ToString();
-                    txtDescription.Text = Clause2.DetailClause.ToString();
-                    txtTittle.ReadOnly = true;
-                    txtDescription.ReadOnly = true;
+                    ApplyPredefinedClause(Clause2);
                 }
                 else
                 {
-                    txtTittle.Text = string.Empty;
-                    txtDescription.Text = string.Empty;
-                    txtTittle.ReadOnly = false;
-                    txtDescription.ReadOnly = false;
+                    EnableCustomClause();
                 }
             }
             catch (Exception ex)
@@ -126,6 +141,28 @@ namespace UI
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Aplica una cláusula predefinida y deshabilita la edición.
+        /// </summary>
+        private void ApplyPredefinedClause(ContractClause clause)
+        {
+            txtTittle.Text = clause.TitleClause;
+            txtDescription.Text = clause.DetailClause;
+            txtTittle.ReadOnly = true;
+            txtDescription.ReadOnly = true;
+        }
+
+        /// <summary>
+        /// Habilita la edición para cláusulas personalizadas.
+        /// </summary>
+        private void EnableCustomClause()
+        {
+            txtTittle.Text = string.Empty;
+            txtDescription.Text = string.Empty;
+            txtTittle.ReadOnly = false;
+            txtDescription.ReadOnly = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -160,6 +197,34 @@ namespace UI
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmAddContractClause_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de gestión de cláusulas."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Ingrese el título y la descripción de la cláusula (si es personalizable).")}",
+                $"- {LanguageService.Translate("Si la cláusula es predefinida, los campos estarán bloqueados.")}",
+                $"- {LanguageService.Translate("Presione 'Guardar' para registrar la cláusula en el contrato.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

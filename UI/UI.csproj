@@ -311,8 +311,7 @@
     <EmbeddedResource Include="Tenant\frmTicket.resx">
       <DependentUpon>frmTicket.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="I18n\idioma.en-US.json" />
-    <None Include="I18n\idioma.es-AR.json" />
+    <None Include="I18n\idiomas.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

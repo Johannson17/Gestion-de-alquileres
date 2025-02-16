@@ -7,28 +7,35 @@ namespace UI
 {
     public partial class frmChangeLanguage : Form
     {
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
-        private Control currentControl; // Control actual sobre el que está el mouse
+        private Control currentControl;
+        private Dictionary<string, string> languageMap;
 
         public frmChangeLanguage()
         {
             InitializeComponent();
-            LoadLanguageFile(); // Cargar los datos del archivo de idioma al iniciar el formulario
-
-            // Inicializar los mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { dgvLanguages, "Aquí se muestran las claves y valores de idioma que puede editar." },
-                { btnSave, "Guarda los cambios realizados en el archivo de idioma." }
-            };
-
-            // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            LoadLanguageFile(); // Cargar los idiomas en el `DataGridView`
+            InitializeHelpMessages();
+            SubscribeHelpMessagesEvents();
+            toolTipTimer = new Timer { Interval = 1000 };
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Suscribir eventos de MouseEnter y MouseLeave para los controles con ayuda
+            // Asignar el evento HelpRequested para mostrar la ayuda general
+            this.HelpRequested += FrmChangeLanguage_HelpRequested;
+        }
+
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvLanguages, LanguageService.Translate("Aquí se muestran los idiomas disponibles que puede modificar.\nPuede agregar nuevos idiomas o cambiar sus códigos.") },
+                { btnSave, LanguageService.Translate("Guarda los cambios realizados en la lista de idiomas.\nRecuerde reiniciar el sistema para aplicar los cambios.") }
+            };
+        }
+
+        private void SubscribeHelpMessagesEvents()
+        {
             foreach (var control in helpMessages.Keys)
             {
                 control.MouseEnter += Control_MouseEnter;
@@ -40,167 +47,120 @@ namespace UI
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el ToolTip para el control actual
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador
+            toolTipTimer.Stop();
         }
 
-        /// <summary>
-        /// Carga el archivo de idioma existente en el DataGridView usando la capa de servicio.
-        /// </summary>
         private void LoadLanguageFile()
         {
             try
             {
-                // Asegurarse de que el DataGridView tenga columnas
-                if (dgvLanguages.Columns.Count == 0)
+                dgvLanguages.Rows.Clear();
+                dgvLanguages.Columns.Clear();
+
+                dgvLanguages.Columns.Add("Key", LanguageService.Translate("Idioma"));
+                dgvLanguages.Columns.Add("Value", LanguageService.Translate("Código"));
+
+                languageMap = LanguageService.GetLanguageMap();
+
+                int rowIndex = 0;
+
+                foreach (var entry in languageMap)
                 {
-                    dgvLanguages.Columns.Add("Key", LanguageService.Translate("Clave"));
-                    dgvLanguages.Columns.Add("Value", LanguageService.Translate("Valor"));
+                    int newRow = dgvLanguages.Rows.Add(entry.Key, entry.Value);
 
-                    dgvLanguages.Columns[0].FillWeight = 50;
-                    dgvLanguages.Columns[1].FillWeight = 50;
+                    // Bloquear la edición solo para las dos primeras filas (Español e Inglés)
+                    if (rowIndex < 2)
+                    {
+                        dgvLanguages.Rows[newRow].Cells[0].ReadOnly = true; // Idioma
+                        dgvLanguages.Rows[newRow].Cells[1].ReadOnly = true; // Código
+                    }
+
+                    rowIndex++;
                 }
-
-                // Obtener todas las traducciones desde la capa de servicio
-                //var translations = LanguageService.LoadAllTranslations("en-US");
-
-                // Cargar las traducciones en el DataGridView
-                dgvLanguages.Rows.Clear(); // Limpiar cualquier dato anterior
-                //foreach (var translation in translations)
-                //{
-                    //dgvLanguages.Rows.Add(translation.Key, translation.Value);
-                //}
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    LanguageService.Translate("Error al cargar el archivo de idioma:") + " " + ex.Message,
-                    LanguageService.Translate("Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                MessageBox.Show($"{LanguageService.Translate("Error al cargar idiomas")}: {ex.Message}",
+                    LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        /// <summary>
-        /// Maneja el evento de clic del botón "Guardar".
-        /// Toma las traducciones modificadas del DataGridView y pregunta si se desea crear un nuevo archivo o modificar el existente.
-        /// </summary>
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
-                // Obtener los datos del DataGridView
-                var updatedTranslations = new Dictionary<string, string>();
+                Dictionary<string, string> updatedLanguages = new Dictionary<string, string>();
+
+                // Recorrer todas las filas y guardar TODOS los idiomas
                 foreach (DataGridViewRow row in dgvLanguages.Rows)
                 {
                     if (row.Cells[0].Value != null && row.Cells[1].Value != null)
                     {
                         string key = row.Cells[0].Value.ToString();
                         string value = row.Cells[1].Value.ToString();
-                        updatedTranslations[key] = value;
+
+                        updatedLanguages[key] = value;
                     }
                 }
 
-                // Preguntar al usuario si desea crear un archivo nuevo
-                DialogResult result = MessageBox.Show(
-                    LanguageService.Translate("¿Desea crear un archivo nuevo?"),
-                    LanguageService.Translate("Guardar archivo de idioma"),
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
+                // Guardar el archivo sobrescribiendo completamente el anterior
+                LanguageService.SaveLanguageMap(updatedLanguages);
 
-                if (result == DialogResult.Yes)
-                {
-                    // Solicitar el nombre completo del nuevo archivo
-                    string newFileName = PromptForNewFileName();
-                    if (!string.IsNullOrEmpty(newFileName))
-                    {
-                        // Guardar los datos en un nuevo archivo usando la capa de servicios
-                        //LanguageService.SaveTranslationsToNewFile(updatedTranslations, newFileName); // Usamos el nombre completo dado
-                        MessageBox.Show(
-                            LanguageService.Translate("Idioma guardado en un nuevo archivo con éxito."),
-                            LanguageService.Translate("Éxito"),
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
-                    }
-                    else
-                    {
-                        MessageBox.Show(
-                            LanguageService.Translate("Debe proporcionar un nombre válido para el nuevo archivo."),
-                            LanguageService.Translate("Advertencia"),
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning
-                        );
-                    }
-                }
-                else
-                {
-                    // Guardar en el archivo existente
-                    //LanguageService.SaveTranslations(updatedTranslations, "es-AR");
-                    MessageBox.Show(
-                        LanguageService.Translate("Idioma guardado con éxito en el archivo existente."),
-                        LanguageService.Translate("Éxito"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                }
+                MessageBox.Show(LanguageService.Translate("Idiomas actualizados correctamente; por favor reinicie el sistema para ver los cambios."),
+                    LanguageService.Translate("Éxito"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    LanguageService.Translate("Error al guardar el archivo:") + " " + ex.Message,
-                    LanguageService.Translate("Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                MessageBox.Show($"{LanguageService.Translate("Error al guardar idiomas")}: {ex.Message}",
+                    LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         /// <summary>
-        /// Método para solicitar al usuario el nombre completo del nuevo archivo de idioma.
+        /// Muestra un mensaje de ayuda detallado cuando el usuario solicita ayuda (tecla F1 o botón de ayuda).
         /// </summary>
-        /// <returns>El nombre completo del archivo de idioma ingresado por el usuario.</returns>
-        private string PromptForNewFileName()
+        private void FrmChangeLanguage_HelpRequested(object sender, HelpEventArgs hlpevent)
         {
-            using (Form prompt = new Form())
+            var helpMessage = string.Join(Environment.NewLine, new[]
             {
-                prompt.Width = 300;
-                prompt.Height = 150;
-                prompt.Text = LanguageService.Translate("Ingrese el nombre completo del archivo de idioma");
+                LanguageService.Translate("Bienvenido a la administración de idiomas."),
+                "",
+                LanguageService.Translate("Aquí puede gestionar los idiomas disponibles en el sistema."),
+                "",
+                LanguageService.Translate("📌 Opciones disponibles:"),
+                $"- {LanguageService.Translate("Modificar los códigos de idioma existentes.")}",
+                $"- {LanguageService.Translate("Agregar nuevos idiomas con sus códigos.")}",
+                $"- {LanguageService.Translate("Guardar los cambios y actualizar el archivo de idiomas.")}",
+                "",
+                LanguageService.Translate("⚠️ Importante:"),
+                LanguageService.Translate("1️⃣ Los idiomas 'Español' e 'English' están bloqueados y no pueden modificarse."),
+                LanguageService.Translate("2️⃣ Debe reiniciar el sistema después de guardar los cambios para aplicarlos."),
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador del sistema.")
+            });
 
-                Label label = new Label() { Left = 20, Top = 20, Text = LanguageService.Translate("Nombre completo del archivo:") };
-                TextBox textBox = new TextBox() { Left = 20, Top = 50, Width = 200 };
-
-                Button confirmation = new Button() { Text = LanguageService.Translate("Guardar"), Left = 100, Top = 80, Width = 100 };
-                confirmation.Click += (sender, e) => { prompt.DialogResult = DialogResult.OK; prompt.Close(); };
-
-                prompt.Controls.Add(label);
-                prompt.Controls.Add(textBox);
-                prompt.Controls.Add(confirmation);
-
-                return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : string.Empty;
-            }
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

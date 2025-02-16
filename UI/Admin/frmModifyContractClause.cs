@@ -14,7 +14,7 @@ namespace UI
         private readonly Contract _contract;
         private Guid _selectedClauseId;
 
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl; // Control actual donde está el mouse
 
@@ -30,26 +30,59 @@ namespace UI
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { txtTittle, "Ingrese el título de la cláusula." },
-                { txtDescription, "Ingrese la descripción de la cláusula." },
-                { btnSave, "Guarda los cambios realizados en la cláusula o agrega una nueva." },
-                { btnDelete, "Elimina la cláusula seleccionada del contrato." },
-                { dgvContractClauses, "Lista de cláusulas del contrato. Seleccione una para editarla." }
-            };
+            TranslateForm();
+
+            InitializeHelpMessages(); // Inicializar ayudas traducidas
+            SubscribeHelpMessagesEvents(); // Suscribir eventos de ToolTips
 
             // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
+        }
 
-            // Suscribir eventos a los controles
-            foreach (var control in helpMessages.Keys)
+        /// <summary>
+        /// Traduce todos los textos del formulario, incluyendo los controles y el título.
+        /// </summary>
+        private void TranslateForm()
+        {
+            this.Text = LanguageService.Translate("Modificar Cláusulas del Contrato");
+
+            label1.Text = LanguageService.Translate("Título de la Cláusula:");
+            label2.Text = LanguageService.Translate("Descripción de la Cláusula:");
+            btnSave.Text = LanguageService.Translate("Guardar Cláusula");
+            btnDelete.Text = LanguageService.Translate("Eliminar Cláusula");
+
+            this.Text = LanguageService.Translate("DModificar clausulas del contrato");
+        }
+
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
             {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
+                { txtTittle, LanguageService.Translate("Ingrese el título de la cláusula.") },
+                { txtDescription, LanguageService.Translate("Ingrese la descripción de la cláusula.") },
+                { btnSave, LanguageService.Translate("Guarda los cambios realizados en la cláusula o agrega una nueva.") },
+                { btnDelete, LanguageService.Translate("Elimina la cláusula seleccionada del contrato.") },
+                { dgvContractClauses, LanguageService.Translate("Lista de cláusulas del contrato. Seleccione una para editarla.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
             }
         }
 
@@ -57,27 +90,25 @@ namespace UI
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el ToolTip para el control actual
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador
+            toolTipTimer.Stop();
         }
 
         private void frmModifyContractClause_Load(object sender, EventArgs e)
@@ -109,7 +140,7 @@ namespace UI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageService.Translate("Error al cargar las cláusulas") + ": " + ex.Message,
+                    $"{LanguageService.Translate("Error al cargar las cláusulas")}: {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -135,13 +166,42 @@ namespace UI
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        LanguageService.Translate("Error al seleccionar la cláusula") + ": " + ex.Message,
+                        $"{LanguageService.Translate("Error al seleccionar la cláusula")}: {ex.Message}",
                         LanguageService.Translate("Error"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
                     );
                 }
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmModifyContractClause_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido a la gestión de cláusulas del contrato."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Seleccionar una cláusula de la lista para editarla.")}",
+                $"- {LanguageService.Translate("Ingresar un título y descripción para agregar o modificar una cláusula.")}",
+                $"- {LanguageService.Translate("Presionar 'Guardar' para almacenar los cambios realizados.")}",
+                $"- {LanguageService.Translate("Presionar 'Eliminar' para eliminar la cláusula seleccionada.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -170,12 +230,7 @@ namespace UI
                     };
 
                     _contractService.UpdateContractClause(clause);
-                    MessageBox.Show(
-                        LanguageService.Translate("Cláusula modificada con éxito."),
-                        LanguageService.Translate("Éxito"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                    MessageBox.Show(LanguageService.Translate("Cláusula modificada con éxito."), LanguageService.Translate("Éxito"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -188,12 +243,7 @@ namespace UI
                     };
 
                     _contractService.AddContractClause(newClause);
-                    MessageBox.Show(
-                        LanguageService.Translate("Cláusula agregada con éxito."),
-                        LanguageService.Translate("Éxito"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                    MessageBox.Show(LanguageService.Translate("Cláusula agregada con éxito."), LanguageService.Translate("Éxito"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 ClearForm();
@@ -201,16 +251,10 @@ namespace UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    LanguageService.Translate("Error al guardar la cláusula") + ": " + ex.Message,
-                    LanguageService.Translate("Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                MessageBox.Show($"{LanguageService.Translate("Error al guardar la cláusula")}: {ex.Message}", LanguageService.Translate("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void btnDelete_Click(object sender, EventArgs e)
+private void btnDelete_Click(object sender, EventArgs e)
         {
             try
             {

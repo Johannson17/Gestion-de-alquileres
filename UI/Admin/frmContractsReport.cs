@@ -20,7 +20,7 @@ namespace UI.Admin
         private Dictionary<Guid, string> _tenantDniMapping;
         private Timer toolTipTimer;
         private Control currentControl;
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
 
         public frmContractsReport()
         {
@@ -31,29 +31,12 @@ namespace UI.Admin
 
             this.Load += frmContractsReports_Load;
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { cmbStatus, "Selecciona el estado del contrato para filtrar." },
-                { cmbProperty, "Selecciona una propiedad para filtrar los contratos relacionados." },
-                { cmbTenant, "Selecciona un arrendatario por su DNI para filtrar." },
-                { btnFilter, "Aplica los filtros seleccionados." },
-                { btnDownload, "Descarga un reporte en formato Excel de los contratos listados." },
-                { btnDownloadImage, "Descarga la imagen asociada al contrato seleccionado." },
-                { btnImage, "Visualiza la imagen del contrato seleccionado." },
-                { dgvContracts, "Lista de contratos disponibles. Haz clic en un contrato para seleccionarlo." }
-            };
+            InitializeHelpMessages(); // Cargar las ayudas traducidas
+            SubscribeHelpMessagesEvents(); // Suscribir eventos de ayuda
 
             // Configurar el Timer
-            toolTipTimer = new Timer { Interval = 1000 }; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
-
-            // Asignar eventos a los controles
-            foreach (var control in helpMessages.Keys)
-            {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
-            }
         }
 
         private void frmContractsReports_Load(object sender, EventArgs e)
@@ -72,6 +55,21 @@ namespace UI.Admin
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
+            }
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
             }
         }
 
@@ -95,9 +93,8 @@ namespace UI.Admin
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar por 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
             toolTipTimer.Stop();
         }
 
@@ -411,6 +408,52 @@ namespace UI.Admin
                 imageForm.Controls.Add(pictureBox);
                 imageForm.ShowDialog();
             }
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { cmbStatus, LanguageService.Translate("Selecciona el estado del contrato para filtrar.") },
+                { cmbProperty, LanguageService.Translate("Selecciona una propiedad para filtrar los contratos relacionados.") },
+                { cmbTenant, LanguageService.Translate("Selecciona un arrendatario por su DNI para filtrar.") },
+                { btnFilter, LanguageService.Translate("Aplica los filtros seleccionados.") },
+                { btnDownload, LanguageService.Translate("Descarga un reporte en formato Excel de los contratos listados.") },
+                { btnDownloadImage, LanguageService.Translate("Descarga la imagen asociada al contrato seleccionado.") },
+                { btnImage, LanguageService.Translate("Visualiza la imagen del contrato seleccionado.") },
+                { dgvContracts, LanguageService.Translate("Lista de contratos disponibles. Haz clic en un contrato para seleccionarlo.") }
+            };
+        }
+
+        /// <summary>
+        /// Actualiza los ToolTips cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmContractsReport_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de reportes de contratos."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Filtrar contratos por estado, propiedad o arrendatario.")}",
+                $"- {LanguageService.Translate("Generar un reporte en Excel con los contratos filtrados.")}",
+                $"- {LanguageService.Translate("Visualizar o descargar la imagen asociada a un contrato.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

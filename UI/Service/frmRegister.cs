@@ -13,8 +13,8 @@ namespace UI
     /// </summary>
     public partial class frmRegister : Form
     {
-        private readonly Dictionary<Control, string> helpMessages; // Diccionario de ayuda
-        private Timer toolTipTimer; // Temporizador para mostrar ToolTip
+        private Dictionary<Control, string> helpMessages; // Diccionario de ayuda
+        private Timer toolTipTimer; // Temporizador para mostrar ToolTips
         private Control currentControl; // Control actual donde está el mouse
 
         /// <summary>
@@ -41,69 +41,105 @@ namespace UI
             cmbFamilias.SelectedIndex = -1;
             cmbPatentes.SelectedIndex = -1;
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { txtUsername, "Ingrese el nombre de usuario." },
-                { txtPassword, "Ingrese la contraseña del usuario." },
-                { txtConfirmPassword, "Confirme la contraseña ingresada." },
-                { cmbFamilias, "Seleccione un rol para el usuario." },
-                { cmbPatentes, "Seleccione un permiso para el usuario." },
-                { btnAddFamilia, "Permite agregar un nuevo rol al sistema." },
-                { btnRegister, "Registra al usuario con los datos proporcionados." }
-            };
+            // Inicializar mensajes de ayuda y eventos
+            InitializeHelpMessages();
+            SubscribeHelpMessagesEvents();
 
             // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
-
-            // Asignar eventos a los controles
-            foreach (var control in helpMessages.Keys)
-            {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
-            }
         }
 
         /// <summary>
-        /// Maneja el evento de MouseEnter en los controles para iniciar el temporizador.
+        /// Inicializa los mensajes de ayuda con la traducción actual.
         /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtUsername, LanguageService.Translate("Ingrese el nombre de usuario.") },
+                { txtPassword, LanguageService.Translate("Ingrese la contraseña del usuario.") },
+                { txtConfirmPassword, LanguageService.Translate("Confirme la contraseña ingresada.") },
+                { cmbFamilias, LanguageService.Translate("Seleccione un rol para el usuario.") },
+                { cmbPatentes, LanguageService.Translate("Seleccione un permiso para el usuario.") },
+                { btnAddFamilia, LanguageService.Translate("Permite agregar un nuevo rol al sistema.") },
+                { btnRegister, LanguageService.Translate("Registra al usuario con los datos proporcionados.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
+        }
+
         private void Control_MouseEnter(object sender, EventArgs e)
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
-        /// <summary>
-        /// Maneja el evento de MouseLeave para detener el temporizador.
-        /// </summary>
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
-        /// <summary>
-        /// Muestra el ToolTip cuando se cumple el tiempo del temporizador.
-        /// </summary>
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador después de mostrar el ToolTip
+            toolTipTimer.Stop();
         }
 
         /// <summary>
-        /// Load families when the family ComboBox is dropped down.
+        /// Actualiza las ayudas cuando se cambia el idioma.
         /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        /// <summary>
+        /// Maneja el evento de solicitud de ayuda.
+        /// </summary>
+        private void FrmRegister_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Formulario de Registro de Usuarios."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Ingresar un nombre de usuario.")}",
+                $"- {LanguageService.Translate("Ingresar y confirmar una contraseña.")}",
+                $"- {LanguageService.Translate("Seleccionar un rol (familia) para el usuario.")}",
+                $"- {LanguageService.Translate("Seleccionar un permiso (patente) si es necesario.")}",
+                $"- {LanguageService.Translate("Presionar el botón 'Registrar' para completar el registro.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+        }
+
         private void cmbFamilias_DropDown(object sender, EventArgs e)
         {
             if (cmbFamilias.Items.Count == 0)
@@ -112,9 +148,6 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Load permissions when the permissions ComboBox is dropped down.
-        /// </summary>
         private void cmbPatentes_DropDown(object sender, EventArgs e)
         {
             if (cmbPatentes.Items.Count == 0)
@@ -123,14 +156,10 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Load available families into the corresponding ComboBox.
-        /// </summary>
         private void LoadFamilias()
         {
             if (cmbFamilias.Items.Count == 0)
             {
-                // Add an empty item to allow no selection
                 cmbFamilias.Items.Add(new Familia { Nombre = "<None>", Id = Guid.Empty });
 
                 var familias = UserService.GetAllFamilias();
@@ -141,18 +170,14 @@ namespace UI
 
                 cmbFamilias.DisplayMember = "Nombre";
                 cmbFamilias.ValueMember = "Id";
-                cmbFamilias.SelectedIndex = -1; // No default selection
+                cmbFamilias.SelectedIndex = -1;
             }
         }
 
-        /// <summary>
-        /// Load available permissions into the corresponding ComboBox.
-        /// </summary>
         private void LoadPatentes()
         {
             if (cmbPatentes.Items.Count == 0)
             {
-                // Add an empty item to allow no selection
                 cmbPatentes.Items.Add(new Patente { Nombre = "<None>", Id = Guid.Empty });
 
                 var patentes = UserService.GetAllPatentes();
@@ -163,14 +188,10 @@ namespace UI
 
                 cmbPatentes.DisplayMember = "Nombre";
                 cmbPatentes.ValueMember = "Id";
-                cmbPatentes.SelectedIndex = -1; // No default selection
+                cmbPatentes.SelectedIndex = -1;
             }
         }
 
-        /// <summary>
-        /// Validate that the passwords entered in the text fields match.
-        /// If they match, enable the register button; otherwise, disable it and highlight the fields in red.
-        /// </summary>
         private void ValidatePasswords(object sender, EventArgs e)
         {
             if (txtPassword.Text == txtConfirmPassword.Text)
@@ -187,25 +208,19 @@ namespace UI
             }
         }
 
-        /// <summary>
-        /// Handles the click event of the register button. Attempts to register a new user with the provided data.
-        /// </summary>
         private void btnRegister_Click(object sender, EventArgs e)
         {
             try
             {
-                // Create a new User instance
                 var user = new Usuario
                 {
                     UserName = txtUsername.Text,
-                    Password = txtPassword.Text // Password will be encrypted in logic
+                    Password = txtPassword.Text
                 };
 
-                // Assign selected roles and permissions to the user
                 var selectedFamilia = (Familia)cmbFamilias.SelectedItem;
                 var selectedPatente = (Patente)cmbPatentes.SelectedItem;
 
-                // Check if at least one of the two is selected
                 if (selectedFamilia == null || selectedFamilia.Id == Guid.Empty)
                 {
                     selectedFamilia = null;
@@ -218,37 +233,28 @@ namespace UI
 
                 if (selectedFamilia == null && selectedPatente == null)
                 {
-                    MessageBox.Show("You must select at least one role or permission.");
+                    MessageBox.Show(LanguageService.Translate("Debe seleccionar al menos un rol o permiso."));
                     return;
                 }
 
-                if (selectedFamilia != null)
-                {
-                    user.Accesos.Add(selectedFamilia);
-                }
+                if (selectedFamilia != null) user.Accesos.Add(selectedFamilia);
+                if (selectedPatente != null) user.Accesos.Add(selectedPatente);
 
-                if (selectedPatente != null)
-                {
-                    user.Accesos.Add(selectedPatente);
-                }
-
-                // Register the user in the database using backend logic through the facade
                 UserService.Register(user);
 
-                // Show a success message
-                MessageBox.Show("User registered successfully.", "Registration", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageService.Translate("Usuario registrado con éxito."),
+                                LanguageService.Translate("Registro"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Open the main administrator form
                 frmMainAdmin mainForm = new frmMainAdmin();
                 mainForm.Show();
-
-                // Close the registration form
                 this.Close();
             }
             catch (Exception ex)
             {
-                // Exception handling
-                MessageBox.Show($"Error registering the user: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{LanguageService.Translate("Error al registrar el usuario")}: {ex.Message}",
+                                LanguageService.Translate("Error"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

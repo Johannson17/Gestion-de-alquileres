@@ -11,7 +11,7 @@ namespace UI.Service
     public partial class frmModifyUser : Form
     {
         private Usuario _selectedUser;
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl;
 
@@ -21,18 +21,8 @@ namespace UI.Service
             btnSave.Enabled = false; // El botón de guardar empieza deshabilitado
             btnDelete.Enabled = false; // El botón de eliminar también empieza deshabilitado
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { txtUsername, "Ingrese el nombre de usuario." },
-                { txtPassword, "Ingrese la contraseña del usuario." },
-                { txtConfirmPassword, "Confirme la contraseña ingresada." },
-                { cmbFamily, "Seleccione un rol para el usuario." },
-                { cmbPermissions, "Seleccione los permisos del usuario." },
-                { btnSave, "Guarde los cambios realizados en el usuario." },
-                { btnDelete, "Elimine el usuario seleccionado." },
-                { btnAddFamilia, "Agregue un nuevo rol al sistema." }
-            };
+            InitializeHelpMessages();
+            SubscribeHelpMessagesEvents();
 
             // Configurar el Timer para el tooltip
             toolTipTimer = new Timer { Interval = 1000 }; // 2 segundos
@@ -68,6 +58,39 @@ namespace UI.Service
             dgvUsers.SelectionChanged += dgvUsers_SelectionChanged;
         }
 
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con traducción dinámica.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtUsername, LanguageService.Translate("Ingrese el nombre de usuario.") },
+                { txtPassword, LanguageService.Translate("Ingrese la contraseña del usuario.") },
+                { txtConfirmPassword, LanguageService.Translate("Confirme la contraseña ingresada.") },
+                { cmbFamily, LanguageService.Translate("Seleccione un rol para el usuario.") },
+                { cmbPermissions, LanguageService.Translate("Seleccione los permisos del usuario.") },
+                { btnSave, LanguageService.Translate("Guarde los cambios realizados en el usuario.") },
+                { btnDelete, LanguageService.Translate("Elimine el usuario seleccionado.") },
+                { btnAddFamilia, LanguageService.Translate("Agregue un nuevo rol al sistema.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
+        }
+
         private void Control_MouseEnter(object sender, EventArgs e)
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
@@ -88,9 +111,8 @@ namespace UI.Service
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
             toolTipTimer.Stop();
         }
 
@@ -362,6 +384,36 @@ namespace UI.Service
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmModifyUser_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de gestión de usuarios."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Seleccionar un usuario de la lista para modificar o eliminar.")}",
+                $"- {LanguageService.Translate("Modificar el nombre de usuario y su contraseña.")}",
+                $"- {LanguageService.Translate("Asignar roles y permisos al usuario.")}",
+                $"- {LanguageService.Translate("Presionar el botón 'Guardar' para actualizar los cambios.")}",
+                $"- {LanguageService.Translate("Presionar el botón 'Eliminar' para eliminar el usuario seleccionado.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
 
         /// <summary>

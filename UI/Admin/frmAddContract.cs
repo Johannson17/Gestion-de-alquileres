@@ -25,10 +25,7 @@ namespace UI
             _propertyService = new PropertyService();
             _personService = new PersonService();
 
-            toolTipTimer = new Timer
-            {
-                Interval = 1000 // 2 segundos
-            };
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
             InitializeHelpMessages();
@@ -38,22 +35,28 @@ namespace UI
         }
 
         /// <summary>
-        /// Inicializar mensajes de ayuda para los controles.
+        /// Diccionario de mensajes de ayuda para los controles.
         /// </summary>
-        private readonly Dictionary<Control, string> helpMessages = new Dictionary<Control, string>();
+        private Dictionary<Control, string> helpMessages = new Dictionary<Control, string>();
 
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
         private void InitializeHelpMessages()
         {
-            helpMessages.Add(cmbProperty, "Seleccione la propiedad disponible para asociarla al contrato.");
-            helpMessages.Add(cmbTenant, "Seleccione el arrendatario para este contrato.");
-            helpMessages.Add(txtPrice, "Ingrese el precio mensual del contrato (solo números).");
-            helpMessages.Add(cldStartDate, "Seleccione la fecha de inicio del contrato.");
-            helpMessages.Add(cldFinalDate, "Seleccione la fecha de finalización del contrato.");
-            helpMessages.Add(btnSave, "Presione para guardar el contrato con los datos ingresados.");
+            helpMessages = new Dictionary<Control, string>
+            {
+                { cmbProperty, LanguageService.Translate("Seleccione la propiedad disponible para asociarla al contrato.") },
+                { cmbTenant, LanguageService.Translate("Seleccione el arrendatario para este contrato.") },
+                { txtPrice, LanguageService.Translate("Ingrese el precio mensual del contrato (solo números).") },
+                { cldStartDate, LanguageService.Translate("Seleccione la fecha de inicio del contrato.") },
+                { cldFinalDate, LanguageService.Translate("Seleccione la fecha de finalización del contrato.") },
+                { btnSave, LanguageService.Translate("Presione para guardar el contrato con los datos ingresados.") }
+            };
         }
 
         /// <summary>
-        /// Suscribir eventos MouseEnter y MouseLeave a los controles con mensajes de ayuda.
+        /// Suscribe eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
         /// </summary>
         private void SubscribeToMouseEvents()
         {
@@ -84,7 +87,7 @@ namespace UI
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
             toolTipTimer.Stop();
         }
@@ -187,7 +190,6 @@ namespace UI
                     Clauses = new List<ContractClause>()
                 };
 
-                // Abre el formulario para añadir las cláusulas
                 OpenAddClauseForm(contract, owner, tenant, property);
 
                 var contractId = _contractFacade.CreateContract(contract, owner, tenant, property);
@@ -223,7 +225,6 @@ namespace UI
                     var result = frmClause.ShowDialog();
                     if (result == DialogResult.OK && frmClause.NewClause != null)
                     {
-                        // Agrega la cláusula devuelta al contrato
                         contract.Clauses.Add(frmClause.NewClause);
 
                         clauseIndex++;
@@ -240,6 +241,27 @@ namespace UI
                 }
             }
             return contract;
+        }
+
+        private void FrmAddContract_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de creación de contratos."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Seleccionar una propiedad y un arrendatario para crear un contrato.")}",
+                $"- {LanguageService.Translate("Ingresar el precio del alquiler.")}",
+                $"- {LanguageService.Translate("Seleccionar la fecha de inicio y fin del contrato.")}",
+                $"- {LanguageService.Translate("Añadir cláusulas al contrato.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

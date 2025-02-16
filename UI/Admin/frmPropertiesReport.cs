@@ -12,7 +12,8 @@ namespace UI.Admin
     {
         private readonly PropertyService _propertyService;
         private List<Property> _properties;
-        private readonly Timer toolTipTimer;
+        private Dictionary<Control, string> helpMessages;
+        private Timer toolTipTimer;
         private Control currentControl;
 
         public frmPropertiesReport()
@@ -20,41 +21,43 @@ namespace UI.Admin
             InitializeComponent();
             _propertyService = new PropertyService();
 
-            toolTipTimer = new Timer
-            {
-                Interval = 1000 // 2 segundos
-            };
-            toolTipTimer.Tick += ToolTipTimer_Tick;
+            InitializeHelpMessages(); // Inicializar mensajes de ayuda traducidos
+            SubscribeToMouseEvents(); // Suscribir eventos para ToolTips
 
-            InitializeHelpMessages();
-            SubscribeToMouseEvents();
+            // Configurar el Timer
+            toolTipTimer = new Timer { Interval = 1000 };
+            toolTipTimer.Tick += ToolTipTimer_Tick;
 
             LoadProperties();
             LoadComboBoxOptions();
         }
 
         /// <summary>
-        /// Inicializar mensajes de ayuda para los controles.
+        /// Inicializa los mensajes de ayuda con la traducción actual.
         /// </summary>
-        private readonly Dictionary<Control, string> helpMessages = new Dictionary<Control, string>();
-
         private void InitializeHelpMessages()
         {
-            helpMessages.Add(dgvProperties, "Muestra las propiedades registradas.");
-            helpMessages.Add(cmbStatus, "Seleccione el estado de las propiedades que desea filtrar.");
-            helpMessages.Add(btnFilter, "Filtra las propiedades según el estado seleccionado.");
-            helpMessages.Add(btnDownload, "Descarga un reporte en Excel con las propiedades mostradas.");
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvProperties, LanguageService.Translate("Muestra las propiedades registradas.") },
+                { cmbStatus, LanguageService.Translate("Seleccione el estado de las propiedades que desea filtrar.") },
+                { btnFilter, LanguageService.Translate("Filtra las propiedades según el estado seleccionado.") },
+                { btnDownload, LanguageService.Translate("Descarga un reporte en Excel con las propiedades mostradas.") }
+            };
         }
 
         /// <summary>
-        /// Suscribir eventos MouseEnter y MouseLeave a los controles con mensajes de ayuda.
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
         /// </summary>
         private void SubscribeToMouseEvents()
         {
-            foreach (var control in helpMessages.Keys)
+            if (helpMessages != null)
             {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
             }
         }
 
@@ -78,13 +81,13 @@ namespace UI.Admin
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
             toolTipTimer.Stop();
         }
 
         /// <summary>
-        /// Cargar todas las propiedades en el DataGridView.
+        /// Carga todas las propiedades en el DataGridView.
         /// </summary>
         private void LoadProperties()
         {
@@ -107,7 +110,6 @@ namespace UI.Admin
 
                 dgvProperties.Columns["IdProperty"].Visible = false;
 
-                // Asignar nombres traducidos a las columnas
                 dgvProperties.Columns["DescriptionProperty"].HeaderText = LanguageService.Translate("Descripción");
                 dgvProperties.Columns["StatusProperty"].HeaderText = LanguageService.Translate("Estado");
                 dgvProperties.Columns["CountryProperty"].HeaderText = LanguageService.Translate("País");
@@ -116,7 +118,7 @@ namespace UI.Admin
                 dgvProperties.Columns["AddressProperty"].HeaderText = LanguageService.Translate("Dirección");
 
                 dgvProperties.AutoResizeColumns();
-                dgvProperties.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajustar columnas al ancho completo
+                dgvProperties.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
@@ -140,9 +142,9 @@ namespace UI.Admin
                     .ToList();
 
                 cmbStatus.Items.Clear();
-                cmbStatus.Items.Add(LanguageService.Translate("Todos")); // Agregar la opción "Todos"
+                cmbStatus.Items.Add(LanguageService.Translate("Todos"));
                 cmbStatus.Items.AddRange(statusValues.ToArray());
-                cmbStatus.SelectedIndex = 0; // Seleccionar el primer elemento por defecto
+                cmbStatus.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -235,6 +237,14 @@ namespace UI.Admin
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
         }
     }
 }

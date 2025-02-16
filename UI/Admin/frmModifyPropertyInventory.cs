@@ -13,70 +13,149 @@ namespace UI
         private Property _selectedProperty;
         private readonly PropertyService _propertyService;
 
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl; // Control actual donde está el mouse
 
+        /// <summary>
+        /// Recorre todos los controles del formulario y traduce automáticamente su texto.
+        /// </summary>
+        private void TranslateControls(Control parentControl)
+        {
+            foreach (Control control in parentControl.Controls)
+            {
+                // Si el control tiene texto, lo traduce
+                if (!string.IsNullOrEmpty(control.Text))
+                {
+                    control.Text = LanguageService.Translate(control.Text);
+                }
+
+                // Si el control tiene hijos (por ejemplo, Panel o GroupBox), recursión
+                if (control.HasChildren)
+                {
+                    TranslateControls(control);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Traduce los encabezados de las columnas del DataGridView.
+        /// </summary>
+        private void TranslateDataGridViewHeaders()
+        {
+            if (dgvInventory.Columns.Count > 0)
+            {
+                dgvInventory.Columns["NameInventory"].HeaderText = LanguageService.Translate("Nombre");
+                dgvInventory.Columns["DescriptionInventory"].HeaderText = LanguageService.Translate("Descripción");
+            }
+        }
+
+        /// <summary>
+        /// Aplica todas las traducciones en el formulario.
+        /// </summary>
+        private void ApplyTranslations()
+        {
+            this.Text = LanguageService.Translate("Modificar Inventario de Propiedad"); // Traducir el título del formulario
+            TranslateControls(this); // Traduce todos los controles del formulario
+            TranslateDataGridViewHeaders(); // Traduce los headers del DataGridView
+            InitializeHelpMessages(); // Traduce las ayudas del usuario
+        }
+
+        /// <summary>
+        /// Llama a ApplyTranslations en el constructor después de InitializeComponent.
+        /// </summary>
         public frmModifyPropertyInventory(Property property)
         {
             InitializeComponent();
             _selectedProperty = property;
             _propertyService = new PropertyService();
-            LoadInventory();
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { txtName, "Ingrese el nombre del inventario." },
-                { txtDescription, "Ingrese la descripción del inventario." },
-                { btnSave, "Guarda los cambios realizados o agrega un nuevo inventario." },
-                { btnDelete, "Elimina el inventario seleccionado." },
-                { dgvInventory, "Lista de inventarios disponibles. Seleccione uno para editar." }
-            };
+            InitializeHelpMessages();
+            SubscribeHelpMessagesEvents();
 
-            // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 };
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Suscribir eventos a los controles
-            foreach (var control in helpMessages.Keys)
-            {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
-            }
+            LoadInventory();
 
-            // Bind events
             dgvInventory.SelectionChanged += dgvInventory_SelectionChanged;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
+
+            ApplyTranslations(); // 🔥 Aplica la traducción automática a todo
+        }
+
+        /// <summary>
+        /// Refresca la grilla de inventario con traducción de los headers.
+        /// </summary>
+        private void RefreshInventoryGrid()
+        {
+            dgvInventory.DataSource = null;
+            dgvInventory.DataSource = _selectedProperty.InventoryProperty
+                .Select(i => new
+                {
+                    i.NameInventory,
+                    i.DescriptionInventory
+                }).ToList();
+
+            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            TranslateDataGridViewHeaders(); // 🔥 Asegura que los headers del DataGridView estén traducidos
+        }
+
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { txtName, LanguageService.Translate("Ingrese el nombre del inventario.") },
+                { txtDescription, LanguageService.Translate("Ingrese la descripción del inventario.") },
+                { btnSave, LanguageService.Translate("Guarda los cambios realizados o agrega un nuevo inventario.") },
+                { btnDelete, LanguageService.Translate("Elimina el inventario seleccionado.") },
+                { dgvInventory, LanguageService.Translate("Lista de inventarios disponibles. Seleccione uno para editar.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
         }
 
         private void Control_MouseEnter(object sender, EventArgs e)
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el ToolTip para el control actual
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador
+            toolTipTimer.Stop();
         }
 
         private void LoadInventory()
@@ -101,12 +180,12 @@ namespace UI
                         i.DescriptionInventory
                     }).ToList();
 
-                dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Adjust columns to DataGridView width
+                dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageService.Translate("Error al cargar el inventario") + ": " + ex.Message,
+                    $"{LanguageService.Translate("Error al cargar el inventario")}: {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -132,7 +211,7 @@ namespace UI
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        LanguageService.Translate("Error al seleccionar el inventario") + ": " + ex.Message,
+                        $"{LanguageService.Translate("Error al seleccionar el inventario")}: {ex.Message}",
                         LanguageService.Translate("Error"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
@@ -167,12 +246,20 @@ namespace UI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageService.Translate("Error al guardar los cambios") + ": " + ex.Message,
+                    $"{LanguageService.Translate("Error al guardar los cambios")}: {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -218,7 +305,7 @@ namespace UI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageService.Translate("Error al eliminar el elemento") + ": " + ex.Message,
+                    $"{LanguageService.Translate("Error al eliminar el elemento")}: {ex.Message}",
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -290,19 +377,6 @@ namespace UI
                     MessageBoxIcon.Error
                 );
             }
-        }
-
-        private void RefreshInventoryGrid()
-        {
-            dgvInventory.DataSource = null;
-            dgvInventory.DataSource = _selectedProperty.InventoryProperty
-                .Select(i => new
-                {
-                    i.NameInventory,
-                    i.DescriptionInventory
-                }).ToList();
-
-            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
     }
 }

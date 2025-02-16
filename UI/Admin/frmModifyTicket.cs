@@ -14,7 +14,7 @@ namespace UI.Admin
         private readonly TicketService _ticketService;
         private readonly PropertyService _propertyService;
 
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl; // Control actual donde está el mouse
 
@@ -24,31 +24,14 @@ namespace UI.Admin
             _ticketService = new TicketService();
             _propertyService = new PropertyService();
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { dgvTickets, "Seleccione un ticket para modificar o ver su imagen." },
-                { txtTitle, "Muestra el título del ticket seleccionado." },
-                { txtDetail, "Muestra la descripción del ticket seleccionado." },
-                { txtProperty, "Muestra la dirección de la propiedad asociada al ticket." },
-                { cmbStatus, "Seleccione el estado que desea asignar al ticket." },
-                { btnSave, "Guarda los cambios realizados al estado del ticket." },
-                { btnImage, "Muestra la imagen asociada al ticket seleccionado." }
-            };
+            InitializeHelpMessages(); // Inicializa los mensajes de ayuda traducidos
+            SubscribeHelpMessagesEvents(); // Suscribe los eventos de ToolTips
 
             // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Suscribir eventos a los controles
-            foreach (var control in helpMessages.Keys)
-            {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
-            }
-
-            LoadTickets();
+            LoadTickets(); // Cargar los tickets al abrir el formulario
 
             // Suscribir eventos adicionales
             dgvTickets.SelectionChanged += dgvTickets_SelectionChanged;
@@ -56,33 +39,66 @@ namespace UI.Admin
             btnImage.Click += btnImage_Click;
         }
 
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvTickets, LanguageService.Translate("Seleccione un ticket para modificar o ver su imagen.") },
+                { txtTitle, LanguageService.Translate("Muestra el título del ticket seleccionado.") },
+                { txtDetail, LanguageService.Translate("Muestra la descripción del ticket seleccionado.") },
+                { txtProperty, LanguageService.Translate("Muestra la dirección de la propiedad asociada al ticket.") },
+                { cmbStatus, LanguageService.Translate("Seleccione el estado que desea asignar al ticket.") },
+                { btnSave, LanguageService.Translate("Guarda los cambios realizados al estado del ticket.") },
+                { btnImage, LanguageService.Translate("Muestra la imagen asociada al ticket seleccionado.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
+        }
+
         private void Control_MouseEnter(object sender, EventArgs e)
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el ToolTip para el control actual
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador
+            toolTipTimer.Stop();
         }
 
+        /// <summary>
+        /// Carga los tickets y los muestra en el `DataGridView`.
+        /// </summary>
         private void LoadTickets()
         {
             try
@@ -102,13 +118,12 @@ namespace UI.Admin
                         ticket.DescriptionTicket,
                         ticket.StatusTicket,
                         ticket.ImageTicket,
-                        PropertyAddress = property?.AddressProperty ?? LanguageService.Translate("Property not found")
+                        PropertyAddress = property?.AddressProperty ?? LanguageService.Translate("Dirección no encontrada")
                     };
                 }).ToList();
 
                 dgvTickets.DataSource = enrichedTickets;
 
-                // Configurar columnas
                 dgvTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 dgvTickets.Columns["IdRequest"].Visible = false;
                 dgvTickets.Columns["FkIdProperty"].Visible = false;
@@ -130,7 +145,36 @@ namespace UI.Admin
             }
         }
 
-        private void dgvTickets_SelectionChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmModifyTicket_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de gestión de tickets."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Seleccionar un ticket de la lista para modificar su estado o ver su imagen.")}",
+                $"- {LanguageService.Translate("Modificar el estado de un ticket usando la lista de estados disponibles.")}",
+                $"- {LanguageService.Translate("Presionar el botón 'Guardar' para actualizar el estado del ticket.")}",
+                $"- {LanguageService.Translate("Presionar el botón 'Imagen' para visualizar la imagen asociada al ticket.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+        }
+
+    private void dgvTickets_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvTickets.CurrentRow == null) return;
 

@@ -11,63 +11,75 @@ namespace UI.Admin
     public partial class frmTenantsReport : Form
     {
         private readonly PersonService _personService;
-
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl;
 
         public frmTenantsReport()
         {
             InitializeComponent();
-            _personService = new PersonService(); // Asegúrate de que PersonService no necesite parámetros.
+            _personService = new PersonService();
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { dgvPersons, "Lista de inquilinos con su información detallada." },
-                { btnDownload, "Descargar el reporte en formato Excel." }
-            };
+            InitializeHelpMessages(); // Inicializar mensajes de ayuda traducidos
+            SubscribeHelpMessagesEvents(); // Suscribir eventos a los controles
 
             // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Asociar eventos a los controles
-            foreach (var control in helpMessages.Keys)
-            {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
-            }
-
             LoadPersonData();
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvPersons, LanguageService.Translate("Lista de inquilinos con su información detallada.") },
+                { btnDownload, LanguageService.Translate("Descargar el reporte en formato Excel.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
+            }
         }
 
         private void Control_MouseEnter(object sender, EventArgs e)
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el ToolTip para el control actual
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador
+            toolTipTimer.Stop();
         }
 
         private void LoadPersonData()
@@ -76,7 +88,6 @@ namespace UI.Admin
             {
                 var persons = _personService.GetAllPersonsByType(Person.PersonTypeEnum.Tenant);
 
-                // Asignar los datos al DataGridView
                 dgvPersons.DataSource = persons.Select(p => new
                 {
                     p.IdPerson,
@@ -89,18 +100,10 @@ namespace UI.Admin
                     NumeroDocumento = p.NumberDocumentPerson
                 }).ToList();
 
-                dgvPersons.Columns["IdPerson"].Visible = false; // Oculta la columna de ID
+                dgvPersons.Columns["IdPerson"].Visible = false;
 
-                // Ajusta los encabezados de las columnas
-                dgvPersons.Columns["Nombre"].HeaderText = LanguageService.Translate("Nombre");
-                dgvPersons.Columns["Apellido"].HeaderText = LanguageService.Translate("Apellido");
-                dgvPersons.Columns["Domicilio"].HeaderText = LanguageService.Translate("Domicilio");
-                dgvPersons.Columns["DomicilioElectronico"].HeaderText = LanguageService.Translate("Domicilio Electrónico");
-                dgvPersons.Columns["Telefono"].HeaderText = LanguageService.Translate("Teléfono");
-                dgvPersons.Columns["TipoDocumento"].HeaderText = LanguageService.Translate("Tipo de Documento");
-                dgvPersons.Columns["NumeroDocumento"].HeaderText = LanguageService.Translate("Número de Documento");
-
-                dgvPersons.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Ajusta las columnas al ancho del DataGridView
+                UpdateColumnHeaders(); // Traducir los encabezados de las columnas
+                dgvPersons.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch (Exception ex)
             {
@@ -111,6 +114,20 @@ namespace UI.Admin
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza los encabezados de las columnas con la traducción actual.
+        /// </summary>
+        private void UpdateColumnHeaders()
+        {
+            dgvPersons.Columns["Nombre"].HeaderText = LanguageService.Translate("Nombre");
+            dgvPersons.Columns["Apellido"].HeaderText = LanguageService.Translate("Apellido");
+            dgvPersons.Columns["Domicilio"].HeaderText = LanguageService.Translate("Domicilio");
+            dgvPersons.Columns["DomicilioElectronico"].HeaderText = LanguageService.Translate("Domicilio Electrónico");
+            dgvPersons.Columns["Telefono"].HeaderText = LanguageService.Translate("Teléfono");
+            dgvPersons.Columns["TipoDocumento"].HeaderText = LanguageService.Translate("Tipo de Documento");
+            dgvPersons.Columns["NumeroDocumento"].HeaderText = LanguageService.Translate("Número de Documento");
         }
 
         private void btnDownload_Click(object sender, EventArgs e)
@@ -125,7 +142,6 @@ namespace UI.Admin
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        // Obtener la lista de personas directamente del DataGridView
                         var personsToExport = dgvPersons.Rows
                             .Cast<DataGridViewRow>()
                             .Where(row => !row.IsNewRow)
@@ -142,7 +158,6 @@ namespace UI.Admin
                             })
                             .ToList();
 
-                        // Llamar al servicio para exportar el archivo Excel
                         _personService.ExportPersonsToExcel(saveFileDialog.FileName, personsToExport);
 
                         MessageBox.Show(
@@ -163,6 +178,33 @@ namespace UI.Admin
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza los mensajes de ayuda cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmTenantsReport_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al reporte de inquilinos."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Consultar la lista de inquilinos y su información.")}",
+                $"- {LanguageService.Translate("Descargar el reporte en formato Excel.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

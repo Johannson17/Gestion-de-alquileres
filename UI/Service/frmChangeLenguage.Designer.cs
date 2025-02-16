@@ -40,19 +40,17 @@
             this.dgvLanguages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLanguages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvLanguages.Location = new System.Drawing.Point(0, 0);
-            this.dgvLanguages.Margin = new System.Windows.Forms.Padding(4);
             this.dgvLanguages.Name = "dgvLanguages";
             this.dgvLanguages.RowHeadersWidth = 51;
-            this.dgvLanguages.Size = new System.Drawing.Size(723, 487);
+            this.dgvLanguages.Size = new System.Drawing.Size(309, 396);
             this.dgvLanguages.TabIndex = 0;
             // 
             // btnSave
             // 
             this.btnSave.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnSave.Location = new System.Drawing.Point(0, 459);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSave.Location = new System.Drawing.Point(0, 373);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(723, 28);
+            this.btnSave.Size = new System.Drawing.Size(309, 23);
             this.btnSave.TabIndex = 1;
             this.btnSave.Text = "Guardar Cambios";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -60,13 +58,12 @@
             // 
             // frmChangeLanguage
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(723, 487);
+            this.ClientSize = new System.Drawing.Size(309, 396);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.dgvLanguages);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmChangeLanguage";
             this.Text = "Agregar Lenguaje";
             ((System.ComponentModel.ISupportInitialize)(this.dgvLanguages)).EndInit();

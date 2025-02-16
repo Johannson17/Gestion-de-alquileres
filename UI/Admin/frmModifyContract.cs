@@ -17,7 +17,7 @@ namespace UI
         private readonly PersonService _personService;
         private List<Contract> _originalContracts;
 
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
         private Timer toolTipTimer;
         private Control currentControl; // Control actual donde está el mouse
 
@@ -27,32 +27,53 @@ namespace UI
             _contractService = new ContractService();
             _propertyService = new PropertyService();
             _personService = new PersonService();
-            this.Load += frmModifyContract_Load;
-            dgvContracts.CellClick += dgvContracts_CellClick;
 
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { cmbProperty, "Seleccione la propiedad asociada al contrato." },
-                { cmbTenant, "Seleccione el inquilino asociado al contrato." },
-                { txtPrice, "Ingrese el precio mensual del contrato en números." },
-                { cldStartDate, "Seleccione la fecha de inicio del contrato." },
-                { cldFinalDate, "Seleccione la fecha de finalización del contrato." },
-                { btnSave, "Guarda los cambios realizados en el contrato seleccionado." },
-                { btnDelete, "Elimina el contrato seleccionado." },
-                { dgvContracts, "Lista de contratos disponibles. Haga clic en un contrato para editarlo." }
-            };
+            // Inicializa los mensajes de ayuda traducidos
+            InitializeHelpMessages();
+            // Suscribe los eventos de ToolTips
+            SubscribeHelpMessagesEvents();
 
             // Configurar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer
+            {
+                Interval = 1000 // 1 segundo
+            };
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Suscribir eventos a los controles
-            foreach (var control in helpMessages.Keys)
+            this.Load += frmModifyContract_Load;
+            dgvContracts.CellClick += dgvContracts_CellClick;
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
             {
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
+                { cmbProperty, LanguageService.Translate("Seleccione la propiedad asociada al contrato.") },
+                { cmbTenant, LanguageService.Translate("Seleccione el inquilino asociado al contrato.") },
+                { txtPrice, LanguageService.Translate("Ingrese el precio mensual del contrato en números.") },
+                { cldStartDate, LanguageService.Translate("Seleccione la fecha de inicio del contrato.") },
+                { cldFinalDate, LanguageService.Translate("Seleccione la fecha de finalización del contrato.") },
+                { btnSave, LanguageService.Translate("Guarda los cambios realizados en el contrato seleccionado.") },
+                { btnDelete, LanguageService.Translate("Elimina el contrato seleccionado.") },
+                { dgvContracts, LanguageService.Translate("Lista de contratos disponibles. Haga clic en un contrato para editarlo.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos de ayuda (ToolTips) a cada control definido en <see cref="helpMessages"/>.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            if (helpMessages != null)
+            {
+                foreach (var control in helpMessages.Keys)
+                {
+                    control.MouseEnter += Control_MouseEnter;
+                    control.MouseLeave += Control_MouseLeave;
+                }
             }
         }
 
@@ -61,7 +82,7 @@ namespace UI
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
                 currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                toolTipTimer.Start();      // Iniciar el temporizador
             }
         }
 
@@ -79,7 +100,6 @@ namespace UI
                 ToolTip toolTip = new ToolTip();
                 toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
             }
-
             toolTipTimer.Stop(); // Detener el temporizador
         }
 
@@ -303,6 +323,35 @@ namespace UI
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        /// <summary>
+        /// Actualiza las ayudas cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
+        }
+
+        private void FrmModifyContract_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al módulo de modificación de contratos."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Seleccione un contrato de la lista para editarlo o eliminarlo.")}",
+                $"- {LanguageService.Translate("Modifique la propiedad, inquilino, precio y fechas del contrato.")}",
+                $"- {LanguageService.Translate("Presione 'Guardar' para actualizar los cambios.")}",
+                $"- {LanguageService.Translate("Presione 'Eliminar' para borrar el contrato seleccionado.")}",
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
         }
     }
 }

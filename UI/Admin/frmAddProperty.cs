@@ -16,7 +16,7 @@ namespace UI
 
         private Timer toolTipTimer;
         private Control currentControl; // Control actual sobre el que se deja el mouse
-        private readonly Dictionary<Control, string> helpMessages; // Diccionario de mensajes de ayuda
+        private Dictionary<Control, string> helpMessages; // Diccionario de mensajes de ayuda
 
         public frmAddProperty()
         {
@@ -27,42 +27,40 @@ namespace UI
             LoadPropertyStates();
 
             // Inicializar el Timer
-            toolTipTimer = new Timer();
-            toolTipTimer.Interval = 1000; // 2 segundos
+            toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Inicializar el diccionario de mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { txtAddress, "Ingrese la dirección completa de la propiedad." },
-                { txtCountry, "Especifique el país donde se encuentra la propiedad." },
-                { txtProvince, "Ingrese la provincia o región donde se encuentra la propiedad." },
-                { txtMunicipality, "Especifique el municipio donde se ubica la propiedad." },
-                { txtDescription, "Agregue una descripción detallada de la propiedad." },
-                { cmbOwner, "Seleccione el propietario de esta propiedad." },
-                { cmbStatus, "Elija el estado actual de la propiedad (Ej.: Disponible, Ocupada)." },
-                { btnSave, "Guarde los datos de la propiedad." }
-            };
-
-            // Registrar los eventos para cada control
-            RegisterHelpEvents(this);
+            InitializeHelpMessages(); // Inicializar mensajes de ayuda traducidos
+            SubscribeHelpMessagesEvents(); // Suscribir eventos de ToolTips
         }
 
-        private void RegisterHelpEvents(Control parent)
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
         {
-            foreach (Control control in parent.Controls)
+            helpMessages = new Dictionary<Control, string>
             {
-                if (helpMessages.ContainsKey(control))
-                {
-                    control.MouseEnter += Control_MouseEnter;
-                    control.MouseLeave += Control_MouseLeave;
-                }
+                { txtAddress, LanguageService.Translate("Ingrese la dirección completa de la propiedad.") },
+                { txtCountry, LanguageService.Translate("Especifique el país donde se encuentra la propiedad.") },
+                { txtProvince, LanguageService.Translate("Ingrese la provincia o región donde se encuentra la propiedad.") },
+                { txtMunicipality, LanguageService.Translate("Especifique el municipio donde se ubica la propiedad.") },
+                { txtDescription, LanguageService.Translate("Agregue una descripción detallada de la propiedad.") },
+                { cmbOwner, LanguageService.Translate("Seleccione el propietario de esta propiedad.") },
+                { cmbStatus, LanguageService.Translate("Elija el estado actual de la propiedad (Ej.: Disponible, Ocupada).") },
+                { btnSave, LanguageService.Translate("Guarde los datos de la propiedad.") }
+            };
+        }
 
-                // Recursión para manejar controles hijos
-                if (control.HasChildren)
-                {
-                    RegisterHelpEvents(control);
-                }
+        /// <summary>
+        /// Suscribe los eventos de `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
+        {
+            foreach (var control in helpMessages.Keys)
+            {
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
             }
         }
 
@@ -70,29 +68,30 @@ namespace UI
         {
             if (sender is Control control && helpMessages.ContainsKey(control))
             {
-                currentControl = control; // Guardar el control actual
-                toolTipTimer.Start(); // Iniciar el temporizador
+                currentControl = control;
+                toolTipTimer.Start();
             }
         }
 
         private void Control_MouseLeave(object sender, EventArgs e)
         {
-            toolTipTimer.Stop(); // Detener el temporizador
-            currentControl = null; // Limpiar el control actual
+            toolTipTimer.Stop();
+            currentControl = null;
         }
 
         private void ToolTipTimer_Tick(object sender, EventArgs e)
         {
             if (currentControl != null && helpMessages.ContainsKey(currentControl))
             {
-                // Mostrar el mensaje de ayuda
                 ToolTip toolTip = new ToolTip();
-                toolTip.Show(helpMessages[currentControl], currentControl, 3000); // Mostrar durante 3 segundos
+                toolTip.Show(helpMessages[currentControl], currentControl, 3000);
             }
-
-            toolTipTimer.Stop(); // Detener el temporizador después de mostrar el mensaje
+            toolTipTimer.Stop();
         }
 
+        /// <summary>
+        /// Carga los propietarios disponibles en el ComboBox `cmbOwner`.
+        /// </summary>
         private void LoadOwners()
         {
             try
@@ -113,23 +112,26 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Carga los estados de propiedad en el ComboBox `cmbStatus`.
+        /// </summary>
         private void LoadPropertyStates()
         {
-            // Cargar el enum PropertyStatusEnum en el ComboBox
             cmbStatus.DataSource = Enum.GetValues(typeof(PropertyStatusEnum)).Cast<PropertyStatusEnum>().ToList();
-            cmbStatus.SelectedIndex = 0; // Seleccionar el primer valor por defecto
+            cmbStatus.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Guarda la propiedad ingresada en la base de datos.
+        /// </summary>
         private async void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
-                // Crear un nuevo objeto Property con los datos del formulario
                 _newProperty = new Property
                 {
                     IdProperty = Guid.NewGuid(),
                     DescriptionProperty = txtDescription.Text,
-                    // Convertir el valor seleccionado del ComboBox a enum
                     StatusProperty = (PropertyStatusEnum)cmbStatus.SelectedItem,
                     CountryProperty = txtCountry.Text,
                     ProvinceProperty = txtProvince.Text,
@@ -139,10 +141,9 @@ namespace UI
                     {
                         IdPerson = (Guid)cmbOwner.SelectedValue
                     },
-                    InventoryProperty = new List<InventoryProperty>() // Inicializar la lista de inventarios
+                    InventoryProperty = new List<InventoryProperty>()
                 };
 
-                // Preguntar al usuario si desea agregar inventario
                 var result = MessageBox.Show(
                     LanguageService.Translate("¿Desea agregar inventario a esta propiedad?"),
                     LanguageService.Translate("Agregar inventario"),
@@ -152,12 +153,10 @@ namespace UI
 
                 if (result == DialogResult.Yes)
                 {
-                    // Abrir el formulario de inventario para agregar items
                     var inventoryForm = new frmAddPropertyInventory(_newProperty);
-                    inventoryForm.ShowDialog(); // Esperar a que termine de agregar inventario
+                    inventoryForm.ShowDialog();
                 }
 
-                // Después de agregar el inventario (si es necesario), guardar la propiedad con su inventario
                 await _propertyService.CreatePropertyAsync(_newProperty);
 
                 MessageBox.Show(
@@ -180,6 +179,9 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Limpia los campos del formulario después de guardar.
+        /// </summary>
         private void ClearForm()
         {
             txtDescription.Clear();
@@ -189,6 +191,41 @@ namespace UI
             txtAddress.Clear();
             cmbOwner.SelectedIndex = -1;
             cmbStatus.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Se ejecuta cuando el usuario solicita ayuda (`F1`).
+        /// </summary>
+        private void FrmAddProperty_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            var helpMessage = string.Join(Environment.NewLine, new[]
+            {
+                LanguageService.Translate("Bienvenido al formulario de registro de propiedades."),
+                "",
+                LanguageService.Translate("Opciones disponibles:"),
+                $"- {LanguageService.Translate("Ingrese la dirección, país, provincia y municipio de la propiedad.")}",
+                $"- {LanguageService.Translate("Escriba una descripción detallada de la propiedad.")}",
+                $"- {LanguageService.Translate("Seleccione el propietario en la lista desplegable.")}",
+                $"- {LanguageService.Translate("Seleccione el estado de la propiedad.")}",
+                $"- {LanguageService.Translate("Presione 'Guardar' para registrar la propiedad en el sistema.")}",
+                "",
+                LanguageService.Translate("Si desea agregar inventario, el sistema le preguntará después de guardar."),
+                "",
+                LanguageService.Translate("Para más ayuda, contacte con el administrador.")
+            });
+
+            MessageBox.Show(helpMessage,
+                            LanguageService.Translate("Ayuda del sistema"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// Actualiza los mensajes de ayuda cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
         }
     }
 }

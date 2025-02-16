@@ -12,9 +12,7 @@ namespace UI
         private Property _property;  // Referencia al objeto Property existente
         private readonly Timer toolTipTimer;
         private Control currentControl;
-
-        // Diccionario para almacenar los mensajes de ayuda
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages; // Mensajes de ayuda traducibles
 
         public frmAddPropertyInventory(Property property)
         {
@@ -22,21 +20,24 @@ namespace UI
             _property = property;
 
             // Inicializar el temporizador para ToolTips
-            toolTipTimer = new Timer
-            {
-                Interval = 1000 // 2 segundos
-            };
+            toolTipTimer = new Timer { Interval = 1000 };
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
-            // Inicializar mensajes de ayuda
+            InitializeHelpMessages(); // Cargar los mensajes de ayuda traducidos
+            SubscribeToMouseEvents(); // Suscribir eventos a los controles
+        }
+
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
             helpMessages = new Dictionary<Control, string>
             {
-                { txtName, "Ingrese el nombre del elemento del inventario. Este campo es obligatorio." },
-                { txtDescription, "Ingrese una descripción detallada del elemento del inventario. Este campo es obligatorio." },
-                { btnSave, "Presione este botón para guardar el elemento del inventario en la propiedad actual." }
+                { txtName, LanguageService.Translate("Ingrese el nombre del elemento del inventario. Este campo es obligatorio.") },
+                { txtDescription, LanguageService.Translate("Ingrese una descripción detallada del elemento del inventario. Este campo es obligatorio.") },
+                { btnSave, LanguageService.Translate("Presione este botón para guardar el elemento del inventario en la propiedad actual.") }
             };
-
-            SubscribeToMouseEvents();
         }
 
         /// <summary>
@@ -97,9 +98,9 @@ namespace UI
                 // Crear un nuevo objeto InventoryProperty con los datos del formulario
                 var newInventoryItem = new InventoryProperty
                 {
-                    IdInventoryProperty = Guid.NewGuid(), // Generar un nuevo ID para el inventario
-                    NameInventory = txtName.Text,         // Nombre del inventario
-                    DescriptionInventory = txtDescription.Text // Descripción del inventario
+                    IdInventoryProperty = Guid.NewGuid(),
+                    NameInventory = txtName.Text,
+                    DescriptionInventory = txtDescription.Text
                 };
 
                 // Verificar si ya existe el inventario antes de agregarlo
@@ -123,13 +124,11 @@ namespace UI
 
                 if (result == DialogResult.Yes)
                 {
-                    // Limpiar el formulario para agregar otro elemento de inventario
-                    ClearForm();
+                    ClearForm(); // Limpiar el formulario para agregar otro elemento
                 }
                 else
                 {
-                    // Cerrar el formulario si no se desean agregar más elementos
-                    this.Close();
+                    this.Close(); // Cerrar el formulario si no se desean agregar más elementos
                 }
             }
             catch (Exception ex)
@@ -150,7 +149,15 @@ namespace UI
         {
             txtName.Clear();
             txtDescription.Clear();
-            txtName.Focus(); // Poner foco en el campo de nombre
+            txtName.Focus();
+        }
+
+        /// <summary>
+        /// Actualiza los mensajes de ayuda cuando se cambia el idioma.
+        /// </summary>
+        public void UpdateHelpMessages()
+        {
+            InitializeHelpMessages();
         }
     }
 }

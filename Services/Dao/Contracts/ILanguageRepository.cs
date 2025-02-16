@@ -13,14 +13,6 @@ namespace Services.Dao.Contracts
         void AddTranslation(string language, string key, string value);
 
         /// <summary>
-        /// Guarda una traducción en el archivo de idioma.
-        /// </summary>
-        /// <param name="key">Clave de traducción.</param>
-        /// <param name="value">Valor de la traducción.</param>
-        /// <param name="newLanguageFile">Nombre del archivo de idioma.</param>
-        void SaveTranslation(string key, string value, string newLanguageFile);
-
-        /// <summary>
         /// Carga todas las traducciones desde los archivos de idioma.
         /// </summary>
         /// <param name="language">Idioma a cargar.</param>

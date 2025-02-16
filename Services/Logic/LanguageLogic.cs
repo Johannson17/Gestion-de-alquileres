@@ -1,4 +1,5 @@
 ﻿using Services.Facade;
+using Services.Dao.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,29 +13,8 @@ namespace Services.Logic
         private static string currentLanguage = DefaultLanguage; // Idioma actualmente seleccionado
         private static readonly string googleTranslateApiUrl = "https://translate.googleapis.com/translate_a/single";
 
-        private static readonly Dictionary<string, string> languageMap = new Dictionary<string, string>
-        {
-            { "Español", "es" },
-            { "English", "en" },
-            { "Français", "fr" },
-            { "Deutsch", "de" },
-            { "Italiano", "it" },
-            { "Português", "pt" },
-            { "Русский", "ru" },
-            { "中文", "zh" },
-            { "日本語", "ja" },
-            { "한국어", "ko" },
-            { "العربية", "ar" },
-            { "हिन्दी", "hi" },
-            { "עברית", "he" },
-            { "Türkçe", "tr" },
-            { "Svenska", "sv" },
-            { "Nederlands", "nl" },
-            { "Polski", "pl" },
-            { "Українська", "uk" },
-            { "ไทย", "th" },
-            { "Tiếng Việt", "vi" }
-        };
+        private static readonly LanguageRepository languageRepository = LanguageRepository.Current; // 🔥 Usar DAO
+        private static readonly Dictionary<string, string> languageMap = languageRepository.LoadLanguageMap(); // 🚀 Cargar idiomas desde el archivo JSON
 
         public static Dictionary<string, string> GetLanguageMap() => new Dictionary<string, string>(languageMap);
 
@@ -110,6 +90,19 @@ namespace Services.Logic
                     return text; // Retorna el texto original si hay un error
                 }
             }
+        }
+
+        /// <summary>
+        /// 📌 Guarda el diccionario de idiomas en `idiomas.json`
+        /// </summary>
+        public static void SaveLanguageMap(Dictionary<string, string> updatedLanguages)
+        {
+            if (updatedLanguages == null || updatedLanguages.Count == 0)
+            {
+                throw new ArgumentException("El diccionario de idiomas no puede estar vacío.");
+            }
+
+            languageRepository.SaveLanguageMap(updatedLanguages);
         }
 
         private static string ParseGoogleTranslateResponse(string response)

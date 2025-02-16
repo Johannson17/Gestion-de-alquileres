@@ -15,32 +15,15 @@ namespace UI
         private Property _currentProperty;
         private Timer toolTipTimer;
         private Control currentControl;
-
-        private readonly Dictionary<Control, string> helpMessages;
+        private Dictionary<Control, string> helpMessages;
 
         public frmModifyProperty()
         {
             InitializeComponent();
             _propertyService = new PropertyService();
             LoadProperties();
-
-            // Inicializar mensajes de ayuda
-            helpMessages = new Dictionary<Control, string>
-            {
-                { dgvProperty, "Lista de propiedades registradas. Seleccione una fila para editar o eliminar una propiedad." },
-                { txtAddress, "Ingrese la dirección de la propiedad." },
-                { txtCountry, "Ingrese el país donde se encuentra la propiedad." },
-                { txtMunicipality, "Ingrese el municipio de la propiedad." },
-                { txtProvince, "Ingrese la provincia de la propiedad." },
-                { txtDescription, "Ingrese una descripción detallada de la propiedad." },
-                { cmbStatus, "Seleccione el estado actual de la propiedad." },
-                { btnSave, "Guarde los cambios realizados en la propiedad seleccionada." },
-                { btnDelete, "Elimine la propiedad seleccionada." },
-                { btnEditInventory, "Edite el inventario asociado a la propiedad seleccionada." }
-            };
-
-            // Configurar eventos para mostrar ayuda
-            ConfigureHelpEvents();
+            InitializeHelpMessages();
+            SubscribeHelpMessagesEvents();
 
             dgvProperty.SelectionChanged += dgvProperties_SelectionChanged;
             btnSave.Click += btnSave_Click;
@@ -48,7 +31,30 @@ namespace UI
             btnEditInventory.Click += btnEditInventory_Click;
         }
 
-        private void ConfigureHelpEvents()
+        /// <summary>
+        /// Inicializa los mensajes de ayuda con la traducción actual.
+        /// </summary>
+        private void InitializeHelpMessages()
+        {
+            helpMessages = new Dictionary<Control, string>
+            {
+                { dgvProperty, LanguageService.Translate("Lista de propiedades registradas. Seleccione una fila para editar o eliminar una propiedad.") },
+                { txtAddress, LanguageService.Translate("Ingrese la dirección de la propiedad.") },
+                { txtCountry, LanguageService.Translate("Ingrese el país donde se encuentra la propiedad.") },
+                { txtMunicipality, LanguageService.Translate("Ingrese el municipio de la propiedad.") },
+                { txtProvince, LanguageService.Translate("Ingrese la provincia de la propiedad.") },
+                { txtDescription, LanguageService.Translate("Ingrese una descripción detallada de la propiedad.") },
+                { cmbStatus, LanguageService.Translate("Seleccione el estado actual de la propiedad.") },
+                { btnSave, LanguageService.Translate("Guarde los cambios realizados en la propiedad seleccionada.") },
+                { btnDelete, LanguageService.Translate("Elimine la propiedad seleccionada.") },
+                { btnEditInventory, LanguageService.Translate("Edite el inventario asociado a la propiedad seleccionada.") }
+            };
+        }
+
+        /// <summary>
+        /// Suscribe los eventos `MouseEnter` y `MouseLeave` a los controles con mensajes de ayuda.
+        /// </summary>
+        private void SubscribeHelpMessagesEvents()
         {
             toolTipTimer = new Timer { Interval = 1000 };
             toolTipTimer.Tick += ToolTipTimer_Tick;
@@ -82,10 +88,12 @@ namespace UI
                 ToolTip toolTip = new ToolTip();
                 toolTip.Show(helpMessages[currentControl], currentControl, currentControl.Width / 2, currentControl.Height, 3000);
             }
-
             toolTipTimer.Stop();
         }
 
+        /// <summary>
+        /// Carga las propiedades en el `DataGridView` y traduce los encabezados.
+        /// </summary>
         private void LoadProperties()
         {
             try
@@ -93,7 +101,6 @@ namespace UI
                 _properties = _propertyService.GetAllProperties();
 
                 dgvProperty.Columns.Clear();
-
                 dgvProperty.DataSource = _properties.Select(p => new
                 {
                     p.IdProperty,
@@ -106,6 +113,8 @@ namespace UI
                 }).ToList();
 
                 dgvProperty.Columns["IdProperty"].Visible = false;
+                TranslateHeaders(); // Llamar a la función de traducción
+
                 dgvProperty.AutoResizeColumns();
                 dgvProperty.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
@@ -120,6 +129,19 @@ namespace UI
             }
         }
 
+        /// <summary>
+        /// Traduce los encabezados del DataGridView.
+        /// </summary>
+        private void TranslateHeaders()
+        {
+            dgvProperty.Columns["DescriptionProperty"].HeaderText = LanguageService.Translate("Descripción");
+            dgvProperty.Columns["StatusProperty"].HeaderText = LanguageService.Translate("Estado");
+            dgvProperty.Columns["CountryProperty"].HeaderText = LanguageService.Translate("País");
+            dgvProperty.Columns["ProvinceProperty"].HeaderText = LanguageService.Translate("Provincia");
+            dgvProperty.Columns["MunicipalityProperty"].HeaderText = LanguageService.Translate("Municipio");
+            dgvProperty.Columns["AddressProperty"].HeaderText = LanguageService.Translate("Dirección");
+        }
+
         private void dgvProperties_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvProperty.SelectedRows.Count > 0)
@@ -127,7 +149,6 @@ namespace UI
                 try
                 {
                     var selectedPropertyId = (Guid)dgvProperty.SelectedRows[0].Cells["IdProperty"].Value;
-
                     _currentProperty = _propertyService.GetProperty(selectedPropertyId);
 
                     if (_currentProperty != null)
@@ -140,24 +161,13 @@ namespace UI
 
                         LoadStatusComboBox(_currentProperty.StatusProperty);
                     }
-                    else
-                    {
-                        MessageBox.Show(
-                            LanguageService.Translate("No se encontró la propiedad seleccionada"),
-                            LanguageService.Translate("Error"),
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning
-                        );
-                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(
-                        LanguageService.Translate("Error al seleccionar la propiedad") + ": " + ex.Message,
+                    MessageBox.Show(LanguageService.Translate("Error al seleccionar la propiedad") + ": " + ex.Message,
                         LanguageService.Translate("Error"),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
+                        MessageBoxIcon.Error);
                 }
             }
         }
@@ -166,6 +176,12 @@ namespace UI
         {
             cmbStatus.DataSource = Enum.GetValues(typeof(PropertyStatusEnum)).Cast<PropertyStatusEnum>().ToList();
             cmbStatus.SelectedItem = currentStatus;
+        }
+
+        public void RefreshUI()
+        {
+            LoadProperties(); // Recargar propiedades con traducciones
+            InitializeHelpMessages(); // Recargar mensajes de ayuda con el idioma actual
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -181,36 +197,19 @@ namespace UI
 
                 _propertyService.UpdateProperty(_currentProperty);
 
-                MessageBox.Show(
-                    LanguageService.Translate("Propiedad actualizada correctamente"),
+                MessageBox.Show(LanguageService.Translate("Propiedad actualizada correctamente"),
                     LanguageService.Translate("Éxito"),
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                    MessageBoxIcon.Information);
 
-                LoadProperties();
-                ReselectCurrentProperty();
+                RefreshUI();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    LanguageService.Translate("Error al actualizar la propiedad") + ": " + ex.Message,
+                MessageBox.Show(LanguageService.Translate("Error al actualizar la propiedad") + ": " + ex.Message,
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-            }
-        }
-
-        private void ReselectCurrentProperty()
-        {
-            foreach (DataGridViewRow row in dgvProperty.Rows)
-            {
-                if (row.Cells["IdProperty"].Value.ToString() == _currentProperty.IdProperty.ToString())
-                {
-                    row.Selected = true;
-                    break;
-                }
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -218,35 +217,29 @@ namespace UI
         {
             try
             {
-                var confirmResult = MessageBox.Show(
-                    LanguageService.Translate("¿Está seguro de eliminar esta propiedad?"),
+                var confirmResult = MessageBox.Show(LanguageService.Translate("¿Está seguro de eliminar esta propiedad?"),
                     LanguageService.Translate("Confirmar eliminación"),
                     MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
+                    MessageBoxIcon.Warning);
 
                 if (confirmResult == DialogResult.Yes)
                 {
                     _propertyService.DeleteProperty(_currentProperty.IdProperty);
 
-                    MessageBox.Show(
-                        LanguageService.Translate("Propiedad eliminada correctamente"),
+                    MessageBox.Show(LanguageService.Translate("Propiedad eliminada correctamente"),
                         LanguageService.Translate("Éxito"),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                        MessageBoxIcon.Information);
 
                     LoadProperties();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    LanguageService.Translate("Error al eliminar la propiedad") + ": " + ex.Message,
+                MessageBox.Show(LanguageService.Translate("Error al eliminar la propiedad") + ": " + ex.Message,
                     LanguageService.Translate("Error"),
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -254,17 +247,6 @@ namespace UI
         {
             try
             {
-                if (_currentProperty == null)
-                {
-                    MessageBox.Show(
-                        LanguageService.Translate("Debe seleccionar una propiedad primero"),
-                        LanguageService.Translate("Propiedad no seleccionada"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-                    return;
-                }
-
                 var modifyInventoryForm = new frmModifyPropertyInventory(_currentProperty);
 
                 if (modifyInventoryForm.ShowDialog() == DialogResult.OK)
