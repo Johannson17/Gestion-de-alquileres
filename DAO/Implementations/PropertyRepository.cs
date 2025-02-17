@@ -166,14 +166,12 @@ namespace DAO.Implementations
             DeleteInventory(propertyId);
 
             // Eliminar la propiedad
-            _propertyTableAdapter.Delete(
-                propertyRow.IdProperty,
-                propertyRow.DescriptionProperty,
-                propertyRow.StatusProperty,
-                propertyRow.CountryProperty,      // Campo país
-                propertyRow.ProvinceProperty,     // Campo provincia
-                propertyRow.MunicipalityProperty, // Campo municipalidad
-                propertyRow.AddressProperty       // Campo dirección
+            _propertyTableAdapter.Delete1(
+                Guid.Parse(propertyRow.IdProperty.ToString().ToUpper())
+            );
+
+            _propertyTableAdapter.Delete1(
+                Guid.Parse(propertyRow.IdProperty.ToString())
             );
         }
 

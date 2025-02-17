@@ -31,10 +31,17 @@ namespace UI.Tenant
 
             // Inicialización de idiomas
             language = new LanguageHelper();
-            LoadAvailableLanguages();
             InitializeHelpMessages(); // Cargar las ayudas en el idioma actual
 
-            LoadLoggedInPerson(); // Cargar la persona asociada al usuario
+            try
+            {
+                LoadLoggedInPerson(); // Cargar la persona asociada al usuario
+                LoadAvailableLanguages();
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             // Configurar el Timer
             toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo

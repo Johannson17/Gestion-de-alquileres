@@ -5,6 +5,7 @@ using Services.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static DAO.RentsDataSet;
 
 namespace DAO.Implementations
 {
@@ -82,6 +83,14 @@ namespace DAO.Implementations
                 throw new KeyNotFoundException($"No se encontró una cláusula con el ID: {idContractClause}");
             }
 
+            _contractClauseTableAdapter.Delete(
+
+                Guid.Parse(clauseRow.IdContractClause.ToString().ToUpper()),
+                clauseRow.FkIdContract,
+                clauseRow.TitleClause,
+                clauseRow.DetailClause,
+                clauseRow.IdAuxiliar
+            );
             _contractClauseTableAdapter.Delete(
                 clauseRow.IdContractClause,
                 clauseRow.FkIdContract,

@@ -26,7 +26,8 @@ namespace UI
             SubscribeHelpMessagesEvents();
 
             dgvProperty.SelectionChanged += dgvProperties_SelectionChanged;
-            btnSave.Click += btnSave_Click;
+            // Evitar que el evento se agregue múltiples veces
+            btnDelete.Click -= btnDelete_Click;
             btnDelete.Click += btnDelete_Click;
             btnEditInventory.Click += btnEditInventory_Click;
         }
@@ -241,6 +242,8 @@ namespace UI
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            finally
+            { RefreshUI(); }
         }
 
         private void btnEditInventory_Click(object sender, EventArgs e)

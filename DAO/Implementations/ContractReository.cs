@@ -157,6 +157,16 @@ namespace DAO.Implementations
             }
 
             _contractTableAdapter.Delete(
+                Guid.Parse(contractRow.IdContract.ToString().ToUpper()),
+                contractRow.FkIdProperty,
+                contractRow.FkIdTenant,
+                contractRow.DateStartContract,
+                contractRow.DateFinalContract,
+                contractRow.MensualRentPrice,
+                contractRow.StatusContract,
+                contractRow.IdContract.ToString() + contractRow.FkIdProperty.ToString() + contractRow.FkIdTenant.ToString() + contractRow.DateStartContract.ToString() + contractRow.DateFinalContract.ToString() + contractRow.MensualRentPrice.ToString() + contractRow.StatusContract.ToString()
+            );
+            _contractTableAdapter.Delete(
                 contractRow.IdContract,
                 contractRow.FkIdProperty,
                 contractRow.FkIdTenant,

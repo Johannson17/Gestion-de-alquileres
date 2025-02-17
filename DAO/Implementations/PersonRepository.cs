@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static DAO.RentsDataSet;
 using static Domain.Person;
 
 namespace DAO.Implementations
@@ -127,6 +128,18 @@ namespace DAO.Implementations
             {
                 throw new KeyNotFoundException($"No se encontró una persona con el ID: {personId}");
             }
+            _personTableAdapter.Delete(
+                Guid.Parse(personRow.IdPerson.ToString().ToUpper()),
+                personRow.IdUser,
+                personRow.NamePerson,                  // Nombre
+                personRow.LastNamePerson,              // Apellido
+                personRow.NumberDocumentPerson,        // Número de documento
+                personRow.TypeDocumentPerson,          // Tipo de documento
+                personRow.PhoneNumberPerson.ToString(),           // Número de teléfono
+                personRow.EmailPerson,    // Correo electrónico (equivalente a EmailPerson)
+                personRow.DomicilePerson,              // Domicilio
+                personRow.TypePerson.ToString()          // Tipo de persona
+            );
 
             _personTableAdapter.Delete(
                 personRow.IdPerson,

@@ -8406,12 +8406,17 @@ SELECT IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, Munic
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, Munici" +
                 "palityProperty, AddressProperty, StatusProperty\r\nFROM     Property";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "DELETE FROM Property WHERE IdProperty = @IdProperty";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IdProperty", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "IdProperty", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8708,6 +8713,30 @@ SELECT IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, Munic
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
         public virtual int Update(string DescriptionProperty, string CountryProperty, string ProvinceProperty, string MunicipalityProperty, string AddressProperty, string StatusProperty, System.Guid Original_IdProperty, string Original_DescriptionProperty, string Original_CountryProperty, string Original_ProvinceProperty, string Original_MunicipalityProperty, string Original_AddressProperty, string Original_StatusProperty) {
             return this.Update(Original_IdProperty, DescriptionProperty, CountryProperty, ProvinceProperty, MunicipalityProperty, AddressProperty, StatusProperty, Original_IdProperty, Original_DescriptionProperty, Original_CountryProperty, Original_ProvinceProperty, Original_MunicipalityProperty, Original_AddressProperty, Original_StatusProperty);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, false)]
+        public virtual int Delete1(System.Guid IdProperty) {
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[1];
+            command.Parameters[0].Value = ((System.Guid)(IdProperty));
+            global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
+            if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                command.Connection.Open();
+            }
+            int returnValue;
+            try {
+                returnValue = command.ExecuteNonQuery();
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    command.Connection.Close();
+                }
+            }
+            return returnValue;
         }
     }
     

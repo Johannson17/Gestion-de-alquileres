@@ -144,17 +144,28 @@ namespace UI
                 }
                 else
                 {
-                    mainForm = new frmMainTenant(user.IdUsuario); // Aquí deberías abrir el formulario para usuarios estándar
+                    mainForm = new frmMainTenant(Guid.Parse(user.IdUsuario.ToString().ToUpper()));
                 }
 
-                // Mostrar el formulario principal
-                if (mainForm != null)
+                try
                 {
-                    mainForm.ShowDialog();
+                    // Mostrar el formulario principal
+                    if (mainForm != null)
+                    {
+                        mainForm.ShowDialog();
+                    }
                 }
+                catch 
+                {
 
-                // Mostrar nuevamente el formulario de login cuando el formulario principal se cierre
-                this.Show();
+                }
+                finally
+                {
+                    txtUsername.Text = string.Empty;
+                    txtPassword.Text = string.Empty;
+                    // Mostrar nuevamente el formulario de login cuando el formulario principal se cierre
+                    this.Show();
+                }
             }
             else
             {

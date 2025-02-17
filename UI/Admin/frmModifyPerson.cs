@@ -104,7 +104,7 @@ namespace UI
         {
             try
             {
-                var persons = _personService.GetAllPersonsByType(Person.PersonTypeEnum.Tenant);
+                var persons = _personService.GetAllPersons();
 
                 dgvPerson.DataSource = persons.Select(p => new
                 {
@@ -242,25 +242,39 @@ namespace UI
         {
             try
             {
-                var selectedPerson = (Person)dgvPerson.CurrentRow?.DataBoundItem;
-
-                if (selectedPerson == null)
+                // Verifica que haya una fila seleccionada
+                if (dgvPerson.CurrentRow == null)
                 {
                     MessageBox.Show(
                         LanguageService.Translate("Seleccione una persona de la lista para eliminar."),
                         LanguageService.Translate("Advertencia"),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
+                        MessageBoxIcon.Warning);
                     return;
                 }
 
+                // Obtener el ID de la persona seleccionada desde el DataGridView
+                Guid idPerson = (Guid)dgvPerson.CurrentRow.Cells["IdPerson"].Value;
+
+                // Buscar la persona en el servicio para obtener un objeto `Person`
+                var selectedPerson = _personService.GetPersonById(idPerson);
+
+                if (selectedPerson == null)
+                {
+                    MessageBox.Show(
+                        LanguageService.Translate("No se encontró la persona en la base de datos."),
+                        LanguageService.Translate("Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Confirmación antes de eliminar
                 var confirmation = MessageBox.Show(
                     LanguageService.Translate("¿Está seguro de que desea eliminar esta persona?"),
                     LanguageService.Translate("Confirmación"),
                     MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
+                    MessageBoxIcon.Question);
 
                 if (confirmation == DialogResult.Yes)
                 {
@@ -270,10 +284,9 @@ namespace UI
                         LanguageService.Translate("Persona eliminada correctamente."),
                         LanguageService.Translate("Éxito"),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                        MessageBoxIcon.Information);
 
-                    LoadPersonData();
+                    LoadPersonData(); // Recargar la lista
                 }
             }
             catch (Exception ex)
@@ -284,6 +297,15 @@ namespace UI
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
+            }
+            finally
+            {
+                txtDocumentNumber.Text = string.Empty;
+                txtDomicile.Text = string.Empty;
+                txtEmail.Text = string.Empty;  
+                txtLastName.Text = string.Empty;
+                txtName.Text = string.Empty;
+                txtPhoneNumber.Text = string.Empty;
             }
         }
     }

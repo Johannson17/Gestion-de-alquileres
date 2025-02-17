@@ -5,6 +5,7 @@ using DAO.Contracts;
 using Domain;
 using DAO.RentsDataSetTableAdapters;
 using System.Linq;
+using static DAO.RentsDataSet;
 
 namespace DAO.Implementations
 {
@@ -114,13 +115,22 @@ namespace DAO.Implementations
 
             // Llamar al método Delete con todos los valores originales necesarios
             _ticketTableAdapter.Delete(
-                ticket.IdRequest,
+                Guid.Parse(ticket.IdRequest.ToString().ToUpper()),
                 ticket.FkIdProperty,
                 ticket.FkIdPerson,
                 ticket.TitleTicket,
                 ticket.DescriptionTicket,
                 ticket.StatusTicket
             );
+
+            _ticketTableAdapter.Delete(
+               ticket.IdRequest,
+               ticket.FkIdProperty,
+               ticket.FkIdPerson,
+               ticket.TitleTicket,
+               ticket.DescriptionTicket,
+               ticket.StatusTicket
+           );
         }
 
         /// <summary>
