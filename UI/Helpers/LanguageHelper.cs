@@ -11,12 +11,11 @@ namespace UI.Helpers
     public class LanguageHelper
     {
         // Cache de traducciones para evitar llamadas repetitivas a Translate.
-        // Thread-safe para uso en Parallel.
         private static readonly ConcurrentDictionary<string, string> _translationCache =
             new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
         /// <summary>
-        /// Aplica las traducciones o restaura los textos predeterminados para el formulario principal y sus hijos.
+        /// Aplica las traducciones al formulario principal y a todos los formularios hijos recursivamente.
         /// </summary>
         /// <param name="language">Idioma a aplicar.</param>
         /// <param name="frm">Formulario principal.</param>
@@ -24,16 +23,10 @@ namespace UI.Helpers
         {
             try
             {
-                // Recolectar textos
-                var itemsToTranslate = CollectControlsAndMenuItems(frm);
+                // Recolectar todos los formularios y controles a traducir
+                var itemsToTranslate = CollectAllFormsAndControls(frm);
 
-                // Incluir el formulario principal y su texto
-                if (!string.IsNullOrWhiteSpace(frm.Text))
-                {
-                    itemsToTranslate.Add((frm, frm.Text));
-                }
-
-                // Traducir en lotes para no saturar la UI
+                // Traducir en paralelo
                 var translations = TranslateTextsParallel(itemsToTranslate);
 
                 // Aplicar traducciones en el hilo principal
@@ -49,10 +42,11 @@ namespace UI.Helpers
         }
 
         /// <summary>
-        /// Recolecta todos los controles y elementos de menú que necesitan traducción.
+        /// Recolecta todos los controles y formularios hijos que necesitan traducción.
         /// </summary>
-        /// <param name="control">Control raíz.</param>
-        private List<(object item, string originalText)> CollectControlsAndMenuItems(Control control)
+        /// <param name="parentForm">Formulario principal.</param>
+        /// <returns>Lista de elementos a traducir.</returns>
+        private List<(object item, string originalText)> CollectAllFormsAndControls(Form parentForm)
         {
             var itemsToTranslate = new List<(object item, string originalText)>();
 
@@ -60,20 +54,16 @@ namespace UI.Helpers
             {
                 if (parentControl == null) return;
 
-                // Si el control no es TextBox o ComboBox y tiene texto, se incluye
-                if (!(parentControl is TextBox) && !(parentControl is ComboBox)
-                    && !string.IsNullOrWhiteSpace(parentControl.Text))
+                if (!(parentControl is TextBox || parentControl is ComboBox) && !string.IsNullOrWhiteSpace(parentControl.Text))
                 {
                     itemsToTranslate.Add((parentControl, parentControl.Text));
                 }
 
-                // Recorrer hijos recursivamente
                 foreach (Control child in parentControl.Controls)
                 {
                     CollectRecursively(child);
                 }
 
-                // Recolectar elementos de menú si es un MenuStrip
                 if (parentControl is MenuStrip menuStrip)
                 {
                     foreach (ToolStripMenuItem menuItem in menuStrip.Items)
@@ -83,12 +73,32 @@ namespace UI.Helpers
                 }
             }
 
-            CollectRecursively(control);
+            // Traducir el título del formulario principal
+            if (!string.IsNullOrWhiteSpace(parentForm.Text))
+            {
+                itemsToTranslate.Add((parentForm, parentForm.Text));
+            }
+
+            CollectRecursively(parentForm);
+
+            // Traducir todos los formularios hijos abiertos
+            foreach (Form childForm in Application.OpenForms)
+            {
+                if (childForm != parentForm)
+                {
+                    if (!string.IsNullOrWhiteSpace(childForm.Text))
+                    {
+                        itemsToTranslate.Add((childForm, childForm.Text));
+                    }
+                    CollectRecursively(childForm);
+                }
+            }
+
             return itemsToTranslate;
         }
 
         /// <summary>
-        /// Recolecta recursivamente los sub-items de menú para traducir.
+        /// Recolecta elementos de menú recursivamente.
         /// </summary>
         private void CollectMenuItemsRecursively(ToolStripMenuItem menuItem, List<(object item, string originalText)> itemsToTranslate)
         {
@@ -107,20 +117,17 @@ namespace UI.Helpers
         }
 
         /// <summary>
-        /// Traduce los textos en paralelo con cache y chunking para evitar bloqueo de la UI.
+        /// Traduce los textos en paralelo con caché y lotes para optimizar rendimiento.
         /// </summary>
-        /// <param name="itemsToTranslate">Elementos que requieren traducción.</param>
-        /// <returns>Diccionario con los elementos y sus textos traducidos.</returns>
         private Dictionary<object, string> TranslateTextsParallel(List<(object item, string originalText)> itemsToTranslate)
         {
             var translations = new ConcurrentDictionary<object, string>();
 
-            // Se divide la lista en lotes (chunks) para procesarlos en paralelo sin saturar
             const int chunkSize = 20;
             var chunks = itemsToTranslate
                 .Select((item, index) => new { item, index })
                 .GroupBy(x => x.index / chunkSize, x => x.item)
-                .ToList(); // Se obtiene una lista de lotes
+                .ToList();
 
             Parallel.ForEach(chunks, chunk =>
             {
@@ -135,7 +142,7 @@ namespace UI.Helpers
         }
 
         /// <summary>
-        /// Aplica las traducciones a los controles y menús en el hilo principal.
+        /// Aplica las traducciones en la UI.
         /// </summary>
         private void ApplyTranslations(Dictionary<object, string> translations)
         {
@@ -153,7 +160,7 @@ namespace UI.Helpers
         }
 
         /// <summary>
-        /// Traduce un texto usando la cache para no llamar repetidamente a LanguageService.
+        /// Traduce un texto utilizando caché para mejorar el rendimiento.
         /// </summary>
         private string TranslateWithCache(string originalText)
         {
@@ -162,10 +169,7 @@ namespace UI.Helpers
                 return cachedTranslation;
             }
 
-            // Si no está en cache, llamamos al LanguageService
             var translated = LanguageService.Translate(originalText, originalText);
-
-            // Guardar en cache
             _translationCache[originalText] = translated;
             return translated;
         }

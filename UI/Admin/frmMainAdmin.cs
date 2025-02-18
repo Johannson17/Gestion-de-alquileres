@@ -201,10 +201,10 @@ namespace UI
                 childForm.MdiParent = this;
                 childForm.Show();
 
-                // Asegurar que la UI no se bloquee mientras se traduce
-                await Task.Delay(100);
+                // Aplicar traducción en segundo plano sin bloquear la UI
+                await Task.Yield(); // Permite a la UI seguir respondiendo antes de ejecutar la traducción
+                await Task.Delay(50).ConfigureAwait(false);
 
-                // Aplicar la traducción después de que el formulario se haya mostrado
                 this.BeginInvoke(new Action(() =>
                 {
                     language.ApplyLanguage(LanguageService.GetCurrentLanguage(), childForm);
