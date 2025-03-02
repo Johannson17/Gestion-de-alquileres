@@ -38,47 +38,42 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 73);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(8, 59);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(82, 16);
+            this.label3.Size = new System.Drawing.Size(66, 13);
             this.label3.TabIndex = 55;
             this.label3.Text = "Descripción:";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 7);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(10, 6);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 16);
+            this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 53;
             this.label1.Text = "Nombre:";
             // 
             // txtDescription
             // 
-            this.txtDescription.Location = new System.Drawing.Point(13, 93);
-            this.txtDescription.Margin = new System.Windows.Forms.Padding(4);
+            this.txtDescription.Location = new System.Drawing.Point(10, 76);
             this.txtDescription.Multiline = true;
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(429, 134);
+            this.txtDescription.Size = new System.Drawing.Size(323, 110);
             this.txtDescription.TabIndex = 50;
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(14, 26);
-            this.txtName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtName.Location = new System.Drawing.Point(10, 21);
             this.txtName.Multiline = true;
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(428, 30);
+            this.txtName.Size = new System.Drawing.Size(322, 25);
             this.txtName.TabIndex = 48;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(13, 249);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSave.Location = new System.Drawing.Point(10, 202);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(429, 47);
+            this.btnSave.Size = new System.Drawing.Size(322, 38);
             this.btnSave.TabIndex = 47;
             this.btnSave.Text = "Guardar cambios";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -86,17 +81,19 @@
             // 
             // frmAddPropertyInventory
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(455, 328);
+            this.ClientSize = new System.Drawing.Size(341, 266);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.btnSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "frmAddPropertyInventory";
             this.Text = "Agregar Inventario";
+            this.Load += new System.EventHandler(this.frmAddPropertyInventory_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -3,6 +3,7 @@ using Services.Facade;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using UI.Helpers;
 
@@ -48,6 +49,8 @@ namespace UI
             // Configurar el Timer
             toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
+            this.KeyPreview = true; // Permite que el formulario intercepte teclas como F1
+            this.HelpRequested += FrmAddProperty_HelpRequested_f1; // <-- Asignación del evento
         }
 
         /// <summary>
@@ -271,6 +274,115 @@ namespace UI
                     // Update the family ComboBox
                     LoadFamilias();
                 }
+            }
+        }
+
+        private void FrmAddProperty_HelpRequested_f1(object sender, HelpEventArgs hlpevent)
+        {
+            hlpevent.Handled = true;
+
+            // 1. Construimos el nombre del archivo de imagen según el formulario
+            string imageFileName = $"{this.Name}.png";
+            // 2. Ruta completa de la imagen (ajusta la carpeta si difiere)
+            string imagePath = Path.Combine(Application.StartupPath, "..", "..", "images", imageFileName);
+            imagePath = Path.GetFullPath(imagePath);
+
+            // 3. Texto de ayuda específico para "Agregar propiedad"
+            var helpMessage = string.Format(
+                LanguageService.Translate("MÓDULO DE REGISTRO DE USUARIOS").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("Este formulario te permite crear un nuevo usuario en el sistema, ").ToString() +
+                LanguageService.Translate("estableciendo su nombre de usuario, contraseña y asignándole un rol (familia) ").ToString() +
+                LanguageService.Translate("y permisos (patentes) específicos.").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("INSTRUCCIONES PASO A PASO:").ToString() + "\r\n" +
+                LanguageService.Translate("1. Ingresa un nombre de usuario en el campo ‘Nombre de usuario’.").ToString() + "\r\n" +
+                LanguageService.Translate("2. Escribe la contraseña en el campo ‘Contraseña’ y confírmala en ‘Confirmar contraseña’. ").ToString() +
+                LanguageService.Translate("   Ambas deben coincidir para habilitar el botón de ‘Registrar’.").ToString() + "\r\n" +
+                LanguageService.Translate("3. Selecciona un rol (familia) en la lista desplegable ‘Roles’. ").ToString() +
+                LanguageService.Translate("   Si no encuentras el rol deseado, haz clic en ‘Nuevo Rol’ para crearlo.").ToString() + "\r\n" +
+                LanguageService.Translate("4. Selecciona un permiso (patente) adicional en la lista ‘Permisos’ si el usuario ").ToString() +
+                LanguageService.Translate("   requiere un acceso específico. Si no, deja la opción ‘<None>’.").ToString() + "\r\n" +
+                LanguageService.Translate("5. Haz clic en ‘Registrar’ para guardar el nuevo usuario en el sistema.").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("Con estos pasos, habrás creado un nuevo usuario con sus roles y permisos asignados. ").ToString() +
+                LanguageService.Translate("Si necesitas más ayuda, por favor contacta al administrador del sistema.").ToString());
+
+            // 4. Creamos el formulario de ayuda
+            using (Form helpForm = new Form())
+            {
+                // El formulario se autoajusta a su contenido
+                helpForm.AutoSize = true;
+                helpForm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                helpForm.StartPosition = FormStartPosition.CenterScreen;
+                helpForm.Text = LanguageService.Translate("Ayuda del sistema");
+                helpForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                helpForm.MaximizeBox = false;
+                helpForm.MinimizeBox = false;
+
+                // (Opcional) Limitamos el tamaño máximo para no salirnos de la pantalla
+                // Esto hace que aparezca scroll si el contenido excede este tamaño
+                helpForm.MaximumSize = new Size(
+                    (int)(Screen.PrimaryScreen.WorkingArea.Width * 0.9),
+                    (int)(Screen.PrimaryScreen.WorkingArea.Height * 0.9)
+                );
+
+                // Para permitir scroll si el contenido excede el tamaño máximo
+                helpForm.AutoScroll = true;
+
+                // 5. Creamos un FlowLayoutPanel que también se autoajuste
+                FlowLayoutPanel flowPanel = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.TopDown,   // Apilar texto e imagen verticalmente
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    WrapContents = false,                    // No “romper” en más columnas
+                    Padding = new Padding(10)
+                };
+
+                // 6. Label para el texto de ayuda
+                Label lblHelp = new Label
+                {
+                    Text = helpMessage,
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                    Margin = new Padding(5)
+                };
+
+                // (Opcional) Si deseas forzar que el texto no exceda cierto ancho y haga wrap:
+                lblHelp.MaximumSize = new Size(800, 0);
+
+                flowPanel.Controls.Add(lblHelp);
+
+                // 7. PictureBox para la imagen
+                PictureBox pbHelpImage = new PictureBox
+                {
+                    Margin = new Padding(5),
+                    // Si quieres mostrar la imagen a tamaño real:
+                    SizeMode = PictureBoxSizeMode.AutoSize,
+                    // O si prefieres que se ajuste pero mantenga proporción:
+                    // SizeMode = PictureBoxSizeMode.Zoom,
+                };
+
+                if (File.Exists(imagePath))
+                {
+                    pbHelpImage.Image = Image.FromFile(imagePath);
+                }
+                else
+                {
+                    lblHelp.Text += "\r\n\r\n" +
+                                    LanguageService.Translate("No se encontró la imagen de ayuda en la ruta: ") + imagePath;
+                }
+
+                // (Opcional) Si usas Zoom, el PictureBox por defecto no hace auto-size, 
+                // puedes darle un tamaño inicial y dejar que el form se ajuste
+                // pbHelpImage.Size = new Size(600, 400);
+
+                flowPanel.Controls.Add(pbHelpImage);
+
+                // 8. Agregamos el FlowLayoutPanel al formulario
+                helpForm.Controls.Add(flowPanel);
+
+                // 9. Mostramos el formulario
+                helpForm.ShowDialog();
             }
         }
     }

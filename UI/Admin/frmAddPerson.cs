@@ -3,6 +3,8 @@ using LOGIC.Facade;
 using Services.Facade;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using UI.Admin;
 
@@ -30,6 +32,8 @@ namespace UI
             // Inicializar el Timer
             toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
+            this.KeyPreview = true; // Permite que el formulario intercepte teclas como F1
+            this.HelpRequested += FrmAddPerson_HelpRequested_f1; // <-- Asignación del evento
         }
 
         /// <summary>
@@ -229,6 +233,94 @@ namespace UI
                             LanguageService.Translate("Ayuda del sistema"),
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+        }
+
+        private void FrmAddPerson_HelpRequested_f1(object sender, HelpEventArgs hlpevent)
+        {
+            hlpevent.Handled = true; // Marcamos como manejado para que no se dispare otra ayuda
+
+            // 1. Construimos dinámicamente el nombre del archivo según el nombre del form
+            string imageFileName = $"{this.Name}.png";
+
+            // 2. Generamos la ruta completa donde está la imagen
+            string imagePath = Path.Combine(Application.StartupPath, "..", "..", "images", imageFileName);
+            imagePath = Path.GetFullPath(imagePath);
+
+            // 3. Texto de ayuda (puedes personalizarlo como gustes)
+            var helpMessage = string.Format(
+                LanguageService.Translate("FORMULARIO DE REGISTRO DE PERSONAS").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("Este formulario te permite ingresar toda la información necesaria ") +
+                LanguageService.Translate("para dar de alta a una persona en el sistema.") + "\r\n\r\n" +
+                LanguageService.Translate("INSTRUCCIONES PASO A PASO:") + "\r\n" +
+                LanguageService.Translate("1. Completa los datos personales de la persona (nombre, apellido, domicilio, etc.).") + "\r\n" +
+                LanguageService.Translate("2. Selecciona el tipo de persona (Arrendatario, Propietario) y el tipo de documento (DNI, Pasaporte).") + "\r\n" +
+                LanguageService.Translate("3. Opcionalmente, asigna un usuario a la persona cuando se te pregunte.") + "\r\n" +
+                LanguageService.Translate("4. Presiona el botón 'Guardar' para registrar a la persona en el sistema.") + "\r\n\r\n" +
+                LanguageService.Translate("Si necesitas más ayuda, por favor contacta al administrador del sistema."));
+
+            // 4. Crear un formulario emergente para mostrar tanto el texto como la imagen
+            using (Form helpForm = new Form())
+            {
+                helpForm.Text = LanguageService.Translate("Ayuda del sistema");
+                helpForm.StartPosition = FormStartPosition.CenterParent;
+                helpForm.Size = new Size(900, 700);  // Ajusta el tamaño según tus preferencias
+                helpForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                helpForm.MaximizeBox = false;
+                helpForm.MinimizeBox = false;
+
+                // 5. Usamos un TableLayoutPanel para organizar texto (fila superior) e imagen (fila inferior)
+                TableLayoutPanel tableLayout = new TableLayoutPanel
+                {
+                    Dock = DockStyle.Fill,
+                    RowCount = 2,
+                    ColumnCount = 1
+                };
+                // Fila 0: Alto automático (para el texto)
+                tableLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                // Fila 1: El resto del espacio (para la imagen)
+                tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+                // 6. Label para el texto de ayuda
+                Label lblHelp = new Label
+                {
+                    Text = helpMessage,
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Margin = new Padding(15),  // Márgenes para que no se pegue a los bordes
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular)
+                };
+
+                // 7. PictureBox para la imagen
+                PictureBox pbHelpImage = new PictureBox
+                {
+                    Dock = DockStyle.Fill,
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Margin = new Padding(10)
+                };
+
+                // 8. Cargamos la imagen desde el archivo, si existe
+                if (File.Exists(imagePath))
+                {
+                    pbHelpImage.Image = Image.FromFile(imagePath);
+                }
+                else
+                {
+                    // Si no se encuentra la imagen, mostramos un texto de advertencia
+                    lblHelp.Text += "\r\n\r\n" +
+                                    "$" + LanguageService.Translate("No se encontró la imagen de ayuda en la ruta: ") + imagePath;
+                }
+
+                // 9. Agregamos los controles al TableLayoutPanel
+                tableLayout.Controls.Add(lblHelp, 0, 0);
+                tableLayout.Controls.Add(pbHelpImage, 0, 1);
+
+                // 10. Agregamos el TableLayoutPanel al formulario de ayuda
+                helpForm.Controls.Add(tableLayout);
+
+                // 11. Mostrar el formulario de ayuda
+                helpForm.ShowDialog();
+            }
         }
     }
 }

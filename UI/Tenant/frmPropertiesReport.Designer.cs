@@ -32,14 +32,16 @@
             this.cmbStatus = new System.Windows.Forms.ComboBox();
             this.btnDownload = new System.Windows.Forms.Button();
             this.dgvProperties = new System.Windows.Forms.DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).BeginInit();
             this.SuspendLayout();
             // 
             // btnFilter
             // 
-            this.btnFilter.Location = new System.Drawing.Point(211, 403);
+            this.btnFilter.Location = new System.Drawing.Point(158, 327);
+            this.btnFilter.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnFilter.Name = "btnFilter";
-            this.btnFilter.Size = new System.Drawing.Size(60, 25);
+            this.btnFilter.Size = new System.Drawing.Size(45, 20);
             this.btnFilter.TabIndex = 24;
             this.btnFilter.Text = "Filtrar";
             this.btnFilter.UseVisualStyleBackColor = true;
@@ -48,16 +50,18 @@
             // cmbStatus
             // 
             this.cmbStatus.FormattingEnabled = true;
-            this.cmbStatus.Location = new System.Drawing.Point(12, 404);
+            this.cmbStatus.Location = new System.Drawing.Point(9, 328);
+            this.cmbStatus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cmbStatus.Name = "cmbStatus";
-            this.cmbStatus.Size = new System.Drawing.Size(193, 24);
+            this.cmbStatus.Size = new System.Drawing.Size(146, 21);
             this.cmbStatus.TabIndex = 23;
             // 
             // btnDownload
             // 
-            this.btnDownload.Location = new System.Drawing.Point(12, 450);
+            this.btnDownload.Location = new System.Drawing.Point(9, 366);
+            this.btnDownload.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(792, 26);
+            this.btnDownload.Size = new System.Drawing.Size(594, 21);
             this.btnDownload.TabIndex = 22;
             this.btnDownload.Text = "Descargar Reporte";
             this.btnDownload.UseVisualStyleBackColor = true;
@@ -68,25 +72,39 @@
             this.dgvProperties.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProperties.Dock = System.Windows.Forms.DockStyle.Top;
             this.dgvProperties.Location = new System.Drawing.Point(0, 0);
+            this.dgvProperties.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgvProperties.Name = "dgvProperties";
             this.dgvProperties.RowTemplate.Height = 24;
-            this.dgvProperties.Size = new System.Drawing.Size(814, 374);
+            this.dgvProperties.Size = new System.Drawing.Size(610, 304);
             this.dgvProperties.TabIndex = 21;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 313);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.TabIndex = 25;
+            this.label1.Text = "Estado:";
             // 
             // frmPropertiesReport
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(814, 483);
+            this.ClientSize = new System.Drawing.Size(610, 392);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnFilter);
             this.Controls.Add(this.cmbStatus);
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.dgvProperties);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "frmPropertiesReport";
             this.Text = "Reporte de propiedades";
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -96,5 +114,6 @@
         private System.Windows.Forms.ComboBox cmbStatus;
         private System.Windows.Forms.Button btnDownload;
         private System.Windows.Forms.DataGridView dgvProperties;
+        private System.Windows.Forms.Label label1;
     }
 }

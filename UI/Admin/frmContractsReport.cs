@@ -8,6 +8,7 @@ using LOGIC.Facade;
 using Domain;
 using static Domain.Person;
 using System.Drawing;
+using System.IO;
 
 namespace UI.Admin
 {
@@ -37,6 +38,8 @@ namespace UI.Admin
             // Configurar el Timer
             toolTipTimer = new Timer { Interval = 1000 }; // 1 segundo
             toolTipTimer.Tick += ToolTipTimer_Tick;
+            this.KeyPreview = true; // Permite que el formulario intercepte teclas como F1
+            this.HelpRequested += FrmAddProperty_HelpRequested_f1; // <-- Asignación del evento
         }
 
         private void frmContractsReports_Load(object sender, EventArgs e)
@@ -454,6 +457,113 @@ namespace UI.Admin
                             LanguageService.Translate("Ayuda del sistema"),
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+        }
+        private void FrmAddProperty_HelpRequested_f1(object sender, HelpEventArgs hlpevent)
+        {
+            hlpevent.Handled = true;
+
+            // 1. Construimos el nombre del archivo de imagen según el formulario
+            string imageFileName = $"{this.Name}.png";
+            // 2. Ruta completa de la imagen (ajusta la carpeta si difiere)
+            string imagePath = Path.Combine(Application.StartupPath, "..", "..", "images", imageFileName);
+            imagePath = Path.GetFullPath(imagePath);
+
+            // 3. Texto de ayuda específico para "Agregar propiedad"
+            var helpMessage =
+                LanguageService.Translate("MÓDULO DE REPORTE DE CONTRATOS").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("Este formulario te permite visualizar y filtrar los contratos existentes en el sistema, ") +
+                LanguageService.Translate("así como descargar un reporte en Excel y ver o descargar la imagen asociada a cada contrato.") + "\r\n\r\n" +
+                LanguageService.Translate("INSTRUCCIONES PASO A PASO:") + "\r\n" +
+                LanguageService.Translate("1. Selecciona el estado del contrato en la lista desplegable (p. ej., Activo, Inactivo) para filtrar.") + "\r\n" +
+                LanguageService.Translate("2. Selecciona una propiedad en la lista desplegable para mostrar solo los contratos de esa dirección.") + "\r\n" +
+                LanguageService.Translate("3. Selecciona un arrendatario (inquilino) en la lista desplegable para filtrar por su DNI.") + "\r\n" +
+                LanguageService.Translate("4. Haz clic en ‘Filtrar’ para aplicar los criterios seleccionados y actualizar la lista de contratos.") + "\r\n" +
+                LanguageService.Translate("5. Para descargar un reporte en formato Excel con los contratos filtrados, haz clic en ‘Descargar Reporte’.") + "\r\n" +
+                LanguageService.Translate("6. Si el contrato tiene una imagen asociada (por ejemplo, una copia escaneada), puedes:") + "\r\n" +
+                LanguageService.Translate("   • Hacer clic en ‘Descargar Imagen’ para guardarla en tu equipo.") + "\r\n" +
+                LanguageService.Translate("   • Hacer clic en ‘Ver Imagen’ para visualizarla directamente en pantalla.") + "\r\n\r\n" +
+                LanguageService.Translate("Con estos pasos, podrás administrar y revisar fácilmente la información de los contratos ") +
+                LanguageService.Translate("en el sistema. Si necesitas más ayuda, contacta al administrador del sistema.");
+
+            // 4. Creamos el formulario de ayuda
+            using (Form helpForm = new Form())
+            {
+                // El formulario se autoajusta a su contenido
+                helpForm.AutoSize = true;
+                helpForm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                helpForm.StartPosition = FormStartPosition.CenterScreen;
+                helpForm.Text = LanguageService.Translate("Ayuda del sistema");
+                helpForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                helpForm.MaximizeBox = false;
+                helpForm.MinimizeBox = false;
+
+                // (Opcional) Limitamos el tamaño máximo para no salirnos de la pantalla
+                // Esto hace que aparezca scroll si el contenido excede este tamaño
+                helpForm.MaximumSize = new Size(
+                    (int)(Screen.PrimaryScreen.WorkingArea.Width * 0.9),
+                    (int)(Screen.PrimaryScreen.WorkingArea.Height * 0.9)
+                );
+
+                // Para permitir scroll si el contenido excede el tamaño máximo
+                helpForm.AutoScroll = true;
+
+                // 5. Creamos un FlowLayoutPanel que también se autoajuste
+                FlowLayoutPanel flowPanel = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.TopDown,   // Apilar texto e imagen verticalmente
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    WrapContents = false,                    // No “romper” en más columnas
+                    Padding = new Padding(10)
+                };
+
+                // 6. Label para el texto de ayuda
+                Label lblHelp = new Label
+                {
+                    Text = helpMessage,
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                    Margin = new Padding(5)
+                };
+
+                // (Opcional) Si deseas forzar que el texto no exceda cierto ancho y haga wrap:
+                lblHelp.MaximumSize = new Size(800, 0);
+
+                flowPanel.Controls.Add(lblHelp);
+
+                // 7. PictureBox para la imagen
+                PictureBox pbHelpImage = new PictureBox
+                {
+                    Margin = new Padding(5),
+                    // Si quieres mostrar la imagen a tamaño real:
+                    SizeMode = PictureBoxSizeMode.AutoSize,
+                    // O si prefieres que se ajuste pero mantenga proporción:
+                    // SizeMode = PictureBoxSizeMode.Zoom,
+                };
+
+                if (File.Exists(imagePath))
+                {
+                    pbHelpImage.Image = Image.FromFile(imagePath);
+                }
+                else
+                {
+                    lblHelp.Text += "\r\n\r\n" +
+                                    "$" + LanguageService.Translate("No se encontró la imagen de ayuda en la ruta: ") + imagePath;
+                }
+
+                // (Opcional) Si usas Zoom, el PictureBox por defecto no hace auto-size, 
+                // puedes darle un tamaño inicial y dejar que el form se ajuste
+                // pbHelpImage.Size = new Size(600, 400);
+
+                flowPanel.Controls.Add(pbHelpImage);
+
+                // 8. Agregamos el FlowLayoutPanel al formulario
+                helpForm.Controls.Add(flowPanel);
+
+                // 9. Mostramos el formulario
+                helpForm.ShowDialog();
+            }
         }
     }
 }

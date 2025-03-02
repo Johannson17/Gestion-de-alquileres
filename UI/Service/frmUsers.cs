@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using Services.Facade;
 using Domain;
 using Services.Domain;
+using System.Drawing;
+using System.IO;
 
 namespace UI.Admin
 {
@@ -27,7 +29,8 @@ namespace UI.Admin
             toolTipTimer.Tick += ToolTipTimer_Tick;
 
             dgvUsers.CellDoubleClick += dgvUsers_CellDoubleClick; // Vincular evento de doble clic
-            this.HelpRequested += FrmUsers_HelpRequested; // Vincular ayuda contextual
+            this.KeyPreview = true; // Permite que el formulario intercepte teclas como F1
+            this.HelpRequested += FrmAddProperty_HelpRequested_f1; // <-- Asignación del evento
         }
 
         /// <summary>
@@ -153,6 +156,109 @@ namespace UI.Admin
                             LanguageService.Translate("Ayuda del sistema"),
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+        }
+
+        private void FrmAddProperty_HelpRequested_f1(object sender, HelpEventArgs hlpevent)
+        {
+            hlpevent.Handled = true;
+
+            // 1. Construimos el nombre del archivo de imagen según el formulario
+            string imageFileName = $"{this.Name}.png";
+            // 2. Ruta completa de la imagen (ajusta la carpeta si difiere)
+            string imagePath = Path.Combine(Application.StartupPath, "..", "..", "images", imageFileName);
+            imagePath = Path.GetFullPath(imagePath);
+
+            // 3. Texto de ayuda específico para "Agregar propiedad"
+            var helpMessage = string.Format(
+                LanguageService.Translate("MÓDULO DE SELECCIÓN DE USUARIO").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("Este formulario te permite elegir un usuario existente en el sistema, ").ToString() +
+                LanguageService.Translate("por ejemplo, para asignarlo a una persona o a otra entidad que requiera un usuario asociado.").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("INSTRUCCIONES PASO A PASO:").ToString() + "\r\n" +
+                LanguageService.Translate("1. Observa la lista de usuarios en la tabla.").ToString() + "\r\n" +
+                LanguageService.Translate("2. Haz doble clic en el usuario que deseas seleccionar. ").ToString() +
+                LanguageService.Translate("   Se cerrará este formulario y se devolverá el usuario seleccionado al formulario anterior.").ToString() + "\r\n\r\n" +
+                LanguageService.Translate("Con estos pasos, habrás elegido un usuario de la lista para utilizarlo donde sea necesario. ").ToString() +
+                LanguageService.Translate("Si necesitas más ayuda, por favor contacta al administrador del sistema.").ToString());
+
+            // 4. Creamos el formulario de ayuda
+            using (Form helpForm = new Form())
+            {
+                // El formulario se autoajusta a su contenido
+                helpForm.AutoSize = true;
+                helpForm.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                helpForm.StartPosition = FormStartPosition.CenterScreen;
+                helpForm.Text = LanguageService.Translate("Ayuda del sistema");
+                helpForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                helpForm.MaximizeBox = false;
+                helpForm.MinimizeBox = false;
+
+                // (Opcional) Limitamos el tamaño máximo para no salirnos de la pantalla
+                // Esto hace que aparezca scroll si el contenido excede este tamaño
+                helpForm.MaximumSize = new Size(
+                    (int)(Screen.PrimaryScreen.WorkingArea.Width * 0.9),
+                    (int)(Screen.PrimaryScreen.WorkingArea.Height * 0.9)
+                );
+
+                // Para permitir scroll si el contenido excede el tamaño máximo
+                helpForm.AutoScroll = true;
+
+                // 5. Creamos un FlowLayoutPanel que también se autoajuste
+                FlowLayoutPanel flowPanel = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.TopDown,   // Apilar texto e imagen verticalmente
+                    Dock = DockStyle.Fill,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    WrapContents = false,                    // No “romper” en más columnas
+                    Padding = new Padding(10)
+                };
+
+                // 6. Label para el texto de ayuda
+                Label lblHelp = new Label
+                {
+                    Text = helpMessage,
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                    Margin = new Padding(5)
+                };
+
+                // (Opcional) Si deseas forzar que el texto no exceda cierto ancho y haga wrap:
+                lblHelp.MaximumSize = new Size(800, 0);
+
+                flowPanel.Controls.Add(lblHelp);
+
+                // 7. PictureBox para la imagen
+                PictureBox pbHelpImage = new PictureBox
+                {
+                    Margin = new Padding(5),
+                    // Si quieres mostrar la imagen a tamaño real:
+                    SizeMode = PictureBoxSizeMode.AutoSize,
+                    // O si prefieres que se ajuste pero mantenga proporción:
+                    // SizeMode = PictureBoxSizeMode.Zoom,
+                };
+
+                if (File.Exists(imagePath))
+                {
+                    pbHelpImage.Image = Image.FromFile(imagePath);
+                }
+                else
+                {
+                    lblHelp.Text += "\r\n\r\n" +
+                                    LanguageService.Translate("No se encontró la imagen de ayuda en la ruta: ") + imagePath;
+                }
+
+                // (Opcional) Si usas Zoom, el PictureBox por defecto no hace auto-size, 
+                // puedes darle un tamaño inicial y dejar que el form se ajuste
+                // pbHelpImage.Size = new Size(600, 400);
+
+                flowPanel.Controls.Add(pbHelpImage);
+
+                // 8. Agregamos el FlowLayoutPanel al formulario
+                helpForm.Controls.Add(flowPanel);
+
+                // 9. Mostramos el formulario
+                helpForm.ShowDialog();
+            }
         }
     }
 }
