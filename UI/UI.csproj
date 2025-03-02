@@ -352,6 +352,30 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="3776265.ico" />
+    <Content Include="images\frmAddContract.png" />
+    <Content Include="images\frmAddContractClause.png" />
+    <Content Include="images\frmAddFamilia.png" />
+    <Content Include="images\frmAddPerson.png" />
+    <Content Include="images\frmAddProperty.png" />
+    <Content Include="images\frmAddPropertyInventory.png" />
+    <Content Include="images\frmBackup_Restore.png" />
+    <Content Include="images\frmChangeLanguage.png" />
+    <Content Include="images\frmContract.png" />
+    <Content Include="images\frmContractsReport.png" />
+    <Content Include="images\frmContractsReport_tenant.png" />
+    <Content Include="images\frmModifyContract.png" />
+    <Content Include="images\frmModifyContractClause.png" />
+    <Content Include="images\frmModifyFamily.png" />
+    <Content Include="images\frmModifyPerson.png" />
+    <Content Include="images\frmModifyProperty.png" />
+    <Content Include="images\frmModifyPropertyInventory.png" />
+    <Content Include="images\frmModifyTicket.png" />
+    <Content Include="images\frmModifyUser.png" />
+    <Content Include="images\frmPropertiesReport.png" />
+    <Content Include="images\frmRegister.png" />
+    <Content Include="images\frmTenantsReport.png" />
+    <Content Include="images\frmTicket.png" />
+    <Content Include="images\frmUsers.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
